@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import JumpButton from './JumpButton.vue';
 const APP_NAME = import.meta.env.VITE_APP_NAME;
 </script>
 
@@ -7,8 +8,8 @@ const APP_NAME = import.meta.env.VITE_APP_NAME;
     <h1>
       <router-link to="/">{{ APP_NAME }}</router-link>
     </h1>
-    <router-link to="/today">Na dziś</router-link>
-    <router-link to="/students">Dzieciaki</router-link>
+    <jump-button icon="calendar" to="/today">Na dziś</jump-button>
+    <jump-button icon="users" to="/students">Uczniowie</jump-button>
   </nav>
 </template>
 

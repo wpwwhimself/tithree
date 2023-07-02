@@ -1,4 +1,4 @@
-# RabbiTTT, Tutor's Time Tally
+# Tutor's Time Tally
 
 This is an app which serves as an aid for a tutor. It tallies how much time is spent with students and how much money is earned based on that.
 

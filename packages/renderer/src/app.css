@@ -49,6 +49,10 @@ a, h2, .accent {
   color: hsl(var(--acc));
 }
 
+form{
+  padding: 0 2em;
+}
+
 /*********** FLEX *************/
 .flex-right, .flex-down{
   display: flex;

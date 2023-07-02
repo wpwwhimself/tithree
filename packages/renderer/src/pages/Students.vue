@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import Button from "../components/Button.vue";
+import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
 
 const students = ref([]);
@@ -18,8 +18,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <PageHeader title="Lista dzieciaków">
-    <Button icon="check">Dodaj</Button>
+  <PageHeader title="Lista uczniów">
+    <JumpButton icon="plus" to="/students/mod">Dodaj</JumpButton>
   </PageHeader>
   <table>
     <thead>

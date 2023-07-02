@@ -1,5 +1,4 @@
 <script setup>
-import imageUrl from "../../src/assets/imgs/home.png";
 </script>
 
 <template>

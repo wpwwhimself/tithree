@@ -1,6 +1,6 @@
 {
-  "name": "tutor-time-tally",
-  "description": "Secure boilerplate for Electron app based on Vite",
+  "name": "t3",
+  "description": "An app for tutors to tally their time spent on tutoring",
   "version": "0.0.1",
   "private": false,
   "author": {

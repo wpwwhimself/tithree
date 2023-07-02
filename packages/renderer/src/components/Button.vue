@@ -3,7 +3,7 @@ defineProps(["icon"]);
 </script>
 
 <template>
-  <button class="rounded">
+  <button class="flex-right v-center rounded" :="$attrs">
     <fai :icon="['fas', icon]" />
     <slot />
   </button>
@@ -16,6 +16,7 @@ button{
   color: hsl(var(--fg));
   border: 3px solid hsl(var(--acc));
   cursor: pointer;
+  font-size: 1rem;
 }
 button:hover{
   background: hsl(var(--acc));
