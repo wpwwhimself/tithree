@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Kalam&display=swap');
+@media(prefers-color-scheme: light){
+  :root{
+    --fg: 210, 29%, 24%;
+    --bg1: 0, 0%, 100%;
+    --bg2: 0, 0%, 95%;
+    --bga: 153, 20%, 90%;
+  }
+}
+@media(prefers-color-scheme: dark){
+  :root{
+    --fg: 210, 29%, 100%;
+    --bg1: 0, 0%, 10%;
+    --bg2: 0, 0%, 15%;
+    --bga: 153, 20%, 20%;
+  }
+}
+:root{
+  --acc: 153, 47%, 49%;
+}
+
+html, body, #app{ height: 100%; }
+body{
+  font-family: Kalam;
+  margin: 0;
+  background-color: hsl(var(--bg1));
+  color: hsl(var(--fg));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app{
+  display: flex;
+  flex-direction: column;
+}
+
+#wrapper{
+  flex: 1 0 auto;
+  margin: 0 auto;
+  width: 90vw;
+  padding: 1em;
+}
+
+h1, h2, h3, p{
+  margin: 0;
+}
+
+a, h2, .accent {
+  color: hsl(var(--acc));
+}
+
+/*********** FLEX *************/
+.flex-right, .flex-down{
+  display: flex;
+  gap: 0.7em;
+  flex-wrap: wrap;
+}
+.flex-right{
+  flex-direction: row;
+}
+.flex-down{
+  flex-direction: column;
+}
+.h-center{
+  justify-content: center;
+}
+.v-center{
+  align-items: center;
+}
+
+/*********** MISC **************/
+.rounded{
+  border-radius: 0.75em;
+}
