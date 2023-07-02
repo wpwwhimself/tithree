@@ -59,3 +59,6 @@ thumbs.db
 
 # Database
 database.db
+
+# Environment
+.env
