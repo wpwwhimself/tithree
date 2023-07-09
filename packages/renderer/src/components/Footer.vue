@@ -6,7 +6,7 @@ const APP_NAME = import.meta.env.VITE_APP_NAME;
   <footer class="flex-right v-center">
     <div id="app-info">
       <h2>{{ APP_NAME }}</h2>
-      <p>Made with ♥️ by Wojciech Przybyła</p>
+      <p>Made by Wojciech Przybyła</p>
     </div>
   </footer>
 </template>

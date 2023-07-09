@@ -1,10 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Kalam&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Kurale&display=swap');
 @media(prefers-color-scheme: light){
   :root{
-    --fg: 210, 29%, 24%;
+    --fg: 210, 29%, 0%;
     --bg1: 0, 0%, 100%;
     --bg2: 0, 0%, 95%;
-    --bga: 153, 20%, 90%;
   }
 }
 @media(prefers-color-scheme: dark){
@@ -12,21 +11,23 @@
     --fg: 210, 29%, 100%;
     --bg1: 0, 0%, 10%;
     --bg2: 0, 0%, 15%;
-    --bga: 153, 20%, 20%;
   }
 }
 :root{
-  --acc: 153, 47%, 49%;
+  --acc: 256, 69%, 69%; /*rgb(150, 121, 230);*/
 }
 
 html, body, #app{ height: 100%; }
 body{
-  font-family: Kalam;
+  font-family: "Kurale", serif;
   margin: 0;
   background-color: hsl(var(--bg1));
   color: hsl(var(--fg));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+h1, h2, h3{
+  font-family: "Dancing Script", cursive;
 }
 
 #app{
