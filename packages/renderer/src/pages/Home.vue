@@ -6,7 +6,7 @@ import logo_big from "../assets/t3_full_color.svg";
   <img :src="logo_big" alt="Tithree Logo">
 </template>
 
-<style>
+<style scoped>
 img{
   max-width: 600px;
 }

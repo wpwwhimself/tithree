@@ -9,8 +9,8 @@ const APP_NAME = import.meta.env.VITE_APP_NAME;
     <router-link to="/">
       <img :src="logo" :alt="APP_NAME" />
     </router-link>
-    <jump-button icon="calendar" to="/today">Na dziś</jump-button>
-    <jump-button icon="users" to="/students">Uczniowie</jump-button>
+    <jump-button icon="calendar" :to="{name: 'Today'}">Na dziś</jump-button>
+    <jump-button icon="users" :to="{name: 'Students'}">Uczniowie</jump-button>
   </nav>
 </template>
 

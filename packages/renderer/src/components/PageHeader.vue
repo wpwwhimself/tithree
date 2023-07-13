@@ -18,4 +18,7 @@ defineProps(["title"]);
   padding: 0.5em 2em;
   margin-bottom: 0.5em;
 }
+.page-header h1{
+  margin: 0;
+}
 </style>

@@ -42,16 +42,32 @@ h1, h2, h3{
   padding: 1em;
 }
 
-h1, h2, h3, p{
-  margin: 0;
-}
-
 a, h2, .accent {
   color: hsl(var(--acc));
 }
 
 form{
   padding: 0 2em;
+}
+
+table{
+  border-spacing: 0;
+  border: 5px solid hsl(var(--bg2));
+  padding: 0.5em;
+}
+tbody tr:hover{
+  background-color: hsl(var(--bg2));
+}
+th{
+  color: hsl(var(--acc));
+}
+thead th{
+  text-align: left;
+  border-bottom: 2px solid hsl(var(--bg2));
+}
+tfoot th{
+  text-align: right;
+  border-top: 2px solid hsl(var(--bg2));
 }
 
 /*********** FLEX *************/

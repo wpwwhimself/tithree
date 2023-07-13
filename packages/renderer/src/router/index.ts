@@ -3,6 +3,7 @@ import Home from "../pages/Home.vue";
 import Today from "../pages/Today.vue";
 import Students from "../pages/Students.vue";
 import StudentMod from "../pages/StudentMod.vue";
+import ActionSummary from "../pages/ActionSummary.vue";
 
 const routes = [
     {
@@ -24,6 +25,11 @@ const routes = [
         path: "/students/mod/:id?",
         name: "StudentsMod",
         component: StudentMod,
+    },
+    {
+        path: "/action-summary/:action/:target",
+        name: "ActionSummary",
+        component: ActionSummary,
     },
 ];
 

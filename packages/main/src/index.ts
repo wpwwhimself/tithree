@@ -53,13 +53,18 @@ const queries = [
     id INTEGER PRIMARY KEY,
     first_name TEXT NOT NULL,
     last_name TEXT,
-    price REAL
+    price REAL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
   )`,
   `CREATE TABLE IF NOT EXISTS sessions(
     id INTEGER PRIMARY KEY,
     student_id INTEGER NOT NULL,
+    session_date TEXT DEFAULT CURRENT_DATE NOT NULL,
     duration REAL,
     price_override REAL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY(student_id) REFERENCES students(id)
   )`
 ];

@@ -2,7 +2,7 @@
  * @module preload
  */
 
-import { contextBridge } from "electron";
+import { app, contextBridge } from "electron";
 import * as sqlite3 from 'sqlite3';
 import * as path from "path";
 
