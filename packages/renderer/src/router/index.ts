@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import About from "../pages/About.vue";
-import Today from "../pages/Today.vue";
+import Sessions from "../pages/Sessions.vue";
+import SessionMod from "../pages/SessionMod.vue";
 import Students from "../pages/Students.vue";
 import StudentMod from "../pages/StudentMod.vue";
 import ActionSummary from "../pages/ActionSummary.vue";
@@ -12,9 +13,14 @@ const routes = [
         component: About,
     },
     {
-        path: "/today",
-        name: "Today",
-        component: Today,
+        path: "/sessions",
+        name: "Sessions",
+        component: Sessions,
+    },
+    {
+        path: "/sessions/mod/:id?",
+        name: "SessionsMod",
+        component: SessionMod,
     },
     {
         path: "/students",
