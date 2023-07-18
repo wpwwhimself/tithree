@@ -30,7 +30,16 @@ onMounted(async () => {
     first_name = ref(student.value.first_name);
     last_name = ref(student.value.last_name);
     price = ref(student.value.price.toString());
-  };
+  }else{
+    try{
+      const data = await window.api.executeQuery(
+        `SELECT value FROM settings WHERE name = 'default_student_price'`
+      );
+      price.value = data[0].value;
+    }catch(err){
+      console.error(err);
+    }
+  }
 });
 
 const handleSubmit = async (e) => {

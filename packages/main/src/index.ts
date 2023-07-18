@@ -36,6 +36,7 @@ app.on('window-all-closed', () => {
 app.on('activate', restoreOrCreateWindow);
 
 /**
+ * *CREATE DATABASE*
  * check the existence of sqlite database
  * and create one, if empty
  */
@@ -66,16 +67,27 @@ const queries = [
     created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY(student_id) REFERENCES students(id)
-  )`
+  )`,
+  `CREATE TABLE IF NOT EXISTS settings(
+    name TEXT PRIMARY KEY,
+    desc TEXT NOT NULL,
+    value TEXT
+  )`,
+  `INSERT OR IGNORE INTO settings VALUES
+    ("default_student_price", "Domyślna stawka [zł]", 50),
+    ("default_session_duration", "Domyślna długość sesji [h]", 1)
+  `,
 ];
-for(let query of queries){
-  db.all(query, [], (err, rows) => {
-    if(err){
-      console.error(err);
-      return;
-    }
-  });
-}
+db.serialize(() => {
+  for(let query of queries){
+    db.all(query, [], (err, rows) => {
+      if(err){
+        console.error(err);
+        return;
+      }
+    });
+  }
+});
 db.close();
 
 /**
