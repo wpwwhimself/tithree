@@ -9,7 +9,9 @@ const APP_NAME = import.meta.env.VITE_APP_NAME;
       <img :src="logo" :alt="APP_NAME" />
     </router-link>
     <div id="app-info">
-      <h2>{{ APP_NAME }}</h2>
+      <router-link to="/about">
+        <h2>{{ APP_NAME }}</h2>
+      </router-link>
       <p>Made by Wojciech Przybyła</p>
     </div>
   </footer>
