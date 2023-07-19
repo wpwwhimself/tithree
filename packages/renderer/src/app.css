@@ -52,6 +52,9 @@ h1, h2, h3{
 a, h2, .accent {
   color: hsl(var(--acc));
 }
+.ghost{
+  opacity: 0.5;
+}
 
 form{
   padding: 0 2em;

@@ -3,7 +3,7 @@ import App from '/@/App.vue';
 import router from './router';
 
 // custom helpers
-import helper from "./helpers";
+import { toPlnPlugin, groupPlugin } from "./helpers";
 
 // font awesome
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -14,7 +14,8 @@ library.add(fas);
 
 createApp(App)
   .use(router)
-  .use(helper)
+  .use(toPlnPlugin)
+  .use(groupPlugin)
   .component("fai", FontAwesomeIcon)
   .mount('#app')
 ;
