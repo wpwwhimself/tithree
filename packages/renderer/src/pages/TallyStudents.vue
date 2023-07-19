@@ -4,9 +4,10 @@ import Button from "../components/Button.vue";
 import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
 import { useRouter } from "vue-router";
+import { Student, Session } from "types";
 
 const router = useRouter();
-const students = ref([]);
+const students = ref([] as (Student & Session)[]);
 
 onMounted(async () => {
   try{

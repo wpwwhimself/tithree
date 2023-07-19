@@ -4,9 +4,10 @@ import Button from "../components/Button.vue";
 import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
 import { useRouter } from "vue-router";
+import { Session } from "../../types";
 
 const router = useRouter();
-const sessions = ref([]);
+const sessions = ref([] as Session[]);
 
 onMounted(async () => {
   try{
@@ -25,13 +26,13 @@ onMounted(async () => {
   }
 });
 
-const handleDelete = async (session_id) => {
+const handleDelete = async (session_id: number) => {
   if(!confirm("Na pewno?")) return;
 
   try{
     const [query, params] = [
       `DELETE FROM sessions WHERE id = ?`,
-      [student_id]
+      [session_id]
     ];
     await window.api.executeQuery(query, params);
     router.push({

@@ -4,15 +4,16 @@ import { useRoute, useRouter } from "vue-router";
 import Button from "../components/Button.vue";
 import PageHeader from "../components/PageHeader.vue";
 import Input from "../components/Input.vue";
+import { Student } from "types";
 
 const [route, router] = [useRoute(), useRouter()];
 const student_id = +route.params.id;
-const student = ref(null);
+const student = ref({} as Student);
 
-let title;
-let first_name = ref(null);
-let last_name = ref(null);
-let price = ref(null);
+let title: string;
+let first_name = ref("");
+let last_name = ref("");
+let price = ref("");
 
 onMounted(async () => {
   if(student_id > 0){
@@ -42,7 +43,7 @@ onMounted(async () => {
   }
 });
 
-const handleSubmit = async (e) => {
+const handleSubmit = async (e: Event) => {
   e.preventDefault();
 
   const is_update = (student_id != 0)
@@ -70,9 +71,9 @@ const handleSubmit = async (e) => {
   }
 };
 
-const updateFirstName = (val) => first_name.value = val;
-const updateLastName = (val) => last_name.value = val;
-const updatePrice = (val) => price.value = val;
+const updateFirstName = (val: string) => first_name.value = val;
+const updateLastName = (val: string) => last_name.value = val;
+const updatePrice = (val: string) => price.value = val;
 </script>
 
 <template>
