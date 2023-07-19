@@ -4,9 +4,16 @@ import Sessions from "../pages/Sessions.vue";
 import SessionMod from "../pages/SessionMod.vue";
 import Students from "../pages/Students.vue";
 import StudentMod from "../pages/StudentMod.vue";
+import StudentsTally from "../pages/StudentsTally.vue";
 import ActionSummary from "../pages/ActionSummary.vue";
+import HomeVue from "../pages/Home.vue";
 
 const routes = [
+    {
+        path: "/",
+        name: "Home",
+        component: HomeVue,
+    },
     {
         path: "/about",
         name: "About",
@@ -23,8 +30,13 @@ const routes = [
         component: SessionMod,
     },
     {
-        path: "/students",
-        name: "Students",
+        path: "/students/tally",
+        name: "StudentsTally",
+        component: StudentsTally,
+    },
+    {
+        path: "/students/list",
+        name: "StudentsList",
         component: Students,
     },
     {

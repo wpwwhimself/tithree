@@ -10,7 +10,7 @@ const APP_NAME = import.meta.env.VITE_APP_NAME;
       <img :src="logo" :alt="APP_NAME" />
     </router-link>
     <jump-button icon="clock-rotate-left" :to="{name: 'Sessions'}">Sesje</jump-button>
-    <jump-button icon="users" :to="{name: 'Students'}">Uczniowie</jump-button>
+    <jump-button icon="users" :to="{name: 'StudentsTally'}">Uczniowie</jump-button>
   </nav>
 </template>
 

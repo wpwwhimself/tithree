@@ -15,9 +15,9 @@ const session = ref(null);
 let title;
 // let session_id = ref("");
 let session_date = ref(moment().format("YYYY-MM-DD"));
-let student_id = ref("");
-let duration = ref("");
-let price_override = ref("");
+let student_id = ref(null);
+let duration = ref(null);
+let price_override = ref(null);
 
 onMounted(async () => {
   // load students
@@ -77,11 +77,11 @@ const handleSubmit = async (e) => {
     const [query, params] = (!is_update)
       ? [
           `INSERT INTO sessions (student_id, session_date, duration, price_override) VALUES(?, ?, ?, ?)`,
-          [student_id.value, session_date.value, duration.value, price_override.value]
+          [student_id.value, session_date.value, duration.value, price_override.value || null]
         ]
       : [
           `UPDATE sessions SET student_id = ?, session_date = ?, duration = ?, price_override = ?, updated_at = datetime() WHERE id = ?`,
-          [student_id.value, session_date.value, duration.value, price_override.value, session_id]
+          [student_id.value, session_date.value, duration.value, price_override.value || null, session_id]
         ];
     await window.api.executeQuery(query, params);
     router.push({
@@ -108,7 +108,7 @@ const updatePriceOverride = (val) => price_override.value = val;
     <PageHeader v-else title="Nowa sesja"></PageHeader>
     <form @submit="handleSubmit">
       <Input type="date" :value="session_date" name="session_date" label="Data" required @input="updateSessionDate($event.target.value)"/>
-      <Select :options="students" :value="student_id" name="student_id" label="Uczeń" required @change="updateStudentId($event.target.value)" />
+      <Select :options="students" :emptyOption="true" :value="student_id" name="student_id" label="Uczeń" required @change="updateStudentId($event.target.value)" />
       <Input type="number" min="0" step="0.25" :value="duration" name="duration" label="Czas trwania [h]" required @input="updateDuration($event.target.value)"/>
       <Input type="number" min="0" step="0.01" :value="price_override" name="price_override" label="Wyjątkowa stawka [zł]" @input="updatePriceOverride($event.target.value)"/>
       <Button icon="check" type="submit">Zatwierdź</Button>

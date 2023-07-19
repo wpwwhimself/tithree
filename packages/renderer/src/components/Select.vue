@@ -2,6 +2,7 @@
 const props = defineProps({
   name: { type: String, required: true },
   options: { type: Object || null },
+  emptyOption: { type: Boolean },
   label: { type: String },
   value: { type: String },
 });
@@ -11,6 +12,7 @@ const props = defineProps({
   <div class="input-container">
     <label :for="name">{{ label }}</label>
     <select :id="name" :name="name" :="$attrs" v-if="options">
+      <option v-if="emptyOption" value=""></option>
       <option v-for="option in options" :key="option.key" :value="option.key" :selected="value == option.key">{{ option.value }}</option>
     </select>
     <span v-else>

@@ -10,9 +10,9 @@ const student_id = +route.params.id;
 const student = ref(null);
 
 let title;
-let first_name = ref("");
-let last_name = ref("");
-let price = ref("");
+let first_name = ref(null);
+let last_name = ref(null);
+let price = ref(null);
 
 onMounted(async () => {
   if(student_id > 0){
@@ -62,7 +62,7 @@ const handleSubmit = async (e) => {
       name: "ActionSummary",
       params: {
         action: (is_update) ? "Dane ucznia poprawione" : "Uczeń dodany",
-        target: "Students"
+        target: "StudentsList"
       }
     });
   }catch(err){

@@ -32,7 +32,7 @@ const handleDelete = async (student_id) => {
       name: "ActionSummary",
       params: {
         action: "Uczeń usunięty",
-        target: "Students",
+        target: "StudentsList",
       }
     });
   }catch(err){
