@@ -62,7 +62,7 @@ const handleSubmit = async (e) => {
       name: "ActionSummary",
       params: {
         action: (is_update) ? "Dane ucznia poprawione" : "Uczeń dodany",
-        target: "StudentsList"
+        target: "Students"
       }
     });
   }catch(err){

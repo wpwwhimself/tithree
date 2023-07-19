@@ -32,7 +32,7 @@ const handleDelete = async (student_id) => {
       name: "ActionSummary",
       params: {
         action: "Uczeń usunięty",
-        target: "StudentsList",
+        target: "Students",
       }
     });
   }catch(err){
@@ -85,10 +85,4 @@ const handleDelete = async (student_id) => {
 </template>
 
 <style>
-.action-buttons button{
-  font-size: 10px !important;
-}
-table{
-  width: 100%;
-}
 </style>

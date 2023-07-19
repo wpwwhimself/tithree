@@ -64,6 +64,7 @@ table{
   border-spacing: 0;
   border: 5px solid hsl(var(--bg2));
   padding: 0.5em;
+  width: 100%;
 }
 tbody tr:hover{
   background-color: hsl(var(--bg2));
@@ -102,4 +103,7 @@ tfoot th{
 /*********** MISC **************/
 .rounded{
   border-radius: 0.75em;
+}
+.action-buttons button{
+  font-size: 10px !important;
 }

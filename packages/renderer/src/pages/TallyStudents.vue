@@ -30,7 +30,7 @@ onMounted(async () => {
 
 <template>
   <PageHeader title="Podliczenie uczniów">
-    <JumpButton icon="pencil" :to="{name: 'StudentsList'}">Zarządzaj</JumpButton>
+    <JumpButton icon="pencil" :to="{name: 'Students'}">Uczniowie</JumpButton>
   </PageHeader>
 
   <template v-if="students">
@@ -41,6 +41,7 @@ onMounted(async () => {
           <th>Sesje</th>
           <th>Czas</th>
           <th>Suma</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -49,11 +50,14 @@ onMounted(async () => {
           <td>{{ student.session_count }}</td>
           <td>{{ student.session_time }} h</td>
           <td>{{ $toPln(student.session_value) }}</td>
+          <th class="flex-right action-buttons">
+            <JumpButton icon="eye" :to="{name: 'Students'}" />
+          </th>
         </tr>
       </tbody>
       <tfoot>
         <tr>
-          <th colspan="3"></th>
+          <th colspan="4"></th>
           <th>
             <fai :icon="['fas', 'calculator']" />
             {{ students.length }}
@@ -69,10 +73,4 @@ onMounted(async () => {
 </template>
 
 <style>
-.action-buttons button{
-  font-size: 10px !important;
-}
-table{
-  width: 100%;
-}
 </style>
