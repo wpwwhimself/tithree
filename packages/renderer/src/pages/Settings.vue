@@ -1,17 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import Button from "../components/Button.vue";
-import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
 import Input from "../components/Input.vue";
-import { useRouter } from "vue-router";
 import { Setting } from "../../types";
 
-const router = useRouter();
 const settings = ref({} as Setting[]);
-
-let default_student_price = ref(null);
-let default_session_duration = ref(null);
 
 onMounted(async () => {
   try{
@@ -22,9 +15,6 @@ onMounted(async () => {
   }catch(err){
     console.error(err);
   }
-
-  // default_student_price = ref(settings.value.first_name);
-  // default_session_duration = ref(settings.value.last_name);
 });
 
 const updateSetting = async (name: string, val: string) => {
