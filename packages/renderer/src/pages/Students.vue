@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from "vue";
 import Button from "../components/Button.vue";
 import JumpButton from "../components/JumpButton.vue";

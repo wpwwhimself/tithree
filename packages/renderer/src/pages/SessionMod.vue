@@ -1,11 +1,11 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Button from "../components/Button.vue";
 import PageHeader from "../components/PageHeader.vue";
 import Input from "../components/Input.vue";
 import Select from "../components/Select.vue";
-import moment from "moment";
+import * as moment from "moment";
 
 const [route, router] = [useRoute(), useRouter()];
 const session_id = +route.params.id;

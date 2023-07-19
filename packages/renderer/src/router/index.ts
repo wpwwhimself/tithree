@@ -7,6 +7,7 @@ import StudentMod from "../pages/StudentMod.vue";
 import Tally from "../pages/Tally.vue";
 import TallyStudents from "../pages/TallyStudents.vue";
 import TallyPeriods from "../pages/TallyPeriods.vue";
+import Settings from "../pages/Settings.vue";
 import ActionSummary from "../pages/ActionSummary.vue";
 import HomeVue from "../pages/Home.vue";
 
@@ -55,6 +56,11 @@ const routes = [
     path: "/tally/periods/:monthsback?",
     name: "TallyPeriods",
     component: TallyPeriods,
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: Settings,
   },
   {
     path: "/action-summary/:action/:target",
