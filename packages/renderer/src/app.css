@@ -1,4 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Kurale&display=swap');
+@font-face {
+  font-family: "Kurale";
+  src: url("./assets/kurale.ttf");
+}
+@font-face {
+  font-family: "Dancing Script";
+  src: url("./assets/dancingscript.ttf");
+}
 @media(prefers-color-scheme: light){
   :root{
     --fg: 210, 29%, 0%;
