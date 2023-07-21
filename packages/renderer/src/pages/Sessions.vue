@@ -11,6 +11,7 @@ import moment from "moment";
 
 const router = useRouter();
 const sessions = ref([] as Session[]);
+let sessions_f = ref([] as Session[]);
 const [filter_from, filter_to] = [
   ref(moment().subtract(1, "month").format("YYYY-MM-DD")),
   ref(moment().format("YYYY-MM-DD")),
@@ -20,7 +21,12 @@ const updateFilters = (name: string, val: string) => {
     case "from": filter_from.value = val; break;
     case "to": filter_to.value = val; break;
   }
+  updateDataSet();
 }
+const updateDataSet = () =>
+  sessions_f.value = sessions.value.filter(ses =>
+    moment(ses.session_date).isBetween(filter_from.value, filter_to.value, undefined, "[]")
+  );
 
 onMounted(async () => {
   try{
@@ -36,6 +42,7 @@ onMounted(async () => {
       ORDER BY session_date DESC, sessions.created_at DESC`
     );
     sessions.value = data;
+    updateDataSet();
   }catch(err){
     console.error(err);
   }
@@ -76,7 +83,7 @@ const handleDelete = async (session_id: number) => {
   </SubPanel>
 
   <template v-if="sessions">
-    <table v-if="sessions.length" class="rounded">
+    <table v-if="sessions_f.length" class="rounded">
       <thead>
         <tr>
           <th>Uczeń</th>
@@ -87,22 +94,20 @@ const handleDelete = async (session_id: number) => {
         </tr>
       </thead>
       <tbody>
-        <template v-for="(sessions_gr, key) of $group(sessions, 'session_date')">
-          <template v-if="moment(key).isBetween(filter_from, filter_to)">
-            <tr>
-              <td colspan="5" class="accent">{{ key }}</td>
-            </tr>
-            <tr v-for="session in sessions_gr" :key="session.id">
-              <td>{{ session.student_name }}</td>
-              <td class="ghost">{{ session.duration }}</td>
-              <td class="ghost">{{ $toPln(session.price) }}</td>
-              <td>{{ $toPln(session.session_value) }}</td>
-              <td class="flex-right action-buttons">
-                <JumpButton icon="pencil" :to="{name: 'SessionsMod', params: {id: session.id}}"></JumpButton>
-                <Button icon="trash" @click="handleDelete(session.id)"></Button>
-              </td>
-            </tr>
-          </template>
+        <template v-for="(sessions_gr, key) of $group(sessions_f, 'session_date')">
+          <tr>
+            <td colspan="5" class="accent">{{ key }}</td>
+          </tr>
+          <tr v-for="session in sessions_gr" :key="session.id">
+            <td>{{ session.student_name }}</td>
+            <td class="ghost">{{ session.duration }}</td>
+            <td class="ghost">{{ $toPln(session.price) }}</td>
+            <td>{{ $toPln(session.session_value) }}</td>
+            <td class="flex-right action-buttons">
+              <JumpButton icon="pencil" :to="{name: 'SessionsMod', params: {id: session.id}}"></JumpButton>
+              <Button icon="trash" @click="handleDelete(session.id)"></Button>
+            </td>
+          </tr>
         </template>
       </tbody>
       <tfoot>
@@ -110,7 +115,7 @@ const handleDelete = async (session_id: number) => {
           <th colspan="4"></th>
           <th>
             <fai :icon="['fas', 'calculator']" />
-            {{ sessions.length }}
+            {{ sessions_f.length }}
           </th>
         </tr>
       </tfoot>
