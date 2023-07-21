@@ -22,3 +22,10 @@ export const groupPlugin = {
       }, {});
   }
 }
+export const roundNumberPlugin = {
+  install(app: App){
+    app.config.globalProperties.$round = (val, precision = 2) =>
+      Math.round(val * Math.pow(10, precision)) / Math.pow(10, precision);
+      // val;
+  }
+}

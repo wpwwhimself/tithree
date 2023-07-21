@@ -11,5 +11,6 @@ declare module '@vue/runtime-core'{
   interface ComponentCustomProperties{
     $toPln: (val: number | undefined) => string,
     $group: (data: any[], key: string) => any[],
+    $round: (val: number, precision?: number) => number,
   }
 }

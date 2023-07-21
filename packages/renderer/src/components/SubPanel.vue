@@ -14,7 +14,7 @@ defineProps(["title"]);
   justify-content: space-between;
   border: 0.3em dashed hsl(var(--bg2));
   padding: 0.5em 2em;
-  margin-bottom: 0.5em;
+  margin: 0.5em 0;
 }
 h2{
   margin: 0;

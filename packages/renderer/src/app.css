@@ -109,6 +109,9 @@ tfoot th{
 .rounded{
   border-radius: 0.75em;
 }
+.no-border{
+  border: none !important;
+}
 .action-buttons button{
   font-size: 10px !important;
 }
