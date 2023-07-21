@@ -14,7 +14,7 @@ onMounted(async () => {
   //students list
   try{
     const data = await window.api.executeQuery(
-      "SELECT * FROM students ORDER BY last_name, first_name"
+      "SELECT * FROM students ORDER BY first_name, last_name"
     );
     students.value = data;
   }catch(err){

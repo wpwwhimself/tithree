@@ -23,7 +23,7 @@ onMounted(async () => {
         LEFT JOIN sessions ON student_id = students.id
       GROUP BY students.id
       HAVING COUNT(sessions.id) > 0
-      ORDER BY students.last_name, students.first_name`
+      ORDER BY students.first_name, students.last_name`
     );
     students.value = data;
   }catch(err){
