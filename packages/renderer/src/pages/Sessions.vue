@@ -121,7 +121,7 @@ const handleDelete = async (session_id: number) => {
       </tfoot>
     </table>
     <p v-else>
-      Lista jest pusta. Utwórz nową sesję przyciskiem powyżej.
+      Lista jest pusta. Utwórz nową sesję przyciskiem powyżej lub sprawdź filtry.
     </p>
   </template>
   <h2 v-else>Wczytuję...</h2>
