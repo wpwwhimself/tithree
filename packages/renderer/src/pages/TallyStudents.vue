@@ -14,13 +14,17 @@ onMounted(async () => {
         students.first_name || ' ' || students.last_name as student_name,
         COUNT(*) as session_count,
         SUM(sessions.duration) as session_time,
-        SUM(sessions.price * sessions.duration) as session_value
+        SUM(
+          CASE WHEN duration < 1 THEN duration * sessions.price * (SELECT value FROM settings WHERE name = 'price_factor_below_1')
+            ELSE duration * sessions.price
+          END
+        ) as session_value
       FROM students
         LEFT JOIN sessions ON student_id = students.id
       GROUP BY students.id
       HAVING COUNT(sessions.id) > 0
       ORDER BY students.last_name, students.first_name`
-    ); //TODO formula for calculating price
+    );
     students.value = data;
   }catch(err){
     console.error(err);

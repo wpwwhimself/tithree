@@ -75,7 +75,8 @@ const queries = [
   )`,
   `INSERT OR IGNORE INTO settings VALUES
     ("default_student_price", "Domyślna stawka [zł]", 50),
-    ("default_session_duration", "Domyślna długość sesji [h]", 1)
+    ("default_session_duration", "Domyślna długość sesji [h]", 1),
+    ("price_factor_below_1", "Mnożnik stawki dla sesji poniżej 1 h", 1.0666667)
   `,
 ];
 db.serialize(() => {

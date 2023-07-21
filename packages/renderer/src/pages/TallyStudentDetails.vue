@@ -32,14 +32,18 @@ onMounted(async () => {
         SUBSTR(session_date, 1, 7) as month,
         COUNT(*) as session_count,
         SUM(duration) as session_time,
-        SUM(sessions.price * duration) as session_value
+        SUM(
+          CASE WHEN duration < 1 THEN duration * sessions.price * (SELECT value FROM settings WHERE name = 'price_factor_below_1')
+            ELSE duration * sessions.price
+          END
+        ) as session_value
       FROM sessions
         JOIN students ON student_id = students.id
       WHERE student_id = ?
       GROUP BY month
-      ORDER BY students.last_name, students.first_name`,
+      ORDER BY month DESC`,
       [student_id]
-    ); //TODO formula for calculating price
+    );
     report_data.value = data;
   }catch(err){
     console.error(err);

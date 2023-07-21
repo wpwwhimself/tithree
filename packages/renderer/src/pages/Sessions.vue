@@ -14,7 +14,10 @@ onMounted(async () => {
     const data = await window.api.executeQuery(
       `SELECT
         sessions.*,
-        first_name || ' ' || last_name as student_name
+        first_name || ' ' || last_name as student_name,
+        CASE WHEN duration < 1 THEN duration * sessions.price * (SELECT value FROM settings WHERE name = 'price_factor_below_1')
+          ELSE duration * sessions.price
+        END as session_value
       FROM sessions
         JOIN students ON student_id = students.id
       ORDER BY session_date DESC, sessions.created_at DESC`
@@ -72,7 +75,7 @@ const handleDelete = async (session_id: number) => {
             <td>{{ session.student_name }}</td>
             <td class="ghost">{{ session.duration }}</td>
             <td class="ghost">{{ $toPln(session.price) }}</td>
-            <td>{{ $toPln(session.price * session.duration) }}</td> <!-- TODO CALCULATE PRICE-->
+            <td>{{ $toPln(session.session_value) }}</td>
             <td class="flex-right action-buttons">
               <JumpButton icon="pencil" :to="{name: 'SessionsMod', params: {id: session.id}}"></JumpButton>
               <Button icon="trash" @click="handleDelete(session.id)"></Button>

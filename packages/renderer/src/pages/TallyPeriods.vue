@@ -18,11 +18,15 @@ onMounted(async () => {
         SUBSTR(session_date, 1, 7) as id,
         COUNT(*) as session_count,
         SUM(duration) as session_time,
-        SUM(price * duration) as session_value
+        SUM(
+          CASE WHEN duration < 1 THEN duration * price * (SELECT value FROM settings WHERE name = 'price_factor_below_1')
+            ELSE duration * price
+          END
+        ) as session_value
       FROM sessions
       GROUP BY 1
       ORDER BY 1 DESC`
-    ); //TODO FORMULA FOR CALCULATING PRICE
+    );
     months.value = data;
 
     for(let month of months.value){
