@@ -60,10 +60,8 @@ onMounted(async () => {
     price = ref(session.value.price.toString());
   }else{
     try{
-      const data = await window.api.executeQuery(
-        `SELECT value FROM settings WHERE name = 'default_session_duration'`
-      );
-      duration.value = data[0].value;
+      const data = await window.api.getSetting("default_session_duration");
+      duration.value = data.value;
     }catch(err){
       console.error(err);
     }

@@ -33,10 +33,8 @@ onMounted(async () => {
     price = ref(student.value.price.toString());
   }else{
     try{
-      const data = await window.api.executeQuery(
-        `SELECT value FROM settings WHERE name = 'default_student_price'`
-      );
-      price.value = data[0].value;
+      const data = await window.api.getSetting('default_student_price');
+      price.value = data.value;
     }catch(err){
       console.error(err);
     }

@@ -8,13 +8,23 @@ import { Student } from "../../types";
 
 const router = useRouter();
 const students = ref([] as Student[]);
+const def_price = ref(0);
 
 onMounted(async () => {
+  //students list
   try{
     const data = await window.api.executeQuery(
       "SELECT * FROM students ORDER BY last_name, first_name"
     );
     students.value = data;
+  }catch(err){
+    console.error(err);
+  }
+
+  //default price for highlighting purposes
+  try{
+    const data = await window.api.getSetting("default_student_price");
+    def_price.value = +data.value;
   }catch(err){
     console.error(err);
   }
@@ -59,9 +69,9 @@ const handleDelete = async (student_id: number) => {
       </thead>
       <tbody>
         <tr v-for="student in students" :key="student.id">
-          <td>{{ student.first_name }}</td>
-          <td>{{ student.last_name }}</td>
-          <td>{{ $toPln(student.price) }}</td>
+          <td>{{ student.first_name || "–" }}</td>
+          <td>{{ student.last_name || "–" }}</td>
+          <td :class="{ ghost: (def_price == student.price) }">{{ $toPln(student.price) }}</td>
           <td class="flex-right action-buttons">
             <JumpButton icon="pencil" :to="{name: 'StudentsMod', params: {id: student.id}}"></JumpButton>
             <Button icon="trash" @click="handleDelete(student.id)"></Button>

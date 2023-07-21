@@ -30,5 +30,30 @@ contextBridge.exposeInMainWorld('api', {
     }catch(err){
       throw err;
     }
+  },
+  getSetting: async (name: string): Promise<any> => {
+    try{
+      const db = new sqlite3.Database(dbPath);
+
+      return new Promise((resolve, reject) => {
+        db.get(
+          `SELECT value FROM settings WHERE name = ?`,
+          [name],
+          (error: Error | null, rows: any[]) => {
+            db.close((closeError: Error | null) => {
+              if(error){
+                reject(error);
+              }else if(closeError){
+                reject(closeError);
+              }else{
+                resolve(rows);
+              }
+            });
+          }
+        );
+      });
+    }catch(err){
+      throw err;
+    }
   }
 });
