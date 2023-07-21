@@ -33,6 +33,10 @@ const updateSetting = async (name: string, val: string) => {
 <template>
   <PageHeader title="Ustawienia"></PageHeader>
 
+  <p class="ghost">
+    Aby zmienić ustawienie, po prostu wpisz wartość – zmiany zostaną zapisane od razu.
+  </p>
+
   <form v-if="settings">
     <Input
       v-for="setting in settings" :key="setting.name"
