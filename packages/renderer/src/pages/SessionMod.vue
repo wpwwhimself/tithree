@@ -6,18 +6,19 @@ import PageHeader from "../components/PageHeader.vue";
 import Input from "../components/Input.vue";
 import Select from "../components/Select.vue";
 import moment from "moment";
+import { SelectOption, Session } from "../../types";
 
 const [route, router] = [useRoute(), useRouter()];
 const session_id = +route.params.id;
-const students = ref(null);
-const session = ref(null);
+const students = ref([] as SelectOption[]);
+const session = ref({} as Session);
 
 let title: string;
 // let session_id = ref("");
 let session_date = ref(moment().format("YYYY-MM-DD"));
-let student_id = ref(null);
-let duration = ref(null);
-let price = ref(null);
+let student_id = ref("");
+let duration = ref("");
+let price = ref("");
 
 onMounted(async () => {
   // load students
@@ -69,7 +70,7 @@ onMounted(async () => {
   }
 });
 
-const handleSubmit = async (e) => {
+const handleSubmit = async (e: Event) => {
   e.preventDefault();
 
   const is_update = (session_id != 0)
@@ -78,11 +79,11 @@ const handleSubmit = async (e) => {
     const [query, params] = (!is_update)
       ? [
           `INSERT INTO sessions (student_id, session_date, duration, price) VALUES(?, ?, ?, ?)`,
-          [student_id.value, session_date.value, duration.value, price.value || session.value!.student_price]
+          [student_id.value, session_date.value, duration.value, price.value]
         ]
       : [
           `UPDATE sessions SET student_id = ?, session_date = ?, duration = ?, price = ?, updated_at = datetime() WHERE id = ?`,
-          [student_id.value, session_date.value, duration.value, price.value || session.value!.student_price, session_id]
+          [student_id.value, session_date.value, duration.value, price.value, session_id]
         ];
     await window.api.executeQuery(query, params);
     router.push({
@@ -97,13 +98,13 @@ const handleSubmit = async (e) => {
   }
 };
 
-const updateSessionDate = (val) => session_date.value = val;
-const updateStudentId = (val) => {
+const updateSessionDate = (val: string) => session_date.value = val;
+const updateStudentId = (val: string) => {
   student_id.value = val;
-  price.value = students.value.filter(opt => opt.key == val)[0].price;
+  price.value = students.value.filter(opt => opt.key == val)[0].price!.toString();
 };
-const updateDuration = (val) => duration.value = val;
-const updatePrice = (val) => price.value = val;
+const updateDuration = (val: string) => duration.value = val;
+const updatePrice = (val: string) => price.value = val;
 </script>
 
 <template>
