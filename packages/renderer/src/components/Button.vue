@@ -24,5 +24,6 @@ button:hover{
 }
 button:active{
   background: hsl(var(--fg));
+  color: hsl(var(--bg1));
 }
 </style>

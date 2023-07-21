@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
 import SubPanel from "../components/SubPanel.vue";
+import ColPlot from "../components/ColPlot.vue";
 import { Session } from "types";
 
 const months = ref([] as Session[]);
@@ -56,6 +57,8 @@ onMounted(async () => {
 
   <template v-if="months">
     <template v-if="months.length">
+      <ColPlot :data="months.slice(0, 12)" :axes="['id', 'session_value']" :as-pln="true"></ColPlot>
+
       <table class="rounded">
         <thead>
           <tr>
