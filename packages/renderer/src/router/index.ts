@@ -6,6 +6,7 @@ import Students from "../pages/Students.vue";
 import StudentMod from "../pages/StudentMod.vue";
 import Tally from "../pages/Tally.vue";
 import TallyStudents from "../pages/TallyStudents.vue";
+import TallyStudentDetails from "../pages/TallyStudentDetails.vue";
 import TallyPeriods from "../pages/TallyPeriods.vue";
 import Settings from "../pages/Settings.vue";
 import ActionSummary from "../pages/ActionSummary.vue";
@@ -48,12 +49,17 @@ const routes = [
     component: Tally,
   },
   {
-    path: "/tally/students/:id?",
+    path: "/tally/students",
     name: "TallyStudents",
     component: TallyStudents,
   },
   {
-    path: "/tally/periods/:monthsback?",
+    path: "/tally/students/:id",
+    name: "TallyStudentDetails",
+    component: TallyStudentDetails,
+  },
+  {
+    path: "/tally/periods",
     name: "TallyPeriods",
     component: TallyPeriods,
   },

@@ -3,16 +3,15 @@ import { ref, onMounted } from "vue";
 import Button from "../components/Button.vue";
 import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
-import { useRouter } from "vue-router";
 import { Student, Session } from "types";
 
-const router = useRouter();
 const students = ref([] as (Student & Session)[]);
 
 onMounted(async () => {
   try{
     const data = await window.api.executeQuery(
       `SELECT
+        students.id,
         students.first_name || ' ' || students.last_name as student_name,
         COUNT(*) as session_count,
         SUM(sessions.duration) as session_time,
@@ -20,6 +19,7 @@ onMounted(async () => {
       FROM students
         LEFT JOIN sessions ON student_id = students.id
       GROUP BY students.id
+      HAVING COUNT(sessions.id) > 0
       ORDER BY students.last_name, students.first_name`
     ); //TODO formula for calculating price
     students.value = data;
@@ -30,8 +30,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <PageHeader title="Podliczenie uczniów">
-    <JumpButton icon="pencil" :to="{name: 'Students'}">Uczniowie</JumpButton>
+  <PageHeader title="Policzenie uczniów">
+    <JumpButton :to="{name: 'Tally'}" icon="angles-left"></JumpButton>
   </PageHeader>
 
   <template v-if="students">
@@ -52,7 +52,7 @@ onMounted(async () => {
           <td>{{ student.session_time }} h</td>
           <td>{{ $toPln(student.session_value) }}</td>
           <th class="flex-right action-buttons">
-            <JumpButton icon="eye" :to="{name: 'Students'}" />
+            <JumpButton icon="eye" :to="{name: 'TallyStudentDetails', params: {id: student.id}}" />
           </th>
         </tr>
       </tbody>
@@ -67,7 +67,7 @@ onMounted(async () => {
       </tfoot>
     </table>
     <p v-else>
-      Lista jest pusta. Utwórz nowego ucznia.
+      Lista jest pusta. Brakuje uczniów lub sesji dla nich.
     </p>
   </template>
   <h2 v-else>Wczytuję...</h2>
