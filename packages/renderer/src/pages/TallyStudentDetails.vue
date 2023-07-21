@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import Button from "../components/Button.vue";
 import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { Student, Session } from "types";
 
-const [route, router] = [useRoute(), useRouter()];
+const route = useRoute();
 const student_id = +route.params.id;
 const report_data = ref([] as (Student & Session)[]);
 
