@@ -5,19 +5,19 @@ import Button from "../components/Button.vue";
 import PageHeader from "../components/PageHeader.vue";
 import Input from "../components/Input.vue";
 import Select from "../components/Select.vue";
-import * as moment from "moment";
+import moment from "moment";
 
 const [route, router] = [useRoute(), useRouter()];
 const session_id = +route.params.id;
 const students = ref(null);
 const session = ref(null);
 
-let title;
+let title: string;
 // let session_id = ref("");
 let session_date = ref(moment().format("YYYY-MM-DD"));
 let student_id = ref(null);
 let duration = ref(null);
-let price_override = ref(null);
+let price = ref(null);
 
 onMounted(async () => {
   // load students
@@ -25,7 +25,8 @@ onMounted(async () => {
     const data = await window.api.executeQuery(
       `SELECT
         id as key,
-        first_name || ' ' || last_name as value
+        first_name || ' ' || last_name as value,
+        price
       FROM students
       ORDER BY first_name, last_name`,
     );
@@ -55,7 +56,7 @@ onMounted(async () => {
     session_date = ref(session.value.session_date);
     student_id = ref(session.value.student_id.toString());
     duration = ref(session.value.duration.toString());
-    price_override = ref(session.value.price_override.toString());
+    price = ref(session.value.price.toString());
   }else{
     try{
       const data = await window.api.executeQuery(
@@ -76,12 +77,12 @@ const handleSubmit = async (e) => {
   try{
     const [query, params] = (!is_update)
       ? [
-          `INSERT INTO sessions (student_id, session_date, duration, price_override) VALUES(?, ?, ?, ?)`,
-          [student_id.value, session_date.value, duration.value, price_override.value || null]
+          `INSERT INTO sessions (student_id, session_date, duration, price) VALUES(?, ?, ?, ?)`,
+          [student_id.value, session_date.value, duration.value, price.value || session.value!.student_price]
         ]
       : [
-          `UPDATE sessions SET student_id = ?, session_date = ?, duration = ?, price_override = ?, updated_at = datetime() WHERE id = ?`,
-          [student_id.value, session_date.value, duration.value, price_override.value || null, session_id]
+          `UPDATE sessions SET student_id = ?, session_date = ?, duration = ?, price = ?, updated_at = datetime() WHERE id = ?`,
+          [student_id.value, session_date.value, duration.value, price.value || session.value!.student_price, session_id]
         ];
     await window.api.executeQuery(query, params);
     router.push({
@@ -97,9 +98,12 @@ const handleSubmit = async (e) => {
 };
 
 const updateSessionDate = (val) => session_date.value = val;
-const updateStudentId = (val) => student_id.value = val;
+const updateStudentId = (val) => {
+  student_id.value = val;
+  price.value = students.value.filter(opt => opt.key == val)[0].price;
+};
 const updateDuration = (val) => duration.value = val;
-const updatePriceOverride = (val) => price_override.value = val;
+const updatePrice = (val) => price.value = val;
 </script>
 
 <template>
@@ -110,7 +114,7 @@ const updatePriceOverride = (val) => price_override.value = val;
       <Input type="date" :value="session_date" name="session_date" label="Data" required @input="updateSessionDate($event.target.value)"/>
       <Select :options="students" :emptyOption="true" :value="student_id" name="student_id" label="Uczeń" required @change="updateStudentId($event.target.value)" />
       <Input type="number" min="0" step="0.25" :value="duration" name="duration" label="Czas trwania [h]" required @input="updateDuration($event.target.value)"/>
-      <Input type="number" min="0" step="0.01" :value="price_override" name="price_override" label="Wyjątkowa stawka [zł]" @input="updatePriceOverride($event.target.value)"/>
+      <Input type="number" min="0" step="0.01" :value="price" name="price" label="Stawka [zł]" required @input="updatePrice($event.target.value)"/>
       <Button icon="check" type="submit">Zatwierdź</Button>
     </form>
   </div>

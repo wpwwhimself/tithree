@@ -16,12 +16,12 @@ onMounted(async () => {
         students.first_name || ' ' || students.last_name as student_name,
         COUNT(*) as session_count,
         SUM(sessions.duration) as session_time,
-        SUM(COALESCE(sessions.price_override, students.price) * sessions.duration) as session_value
+        SUM(sessions.price * sessions.duration) as session_value
       FROM students
         LEFT JOIN sessions ON student_id = students.id
       GROUP BY students.id
       ORDER BY students.last_name, students.first_name`
-    );
+    ); //TODO formula for calculating price
     students.value = data;
   }catch(err){
     console.error(err);

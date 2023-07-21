@@ -14,8 +14,7 @@ onMounted(async () => {
     const data = await window.api.executeQuery(
       `SELECT
         sessions.*,
-        first_name || ' ' || last_name as student_name,
-        coalesce(price_override, students.price) as session_price
+        first_name || ' ' || last_name as student_name
       FROM sessions
         JOIN students ON student_id = students.id
       ORDER BY session_date DESC, sessions.created_at DESC`
@@ -72,8 +71,8 @@ const handleDelete = async (session_id: number) => {
           <tr v-for="session in sessions_gr" :key="session.id">
             <td>{{ session.student_name }}</td>
             <td class="ghost">{{ session.duration }}</td>
-            <td class="ghost">{{ $toPln(session.session_price) }}</td>
-            <td>{{ $toPln(session.session_price * session.duration) }}</td>
+            <td class="ghost">{{ $toPln(session.price) }}</td>
+            <td>{{ $toPln(session.price * session.duration) }}</td> <!-- TODO CALCULATE PRICE-->
             <td class="flex-right action-buttons">
               <JumpButton icon="pencil" :to="{name: 'SessionsMod', params: {id: session.id}}"></JumpButton>
               <Button icon="trash" @click="handleDelete(session.id)"></Button>
