@@ -1,10 +1,32 @@
 <script setup lang="ts">
+import { useRoute } from "vue-router";
 import logo from "../assets/t3_color.svg";
 import JumpButton from './JumpButton.vue';
 const APP_NAME = import.meta.env.VITE_APP_NAME;
+const route = useRoute();
+const page_names = {
+  About: "O aplikacji",
+  Sessions: "Sesje",
+  SessionsMod: "Edycja sesji",
+  Students: "Uczniowie",
+  StudentsMod: "Edycja ucznia",
+  Tally: "Podliczanie",
+  TallyStudents: "Podliczanie po uczniach",
+  TallyStudentDetails: "Podliczanie po uczniu",
+  TallyPeriods: "Podliczanie po okresach",
+  Settings: "Ustawienia",
+  ActionSummary: "Gotowe!",
+};
 </script>
 
 <template>
+  <div id="dragger">
+    <span v-if="route.name == 'Home'" class="script">{{ APP_NAME }}</span>
+    <template v-else>
+      <span>{{ page_names[route.name as keyof typeof page_names] }}</span>
+      <small class="ghost script">{{ APP_NAME }}</small>
+    </template>
+  </div>
   <nav class="flex-right v-center">
     <router-link to="/">
       <img :src="logo" :alt="APP_NAME" />
@@ -18,8 +40,10 @@ const APP_NAME = import.meta.env.VITE_APP_NAME;
 
 <style scoped>
 nav{
+  --dragger-height: 25px;
   background-color: hsla(var(--acc), 35%);
   padding: 1em;
+  padding-top: calc(var(--dragger-height) + 1em);
 }
 h1 a{
   color: hsl(var(--fg));
@@ -27,5 +51,17 @@ h1 a{
 }
 img{
   height: 3em;
+}
+#dragger{
+  -webkit-app-region: drag;
+  height: var(--dragger-height);
+  background-color: hsl(var(--acc));
+  padding: 0 2em;
+  align-items: flex-end;
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 999;
+}
+small{
+  margin-left: 1em;
 }
 </style>

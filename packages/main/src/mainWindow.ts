@@ -1,5 +1,6 @@
 import {app, BrowserWindow} from 'electron';
 import {join, resolve} from 'node:path';
+import * as path from 'path';
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
@@ -11,6 +12,12 @@ async function createWindow() {
       webviewTag: false, // The webview tag is not recommended. Consider alternatives like an iframe or Electron's BrowserView. @see https://www.electronjs.org/docs/latest/api/webview-tag#warning
       preload: join(app.getAppPath(), 'packages/preload/dist/index.cjs'),
     },
+    titleBarStyle: "hidden",
+    titleBarOverlay: {
+      color: "hsl(256, 69%, 69%)",
+      height: 25,
+    },
+    width: 1000, height: 750,
   });
 
   /**
