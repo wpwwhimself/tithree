@@ -81,7 +81,7 @@ onMounted(async () => {
         <tr>
           <th colspan="2"></th>
           <th>
-            <fai :icon="['fas', 'calculator']" />
+            <fai :icon="['fas', 'calculator']" title="Liczba wyników" />
             {{ report_data.length }}
           </th>
         </tr>

@@ -55,7 +55,7 @@ onMounted(async () => {
           <td>{{ student.session_time }} h</td>
           <td>{{ $toPln(student.session_value) }}</td>
           <th class="flex-right action-buttons">
-            <JumpButton icon="eye" :to="{name: 'TallyStudentDetails', params: {id: student.id}}" />
+            <JumpButton title="Szczegóły" icon="eye" :to="{name: 'TallyStudentDetails', params: {id: student.id}}" />
           </th>
         </tr>
       </tbody>
@@ -63,7 +63,7 @@ onMounted(async () => {
         <tr>
           <th colspan="4"></th>
           <th>
-            <fai :icon="['fas', 'calculator']" />
+            <fai :icon="['fas', 'calculator']" title="Liczba wyników" />
             {{ students.length }}
           </th>
         </tr>

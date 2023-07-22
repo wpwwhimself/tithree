@@ -73,8 +73,8 @@ const handleDelete = async (student_id: number) => {
           <td>{{ student.last_name || "–" }}</td>
           <td :class="{ ghost: (def_price == student.price) }">{{ $toPln(student.price) }}</td>
           <td class="flex-right action-buttons">
-            <JumpButton icon="pencil" :to="{name: 'StudentsMod', params: {id: student.id}}"></JumpButton>
-            <Button icon="trash" @click="handleDelete(student.id)"></Button>
+            <JumpButton title="Edytuj" icon="pencil" :to="{name: 'StudentsMod', params: {id: student.id}}"></JumpButton>
+            <Button title="Usuń" icon="trash" @click="handleDelete(student.id)"></Button>
           </td>
         </tr>
       </tbody>
@@ -82,7 +82,7 @@ const handleDelete = async (student_id: number) => {
         <tr>
           <th colspan="3"></th>
           <th>
-            <fai :icon="['fas', 'calculator']" />
+            <fai :icon="['fas', 'calculator']" title="Liczba wyników" />
             {{ students.length }}
           </th>
         </tr>
