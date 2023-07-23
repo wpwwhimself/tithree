@@ -15,7 +15,7 @@ async function createWindow() {
     titleBarStyle: "hidden",
     titleBarOverlay: {
       color: "hsl(256, 69%, 69%)",
-      height: 25,
+      height: 30,
     },
     width: 1000, height: 750,
   });
