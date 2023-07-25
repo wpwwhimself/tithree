@@ -25,10 +25,13 @@ onMounted(async () => {
   try{
     const data = await window.api.executeQuery(
       `SELECT
-        id as key,
+        students.id as key,
         first_name || ' ' || last_name as value,
-        price
+        COALESCE(JULIANDAY(DATE()) - JULIANDAY(MAX(session_date)) > (SELECT value FROM settings WHERE name = 'student_inactive_days'), 1) as ghost,
+        students.price
       FROM students
+        LEFT JOIN sessions ON sessions.student_id = students.id
+      GROUP BY students.id
       ORDER BY first_name, last_name`,
     );
     students.value = data;
