@@ -5,9 +5,11 @@ const props = withDefaults(defineProps<{
     title?: string,
     asPln?: boolean,
     barHeightPx?: number,
+    flip?: boolean,
   }>(), {
     asPln: false,
     barHeightPx: 100,
+    flip: false,
   }
 );
 
@@ -16,6 +18,10 @@ let values = [] as number[];
 for(let el of props.data){
   labels.push(el[props.axes[0]]);
   values.push(el[props.axes[1]]);
+}
+if(props.flip){
+  labels.reverse();
+  values.reverse();
 }
 const highest_col = Math.max(...values);
 </script>

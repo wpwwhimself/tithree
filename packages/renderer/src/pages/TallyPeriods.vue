@@ -62,7 +62,7 @@ onMounted(async () => {
 
   <template v-if="months">
     <template v-if="months.length">
-      <ColPlot :data="months.slice(0, 12)" :axes="['id', 'session_value']" :as-pln="true"></ColPlot>
+      <ColPlot :data="months.slice(0, 12)" :axes="['id', 'session_value']" :as-pln="true" :flip="true"></ColPlot>
 
       <table class="rounded">
         <thead>
