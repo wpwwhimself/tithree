@@ -12,7 +12,7 @@ const APP_NAME = import.meta.env.VITE_APP_NAME;
       <router-link to="/about">
         <h2>{{ APP_NAME }}</h2>
       </router-link>
-      <p>Made by Wojciech Przybyła</p>
+      <p>Made by <a href="http://wpww.pl/" target="_blank">Wojciech Przybyła</a></p>
     </div>
   </footer>
 </template>

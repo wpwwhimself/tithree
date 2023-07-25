@@ -1,4 +1,4 @@
-import {app, BrowserWindow} from 'electron';
+import {app, BrowserWindow, shell} from 'electron';
 import {join, resolve} from 'node:path';
 import * as path from 'path';
 
@@ -34,6 +34,14 @@ async function createWindow() {
     if (import.meta.env.DEV) {
       browserWindow?.webContents.openDevTools();
     }
+  });
+
+  /**
+   * Open external links
+   */
+  browserWindow.webContents.setWindowOpenHandler(({url}) => {
+    shell.openExternal(url);
+    return {action: "deny"};
   });
 
   /**
