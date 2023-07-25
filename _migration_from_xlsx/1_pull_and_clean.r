@@ -6,7 +6,7 @@ source("_migration_from_xlsx/0_paths.r")
 students <- readxl::read_xlsx(
   paste(path, "grafik_korkow.xlsx", sep = "/"),
   "osoby",
-  "A2:B50"
+  "A2:B49"
 )
 colnames(students) <- c("name", "price")
 
@@ -22,7 +22,7 @@ students_out <- students %>%
 sessions <- readxl::read_xlsx(
   paste(path, "grafik_korkow.xlsx", sep = "/"),
   "godziny",
-  "B1:AG366"
+  "B1:AP366"
 )
 colnames(sessions) <- c(
   "session_date",
