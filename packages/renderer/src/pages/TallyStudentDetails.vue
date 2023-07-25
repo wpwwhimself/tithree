@@ -56,6 +56,10 @@ onMounted(async () => {
     <JumpButton :to="{name: 'TallyStudents'}" icon="angles-left"></JumpButton>
   </PageHeader>
 
+  <p class="ghost">
+    To zestawienie wpłat danego ucznia z podziałem na miesiące, na podstawie całej dostępnej historii.
+  </p>
+
   <template v-if="report_data">
     <table v-if="report_data.length" class="rounded">
       <thead>

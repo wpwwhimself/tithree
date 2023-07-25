@@ -75,6 +75,12 @@ const handleDelete = async (session_id: number) => {
     <JumpButton icon="plus" :to="{name: 'SessionsMod', params: {id: 0}}">Dodaj</JumpButton>
   </PageHeader>
 
+  <p class="ghost">
+    Na liście poniżej znajdziesz odbyte już sesje ze wskazanego przedziału czasowego.
+    Możesz go zmieniać za pomocą filtrów poniżej.
+    Z tego miejsca możesz też dodać nową odbytą już sesję.
+  </p>
+
   <SubPanel title="Filtry">
     <div class="flex-right h-center inputs-in-line">
       <Input type="date" name="date_from" :value="filter_from" label="Od" @change="updateFilters('from', $event.target.value)"/>

@@ -55,6 +55,11 @@ onMounted(async () => {
     <JumpButton :to="{name: 'Tally'}" icon="angles-left"></JumpButton>
   </PageHeader>
 
+  <p class="ghost">
+    Poniżej znajdziesz zestawienie przychodów na podstawie całej dostępnej historii,
+    z podziałem na miesiące.
+  </p>
+
   <template v-if="months">
     <template v-if="months.length">
       <ColPlot :data="months.slice(0, 12)" :axes="['id', 'session_value']" :as-pln="true"></ColPlot>

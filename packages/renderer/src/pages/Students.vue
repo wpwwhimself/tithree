@@ -57,6 +57,12 @@ const handleDelete = async (student_id: number) => {
     <JumpButton icon="plus" :to="{name: 'StudentsMod', params: {id: 0}}">Dodaj</JumpButton>
   </PageHeader>
 
+  <p class="ghost">
+    Poniżej znajduje się pełna lista uczniów wpisanych do systemu.
+    Możesz edytować każdego z nich lub dodać nowego.
+    Wyszarzone kwoty w stawkach oznaczają, że uczeń został zapisany z domyślną stawką (patrz ustawienia).
+  </p>
+
   <template v-if="students">
     <table v-if="students.length" class="rounded">
       <thead>

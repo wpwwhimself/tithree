@@ -37,6 +37,11 @@ onMounted(async () => {
     <JumpButton :to="{name: 'Tally'}" icon="angles-left"></JumpButton>
   </PageHeader>
 
+  <p class="ghost">
+    Poniżej widzisz zestawienie wpływów od uczniów na podstawie całej dostępnej historii.
+    Szczegóły dla każdego ucznia z osobna możesz znaleźć pod przyciskami obok.
+  </p>
+
   <template v-if="students">
     <table v-if="students.length" class="rounded">
       <thead>

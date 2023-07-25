@@ -112,6 +112,12 @@ const updatePrice = (val: string) => price.value = val;
   <div v-if="session || session_id == 0">
     <PageHeader v-if="session_id > 0" :title="title"></PageHeader>
     <PageHeader v-else title="Nowa sesja"></PageHeader>
+
+    <p class="ghost">
+      Dodajesz właśnie nową, odbytą już sesję. Wybierz ucznia i uzupełnij informacje o sesji.
+      Wyszarzeni uczniowie to ci, którzy ostatnią sesję odbyli dawno temu (jak dawno – znajdziesz w ustawieniach).
+    </p>
+
     <form @submit="handleSubmit">
       <Input type="date" :value="session_date" name="session_date" label="Data" required @input="updateSessionDate($event.target.value)"/>
       <Select :options="students" :emptyOption="true" :value="student_id" name="student_id" label="Uczeń" required @change="updateStudentId($event.target.value)" />
