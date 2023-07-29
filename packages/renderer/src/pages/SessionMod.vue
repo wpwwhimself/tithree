@@ -27,7 +27,7 @@ onMounted(async () => {
       `SELECT
         students.id as key,
         first_name || ' ' || last_name as value,
-        COALESCE(JULIANDAY(DATE()) - JULIANDAY(MAX(session_date)) > (SELECT value FROM settings WHERE name = 'student_inactive_days'), 1) as ghost,
+        COALESCE(JULIANDAY(DATE()) - JULIANDAY(MAX(session_date)) > CAST((SELECT value FROM settings WHERE name = 'student_inactive_days') AS INTEGER), 1) as ghost,
         students.price
       FROM students
         LEFT JOIN sessions ON sessions.student_id = students.id
