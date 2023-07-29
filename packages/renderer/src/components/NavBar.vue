@@ -55,6 +55,7 @@ h1 a{
 }
 img{
   height: 3em;
+  filter: brightness(var(--brightness));
 }
 #dragger{
   -webkit-app-region: drag;
@@ -69,11 +70,5 @@ img{
 }
 small{
   margin-left: 1em;
-}
-@media (prefers-color-scheme: dark){
-  img{ filter: brightness(2); }
-}
-@media (prefers-color-scheme: light){
-  img{ filter: brightness(0); }
 }
 </style>

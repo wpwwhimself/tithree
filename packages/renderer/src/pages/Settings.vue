@@ -35,16 +35,22 @@ const updateSetting = async (name: string, val: string) => {
 
   <p class="ghost">
     Aby zmienić ustawienie, po prostu wpisz wartość – zmiany zostaną zapisane od razu.<br>
-    <b>Po zmianie koloru wymagany jest restart aplikacji!</b>
+    <b>* Po zmianie tego parametru wymagany jest restart aplikacji!</b>
   </p>
 
   <form v-if="settings">
     <template v-for="setting in settings" :key="setting.name">
       <Input v-if="setting.name == 'accent_color'"
         type="color"
-        :label="setting.desc" :value="$colorConvert(setting.value, 'hsl-hex')"
+        :label="setting.desc + '*'" :value="$colorConvert(setting.value, 'hsl-hex')"
         :name="setting.name"
         @change="(event) => updateSetting(setting.name, $colorConvert(event.target.value, 'hex-hsl'))"
+        />
+      <Input v-else-if="setting.name == 'dark_mode'"
+        type="checkbox"
+        :label="setting.desc + '*'" :checked="+setting.value"
+        :name="setting.name"
+        @change="(event) => updateSetting(setting.name, (+event.target.checked).toString())"
         />
       <Input v-else
         :label="setting.desc" :value="setting.value"

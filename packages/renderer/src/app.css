@@ -6,19 +6,19 @@
   font-family: "Dancing Script";
   src: url("./assets/dancingscript.ttf");
 }
-@media(prefers-color-scheme: light){
-  :root{
-    --fg: 210, 29%, 0%;
-    --bg1: 0, 0%, 100%;
-    --bg2: 0, 0%, 80%;
-  }
+/* light mode (default) */
+:root{
+  --fg: 210, 29%, 0%;
+  --bg1: 0, 0%, 100%;
+  --bg2: 0, 0%, 80%;
+  --brightness: 0;
 }
-@media(prefers-color-scheme: dark){
-  :root{
-    --fg: 210, 29%, 100%;
-    --bg1: 0, 0%, 10%;
-    --bg2: 0, 0%, 30%;
-  }
+/* dark mode */
+[data-theme="dark"]{
+  --fg: 210, 29%, 100%;
+  --bg1: 0, 0%, 10%;
+  --bg2: 0, 0%, 30%;
+  --brightness: 2;
 }
 :root{
   --acc: 256, 69%, 69%; /*rgb(150, 121, 230);*/
@@ -28,8 +28,6 @@ html, body, #app, #app-container{ height: 100%; }
 body{
   font-family: "Kurale", serif;
   margin: 0;
-  background-color: hsl(var(--bg1));
-  color: hsl(var(--fg));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -40,6 +38,8 @@ h1, h2, h3, .script{
 #app-container{
   display: flex;
   flex-direction: column;
+  background-color: hsl(var(--bg1));
+  color: hsl(var(--fg));
 }
 
 #wrapper{
