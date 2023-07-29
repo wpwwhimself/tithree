@@ -34,16 +34,24 @@ const updateSetting = async (name: string, val: string) => {
   <PageHeader title="Ustawienia"></PageHeader>
 
   <p class="ghost">
-    Aby zmienić ustawienie, po prostu wpisz wartość – zmiany zostaną zapisane od razu.
+    Aby zmienić ustawienie, po prostu wpisz wartość – zmiany zostaną zapisane od razu.<br>
+    <b>Po zmianie koloru wymagany jest restart aplikacji!</b>
   </p>
 
   <form v-if="settings">
-    <Input
-      v-for="setting in settings" :key="setting.name"
-      :label="setting.desc" :value="setting.value"
-      :name="setting.name"
-      @change="(event) => updateSetting(setting.name, event.target.value)"
-      />
+    <template v-for="setting in settings" :key="setting.name">
+      <Input v-if="setting.name == 'accent_color'"
+        type="color"
+        :label="setting.desc" :value="$colorConvert(setting.value, 'hsl-hex')"
+        :name="setting.name"
+        @change="(event) => updateSetting(setting.name, $colorConvert(event.target.value, 'hex-hsl'))"
+        />
+      <Input v-else
+        :label="setting.desc" :value="setting.value"
+        :name="setting.name"
+        @change="(event) => updateSetting(setting.name, event.target.value)"
+        />
+    </template>
   </form>
   <h2 v-else>Wczytywanie...</h2>
 </template>

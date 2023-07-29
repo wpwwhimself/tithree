@@ -24,7 +24,7 @@
   --acc: 256, 69%, 69%; /*rgb(150, 121, 230);*/
 }
 
-html, body, #app{ height: 100%; }
+html, body, #app, #app-container{ height: 100%; }
 body{
   font-family: "Kurale", serif;
   margin: 0;
@@ -37,7 +37,7 @@ h1, h2, h3, .script{
   font-family: "Dancing Script", cursive;
 }
 
-#app{
+#app-container{
   display: flex;
   flex-direction: column;
 }

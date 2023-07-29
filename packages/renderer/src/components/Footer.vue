@@ -30,6 +30,7 @@ h2, p{
 }
 img{
   height: 3em;
+  filter: brightness(2)
 }
 
 #app-info{

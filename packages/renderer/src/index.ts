@@ -3,7 +3,7 @@ import App from '/@/App.vue';
 import router from './router';
 
 // custom helpers
-import { toPlnPlugin, groupPlugin, roundNumberPlugin } from "./helpers";
+import { toPlnPlugin, groupPlugin, roundNumberPlugin, colorConvertPlugin } from "./helpers";
 
 // font awesome
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -17,6 +17,7 @@ createApp(App)
   .use(toPlnPlugin)
   .use(groupPlugin)
   .use(roundNumberPlugin)
+  .use(colorConvertPlugin)
   .component("fai", FontAwesomeIcon)
   .mount('#app')
 ;

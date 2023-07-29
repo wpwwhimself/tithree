@@ -12,5 +12,6 @@ declare module '@vue/runtime-core'{
     $toPln: (val: number | undefined) => string,
     $group: (data: any[], key: string) => any[],
     $round: (val: number, precision?: number) => number,
+    $colorConvert: (color: string, direction: 'hsl-hex' | 'hex-hsl') => string,
   }
 }

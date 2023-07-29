@@ -79,7 +79,8 @@ const queries = [
     ("default_student_price", "Domyślna stawka [zł]", 50),
     ("default_session_duration", "Domyślna długość sesji [h]", 1),
     ("price_factor_below_1", "Mnożnik stawki dla sesji poniżej 1 h", 1.0666667),
-    ("student_inactive_days", "Powyżej ilu dni braku wpisów uczeń jest uznawany za nieaktywnego", 60)
+    ("student_inactive_days", "Powyżej ilu dni braku wpisów uczeń jest uznawany za nieaktywnego", 60),
+    ("accent_color", "Kolor wiodący aplikacji", "256, 69%, 69%")
   `,
 ];
 db.serialize(() => {

@@ -1,6 +1,5 @@
-import {app, BrowserWindow, shell} from 'electron';
+import {app, BrowserWindow, ipcMain, ipcRenderer, shell} from 'electron';
 import {join, resolve} from 'node:path';
-import * as path from 'path';
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
@@ -14,7 +13,8 @@ async function createWindow() {
     },
     titleBarStyle: "hidden",
     titleBarOverlay: {
-      color: "hsl(256, 69%, 69%)",
+      color: "dimgray",
+      symbolColor: "white",
       height: 30,
     },
     width: 1000, height: 750,
@@ -35,6 +35,10 @@ async function createWindow() {
       browserWindow?.webContents.openDevTools();
     }
   });
+
+  ipcMain.on("getAccentColorResponse", (event, result) => {
+    console.log(result);
+  })
 
   /**
    * Open external links

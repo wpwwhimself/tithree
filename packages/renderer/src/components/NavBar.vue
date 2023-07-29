@@ -60,7 +60,8 @@ img{
   -webkit-app-region: drag;
   height: var(--dragger-height);
   font-size: calc(var(--dragger-height) - 0.5em);
-  background-color: hsl(var(--acc));
+  background-color: dimgray;
+  color: white;
   padding: 0 2em;
   align-items: flex-end;
   position: fixed; top: 0; left: 0; right: 0;
@@ -68,5 +69,11 @@ img{
 }
 small{
   margin-left: 1em;
+}
+@media (prefers-color-scheme: dark){
+  img{ filter: brightness(2); }
+}
+@media (prefers-color-scheme: light){
+  img{ filter: brightness(0); }
 }
 </style>
