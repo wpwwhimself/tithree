@@ -25,4 +25,6 @@ export interface Student{
   last_name: string,
   student_name?: string,
   price: number,
+  phone: string?,
+  note: string?,
 }

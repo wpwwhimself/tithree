@@ -14,6 +14,8 @@ let title: string;
 let first_name = ref("");
 let last_name = ref("");
 let price = ref("");
+let phone = ref("");
+let note = ref("");
 
 onMounted(async () => {
   if(student_id > 0){
@@ -31,6 +33,8 @@ onMounted(async () => {
     first_name = ref(student.value.first_name);
     last_name = ref(student.value.last_name);
     price = ref(student.value.price.toString());
+    phone = ref(student.value.phone || "");
+    note = ref(student.value.note || "");
   }else{
     try{
       const data = await window.api.getSetting('default_student_price');
@@ -49,12 +53,12 @@ const handleSubmit = async (e: Event) => {
   try{
     const [query, params] = (!is_update)
       ? [
-          `INSERT INTO students (first_name, last_name, price) VALUES(?, ?, ?)`,
-          [first_name.value, last_name.value, price.value]
+          `INSERT INTO students (first_name, last_name, price, phone, note) VALUES(?, ?, ?, ?, ?)`,
+          [first_name.value, last_name.value, price.value, phone.value || null, note.value || null]
         ]
       : [
-          `UPDATE students SET first_name = ?, last_name = ?, price = ?, updated_at = datetime() WHERE id = ?`,
-          [first_name.value, last_name.value, price.value, student_id]
+          `UPDATE students SET first_name = ?, last_name = ?, price = ?, phone = ?, note = ?, updated_at = datetime() WHERE id = ?`,
+          [first_name.value, last_name.value, price.value, phone.value || null, note.value || null, student_id]
         ];
     await window.api.executeQuery(query, params);
     router.push({
@@ -72,6 +76,8 @@ const handleSubmit = async (e: Event) => {
 const updateFirstName = (val: string) => first_name.value = val;
 const updateLastName = (val: string) => last_name.value = val;
 const updatePrice = (val: string) => price.value = val;
+const updatePhone = (val: string) => phone.value = val;
+const updateNote = (val: string) => note.value = val;
 </script>
 
 <template>
@@ -82,6 +88,8 @@ const updatePrice = (val: string) => price.value = val;
       <Input name="first_name" :value="first_name" label="Imię" required @input="updateFirstName($event.target.value)" />
       <Input name="last_name" :value="last_name" label="Nazwisko" @input="updateLastName($event.target.value)" />
       <Input type="number" min="0" step="0.01" :value="price" name="price" label="Stawka [zł]" required @input="updatePrice($event.target.value)"/>
+      <Input name="phone" :value="phone" label="Numer telefonu" @input="updatePhone($event.target.value)" />
+      <Input name="note" :value="note" label="Notatka" @input="updateNote($event.target.value)" />
       <Button icon="check" type="submit">Zatwierdź</Button>
     </form>
   </div>

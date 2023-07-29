@@ -55,6 +55,8 @@ const queries = [
     first_name TEXT NOT NULL,
     last_name TEXT,
     price REAL,
+    phone TEXT,
+    note TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
   )`,

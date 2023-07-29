@@ -67,17 +67,19 @@ const handleDelete = async (student_id: number) => {
     <table v-if="students.length" class="rounded">
       <thead>
         <tr>
-          <th>Imię</th>
-          <th>Nazwisko</th>
+          <th>Imię i nazwisko</th>
           <th>Stawka</th>
+          <th>Telefon</th>
+          <th>Notatka</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="student in students" :key="student.id">
-          <td>{{ student.first_name || "–" }}</td>
-          <td>{{ student.last_name || "–" }}</td>
+          <td>{{ student.first_name }} {{ student.last_name }}</td>
           <td :class="{ ghost: (def_price == student.price) }">{{ $toPln(student.price) }}</td>
+          <td>{{ student.phone || "–" }}</td>
+          <td>{{ student.note || "–" }}</td>
           <td class="flex-right action-buttons">
             <JumpButton title="Edytuj" icon="pencil" :to="{name: 'StudentsMod', params: {id: student.id}}"></JumpButton>
             <Button title="Usuń" icon="trash" @click="handleDelete(student.id)"></Button>
@@ -86,7 +88,7 @@ const handleDelete = async (student_id: number) => {
       </tbody>
       <tfoot>
         <tr>
-          <th colspan="3"></th>
+          <th colspan="4"></th>
           <th>
             <fai :icon="['fas', 'calculator']" title="Liczba wyników" />
             {{ students.length }}
