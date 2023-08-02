@@ -4,7 +4,7 @@ import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
 import SubPanel from "../components/SubPanel.vue";
 import ColPlot from "../components/ColPlot.vue";
-import { Session } from "types";
+import { Session } from "../../types";
 
 const months = ref([] as Session[]);
 let totals = {

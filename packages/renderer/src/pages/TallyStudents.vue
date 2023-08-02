@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
-import { Student, Session } from "types";
+import { Student, Session } from "../../types";
 
 const students = ref([] as (Student & Session)[]);
 

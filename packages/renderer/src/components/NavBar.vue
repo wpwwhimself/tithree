@@ -15,6 +15,7 @@ const page_names = {
   TallyStudentDetails: "Podliczanie po uczniu",
   TallyPeriods: "Podliczanie po okresach",
   Settings: "Ustawienia",
+  Calendar: "Kalendarz",
   ActionSummary: "Gotowe!",
 };
 </script>
@@ -32,6 +33,7 @@ const page_names = {
       <router-link to="/">
         <img :src="logo" :alt="APP_NAME" />
       </router-link>
+      <jump-button icon="calendar" :to="{name: 'Calendar'}">Kalendarz</jump-button>
       <jump-button icon="clock-rotate-left" :to="{name: 'Sessions'}">Sesje</jump-button>
       <jump-button icon="users" :to="{name: 'Students'}">Uczniowie</jump-button>
       <jump-button icon="chart-line" :to="{name: 'Tally'}">Podliczenia</jump-button>

@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import Button from "../components/Button.vue";
 import PageHeader from "../components/PageHeader.vue";
 import Input from "../components/Input.vue";
-import { Student } from "types";
+import { Student } from "../../types";
 
 const [route, router] = [useRoute(), useRouter()];
 const student_id = +route.params.id;

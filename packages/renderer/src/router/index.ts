@@ -11,6 +11,7 @@ import TallyPeriods from "../pages/TallyPeriods.vue";
 import Settings from "../pages/Settings.vue";
 import ActionSummary from "../pages/ActionSummary.vue";
 import HomeVue from "../pages/Home.vue";
+import CalendarVue from "../pages/Calendar.vue";
 
 const routes = [
   {
@@ -67,6 +68,11 @@ const routes = [
     path: "/settings",
     name: "Settings",
     component: Settings,
+  },
+  {
+    path: "/calendar",
+    name: "Calendar",
+    component: CalendarVue,
   },
   {
     path: "/action-summary/:action/:target",

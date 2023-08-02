@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
 import { useRoute } from "vue-router";
-import { Student, Session } from "types";
+import { Student, Session } from "../../types";
 
 const route = useRoute();
 const student_id = +route.params.id;

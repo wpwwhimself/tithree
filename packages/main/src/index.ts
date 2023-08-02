@@ -1,10 +1,11 @@
-import {app, BrowserWindow} from 'electron';
+import {app, BrowserWindow, ipcMain, ipcRenderer} from 'electron';
 import './security-restrictions';
 import {restoreOrCreateWindow} from '/@/mainWindow';
 import {platform} from 'node:process';
 import * as path from 'node:path';
 import * as fs from 'fs';
 import * as sqlite3 from 'sqlite3';
+import { google } from 'googleapis';
 
 /**
  * Prevent electron from running multiple instances.
@@ -102,6 +103,13 @@ db.close();
 app
   .whenReady()
   .then(restoreOrCreateWindow)
+  // .then(() => {
+  //   oauth = new google.auth.OAuth2(
+  //     import.meta.env.VITE_GOOGLE_API_CLIENT_ID,
+  //     import.meta.env.VITE_GOOGLE_API_CLIENT_SECRET,
+  //     REDIRECT_URI
+  //   );
+  // })
   .catch(e => console.error('Failed create window:', e));
 
 /**
@@ -148,3 +156,46 @@ if (import.meta.env.PROD) {
     )
     .catch(e => console.error('Failed check and install updates:', e));
 }
+
+/**
+ * google auth
+ */
+const REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob';
+const SCOPES = ['https://www.googleapis.com/auth/calendar'];
+
+ipcMain.on("calendar-authenticate", (event, data) => {
+  const oauth = data.oauth;
+
+  const url = oauth.generateAuthUrl({
+    access_type: "offline",
+    scope: SCOPES,
+  });
+
+  const authWindow = new BrowserWindow({
+    width: 800, height: 600,
+    show: true,
+    webPreferences: {
+      nodeIntegration: false,
+    }
+  });
+
+  authWindow.loadURL(url);
+
+  authWindow.webContents.on("will-redirect", async (event, url) => {
+    const code = new URL(url).searchParams.get('code');
+    if (code) {
+      try {
+        // Exchange the authorization code for an access token
+        const { tokens } = await oauth.getToken(code);
+
+        // Send the access token back to the component
+        ipcRenderer.send('google-auth-token', tokens);
+
+        // Close the authentication window
+        authWindow.close();
+      } catch (error) {
+        console.error('Error retrieving access token:', error);
+      }
+    }
+  })
+})
