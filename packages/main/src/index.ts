@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain, ipcRenderer} from 'electron';
+import {app, BrowserWindow, ipcMain, ipcRenderer, protocol, session, shell} from 'electron';
 import './security-restrictions';
 import {restoreOrCreateWindow} from '/@/mainWindow';
 import {platform} from 'node:process';
@@ -6,6 +6,9 @@ import * as path from 'node:path';
 import * as fs from 'fs';
 import * as sqlite3 from 'sqlite3';
 import { google } from 'googleapis';
+import { OAuth2Client } from 'google-auth-library';
+import * as http from "http";
+import * as url from "url";
 
 /**
  * Prevent electron from running multiple instances.
@@ -103,13 +106,6 @@ db.close();
 app
   .whenReady()
   .then(restoreOrCreateWindow)
-  // .then(() => {
-  //   oauth = new google.auth.OAuth2(
-  //     import.meta.env.VITE_GOOGLE_API_CLIENT_ID,
-  //     import.meta.env.VITE_GOOGLE_API_CLIENT_SECRET,
-  //     REDIRECT_URI
-  //   );
-  // })
   .catch(e => console.error('Failed create window:', e));
 
 /**
@@ -160,42 +156,108 @@ if (import.meta.env.PROD) {
 /**
  * google auth
  */
-const REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob';
+const CALLBACK_PORT = 9876;
+const REDIRECT_URI = `http://localhost:${CALLBACK_PORT}/google-auth`;
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
+const TOKEN_PATH = "TOKEN.json";
 
-ipcMain.on("calendar-authenticate", (event, data) => {
-  const oauth = data.oauth;
+/**
+ * Create an OAuth2 client with the given credentials, and then execute the
+ * given callback function.
+ */
+interface Authorize {
+  (
+    client_id: string,
+    client_secret: string,
+    redirect_uri: string,
+    callback: (...args: any[]) => any,
+  ): any
+}
+const authorize: Authorize = function(client_id, client_secret, redirect_uri, callback){
+  const oAuth2Client = new google.auth.OAuth2(
+    client_id,
+    client_secret,
+    redirect_uri
+  );
 
-  const url = oauth.generateAuthUrl({
-    access_type: "offline",
-    scope: SCOPES,
+  // Check if we have previously stored a token.
+  fs.readFile(TOKEN_PATH, (err, token) => {
+      if (err) return getNewToken(oAuth2Client, callback);
+      oAuth2Client.setCredentials(JSON.parse(token.toString()));
+      callback(oAuth2Client);
+  });
+}
+
+/**
+* Get and store new token after prompting for user authorization, and then
+* execute the given callback with the authorized OAuth2 client.
+*/
+interface GetNewToken{
+  (
+    oAuth2Client: OAuth2Client,
+    callback: (...args: any[]) => any,
+  ): any
+}
+const getNewToken: GetNewToken = function (oAuth2Client, callback) {
+  const authUrl = oAuth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: SCOPES,
   });
 
-  const authWindow = new BrowserWindow({
-    width: 800, height: 600,
-    show: true,
-    webPreferences: {
-      nodeIntegration: false,
-    }
+  // Create auth prompt
+  let win = createAuthPrompt(authUrl);
+
+  // Create a temp server for receiving the authentication approval request
+  const server = http.createServer(function (req, res) {
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.end("OK. Autoryzacja pomyślna, możesz zamknąć tę kartę.");
+
+      var q = url.parse(req.url!, true).query;
+      const code = q.code as string;
+      if(!code) return;
+
+      oAuth2Client.getToken(code, (err, token) => {
+          if (err) return console.error('Error while trying to retrieve access token', err);
+          oAuth2Client.setCredentials(token!);
+
+          // Store the token to disk for later program executions
+          fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+              if (err) return console.error(err);
+              console.log('Token stored to', TOKEN_PATH);
+          });
+
+          // Close the auth window (if it was an electron window) and stop the server
+          // if(win) win.close();
+          server.close( err => {
+              if(err) return console.log(err)
+              console.log("Server closed")
+          });
+
+          callback(oAuth2Client);
+      });
   });
+  server.listen(CALLBACK_PORT);
+}
 
-  authWindow.loadURL(url);
+function createAuthPrompt(authUrl: string) {
+  shell.openExternal(authUrl);
+}
 
-  authWindow.webContents.on("will-redirect", async (event, url) => {
-    const code = new URL(url).searchParams.get('code');
-    if (code) {
-      try {
-        // Exchange the authorization code for an access token
-        const { tokens } = await oauth.getToken(code);
+ipcMain.on("calendar", (event, func) => {
+  authorize(
+    import.meta.env.VITE_GOOGLE_API_CLIENT_ID,
+    import.meta.env.VITE_GOOGLE_API_CLIENT_SECRET,
+    REDIRECT_URI,
+    func
+  );
+})
 
-        // Send the access token back to the component
-        ipcRenderer.send('google-auth-token', tokens);
+ipcMain.on("calendar-events", (event, auth) => {
+  const calendar = google.calendar({ version: 'v3', auth });
+  calendar.calendarList.get({
 
-        // Close the authentication window
-        authWindow.close();
-      } catch (error) {
-        console.error('Error retrieving access token:', error);
-      }
-    }
-  })
+  }, (err, res) => {
+    if (err) return console.log('The API returned an error: ' + err);
+    console.log(res);
+  });
 })

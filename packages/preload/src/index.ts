@@ -12,7 +12,7 @@ const dbPath = path.join(__dirname, "../../../database.db")
 contextBridge.exposeInMainWorld("ipcRenderer", {
   send: (channel: string, data: any = undefined) => {
     // whitelist channels
-    let validChannels = ['calendar-authenticate']
+    let validChannels = ['calendar-authenticate', 'calendar-ready']
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data)
     }
@@ -23,7 +23,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       // Deliberately strip event as it includes `sender`
       ipcRenderer.on(channel, (event, ...args) => func(...args))
     }
-  }
+  },
 })
 
 contextBridge.exposeInMainWorld('api', {

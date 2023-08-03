@@ -63,3 +63,4 @@ database.db
 # Environment
 .env
 GOOGLE.json
+TOKEN.json
