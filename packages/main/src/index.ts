@@ -243,21 +243,28 @@ function createAuthPrompt(authUrl: string) {
   shell.openExternal(authUrl);
 }
 
-ipcMain.on("calendar", (event, func) => {
+ipcMain.on("calendar-events", (event, func) => {
+  const events = (auth: OAuth2Client) => {
+    // step 1: calendar's ID
+    // TODO use env to get its name
+    const calendar = google.calendar({ version: 'v3', auth });
+    calendar.calendarList.list({
+
+    }, (err, res) => {
+        if (err) return console.log('The API returned an error: ' + err);
+        console.log(res?.data);
+    });
+
+    // step 2:
+
+    // step 3: response
+    BrowserWindow.getAllWindows()[0].webContents.send("calendar-events-response", "aaa")
+  }
+
   authorize(
     import.meta.env.VITE_GOOGLE_API_CLIENT_ID,
     import.meta.env.VITE_GOOGLE_API_CLIENT_SECRET,
     REDIRECT_URI,
-    func
+    events
   );
-})
-
-ipcMain.on("calendar-events", (event, auth) => {
-  const calendar = google.calendar({ version: 'v3', auth });
-  calendar.calendarList.get({
-
-  }, (err, res) => {
-    if (err) return console.log('The API returned an error: ' + err);
-    console.log(res);
-  });
 })

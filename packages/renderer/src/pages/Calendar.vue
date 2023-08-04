@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { Ref, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import PageHeader from '../components/PageHeader.vue';
-import { google, calendar_v3 } from 'googleapis';
+import { calendar_v3 } from 'googleapis';
+import { ipcRenderer } from 'electron';
 
 const events = ref<calendar_v3.Schema$Event[] | undefined>([]);
 
-onMounted(async () => {
-  try{
-    const data = await window.ipcRenderer.send("calendar-events");
+onMounted(() => {
+  window.ipcRenderer.send("calendar-events");
+});
 
-  } catch(err) {
-    console.error(err);
-  }
+window.ipcRenderer.on("calendar-events-response", (event, data) => {
+  console.log(data);
 })
+
 </script>
 
 <template>

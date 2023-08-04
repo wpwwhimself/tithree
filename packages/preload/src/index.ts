@@ -12,7 +12,7 @@ const dbPath = path.join(__dirname, "../../../database.db")
 contextBridge.exposeInMainWorld("ipcRenderer", {
   send: (channel: string, data: any = undefined) => {
     // whitelist channels
-    let validChannels = ['calendar-authenticate', 'calendar-ready']
+    let validChannels = ['calendar-events']
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data)
     }
