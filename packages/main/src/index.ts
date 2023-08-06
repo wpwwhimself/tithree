@@ -85,7 +85,8 @@ const queries = [
     ("price_factor_below_1", "Mnożnik stawki dla sesji poniżej 1 h", 1.0666667),
     ("student_inactive_days", "Powyżej ilu dni braku wpisów uczeń jest uznawany za nieaktywnego", 60),
     ("accent_color", "Kolor wiodący aplikacji", "256, 69%, 69%"),
-    ("dark_mode", "Tryb ciemny", 0)
+    ("dark_mode", "Tryb ciemny", 0),
+    ("google_calendar_name", "Nazwa kalendarza Google do integracji", "")
   `,
 ];
 db.serialize(() => {
@@ -243,22 +244,20 @@ function createAuthPrompt(authUrl: string) {
   shell.openExternal(authUrl);
 }
 
-ipcMain.on("calendar-events", (event, func) => {
+ipcMain.on("calendar-events", (event, data) => {
   const events = (auth: OAuth2Client) => {
-    // step 1: calendar's ID
-    // TODO use env to get its name
+    const cal_name = data.value;
     const calendar = google.calendar({ version: 'v3', auth });
-    calendar.calendarList.list({
 
-    }, (err, res) => {
-        if (err) return console.log('The API returned an error: ' + err);
-        console.log(res?.data);
-    });
-
-    // step 2:
-
-    // step 3: response
-    BrowserWindow.getAllWindows()[0].webContents.send("calendar-events-response", "aaa")
+    calendar.calendarList.list()
+      .then((res) => res?.data.items?.find((cal => cal.summary === cal_name))?.id)
+      .then((cal_id) => calendar.events.list({
+        calendarId: cal_id ?? undefined,
+      }))
+      .then(res => {
+        BrowserWindow.getAllWindows()[0].webContents.send("calendar-events-response", res.data.items)
+      })
+      .catch((err) => console.error(`Calendar fetching error: ${err}`));
   }
 
   authorize(

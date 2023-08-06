@@ -36,10 +36,6 @@ async function createWindow() {
     }
   });
 
-  ipcMain.on("getAccentColorResponse", (event, result) => {
-    console.log(result);
-  })
-
   /**
    * Open external links
    */

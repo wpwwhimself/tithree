@@ -18,7 +18,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     }
   },
   on: (channel: string, func: (...args: any[]) => void) => {
-    let validChannels = ['google-auth-token']
+    let validChannels = ['google-auth-token', 'calendar-events-response']
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`
       ipcRenderer.on(channel, (event, ...args) => func(...args))
