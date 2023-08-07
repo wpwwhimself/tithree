@@ -1,3 +1,5 @@
+import { Moment } from "moment";
+
 export interface SelectOption{
   key: string,
   value: string,
@@ -33,7 +35,7 @@ export interface CalEvent{
   date: string,
   title: string,
   student?: Student,
-  startTime: string,
+  startTime: Moment,
   duration: number,
 }
 export interface CalDay{

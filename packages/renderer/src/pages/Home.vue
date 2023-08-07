@@ -52,7 +52,7 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
       date: moment(item.start?.dateTime).format("YYYY-MM-DD"),
       student: student,
       title: item.summary || '',
-      startTime: moment(item.start?.dateTime).format("H:mm"),
+      startTime: moment(item.start?.dateTime),
       duration: moment.duration(moment(item.end?.dateTime).diff(moment(item.start?.dateTime))).asHours(),
     })
   })
@@ -97,7 +97,7 @@ const finalizeSession = async (date: string, student: Student, duration: number)
     </thead>
     <tbody>
       <tr v-for="(event, key) in events" :key="key">
-        <td>{{ event.startTime }}, {{ event.duration }} h</td>
+        <td>{{ event.startTime.format("H:mm") }}, {{ event.duration }} h</td>
         <td>{{ event.student && `${event.student?.first_name} ${event.student?.last_name}` }}</td>
         <td class="flex-right action-buttons">
           <Button title="Wykonaj sesję" icon="check" @click="finalizeSession(event.date, event.student as Student, event.duration)"></Button>

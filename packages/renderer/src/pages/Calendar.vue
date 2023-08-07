@@ -12,6 +12,10 @@ const students = ref<Student[]>([]);
 
 const DoWs = ["nd", "pn", "wt", "śr", "cz", "pt", "so"];
 
+const [low, high] = [8, 21];
+const unit = 1 / (high - low) * 100;
+const timestretch = (hour: number) => (hour - low) / (high - low);
+
 onMounted(async () => {
   // get events
   try{
@@ -43,8 +47,8 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
 
     events.value?.push({
       date: moment(item.start?.dateTime).format("YYYY-MM-DD"),
-      title: student ? `${student?.first_name} ${student?.last_name}` : item.summary || '',
-      startTime: moment(item.start?.dateTime).format("H:mm"),
+      title: item.summary || '',
+      startTime: moment(item.start?.dateTime),
       duration: moment.duration(moment(item.end?.dateTime).diff(moment(item.start?.dateTime))).asHours(),
     })
   })
@@ -70,13 +74,14 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
         <small>{{ DoWs[day.date.format("d") as keyof typeof DoWs] }}</small>
         <h3>{{ day.date.format("D.MM") }}</h3>
       </div>
-      <div class="event rounded flex-down" v-for="(event, key2) in day.events" :key="key2">
-        <small class="ghost">
-          {{ event.startTime }}, {{ event.duration }} h
-        </small>
-        <span>
-          {{ event.title }}
-        </span>
+      <div class="events-container">
+        <div class="event rounded flex-down" v-for="(event, key2) in day.events" :key="key2" :style="{
+          height: `calc(${event.duration * unit + '%'} - 0.2em)`,
+          top: timestretch(moment.duration(event.startTime.format('H:mm')).asHours()) * 100 + '%',
+        }">
+          <span>{{ event.title }}</span>
+          <small class="ghost">{{ event.startTime.format("H:mm") }}</small>
+        </div>
       </div>
     </div>
   </div>
@@ -98,14 +103,23 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
   display: flex; flex-direction: column;
   gap: 0.5em;
 }
+
+.events-container{
+  position: relative;
+  height: 100%;
+}
+
 .event{
+  position: absolute;
+  width: 100%;
   background-color: hsl(var(--bg2));
-  padding: 0.5em;
-  gap: 0;
+  box-sizing: border-box;
+  padding: 0 0.5em;
+  font-size: 0.85em;
+  gap: 0; flex-wrap: nowrap;
 }
 .event small{
   font-size: 0.75em;
-  margin: 0;
 }
 .header{
   text-align: center;
