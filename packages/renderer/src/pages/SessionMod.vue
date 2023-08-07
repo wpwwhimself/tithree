@@ -99,13 +99,18 @@ const handleSubmit = async (e: Event) => {
   }
 };
 
-const updateSessionDate = (val: string) => session_date.value = val;
 const updateStudentId = (val: string) => {
   student_id.value = val;
   price.value = students.value.filter(opt => opt.key == val)[0].price!.toString();
 };
-const updateDuration = (val: string) => duration.value = val;
-const updatePrice = (val: string) => price.value = val;
+const updateRef = (target: string, val: string) => {
+  const refTable = {
+    session_date: session_date,
+    duration: duration,
+    price: price,
+  }
+  refTable[target as keyof typeof refTable].value = val;
+}
 </script>
 
 <template>
@@ -119,10 +124,10 @@ const updatePrice = (val: string) => price.value = val;
     </p>
 
     <form @submit="handleSubmit">
-      <Input type="date" :value="session_date" name="session_date" label="Data" required @input="updateSessionDate($event.target.value)"/>
+      <Input type="date" :value="session_date" name="session_date" label="Data" required @input="updateRef('session_date', $event.target.value)"/>
       <Select :options="students" :emptyOption="true" :value="student_id" name="student_id" label="Uczeń" required @change="updateStudentId($event.target.value)" />
-      <Input type="number" min="0" step="0.25" :value="duration" name="duration" label="Czas trwania [h]" required @input="updateDuration($event.target.value)"/>
-      <Input type="number" min="0" step="0.01" :value="price" name="price" label="Stawka [zł]" required @input="updatePrice($event.target.value)"/>
+      <Input type="number" min="0" step="0.25" :value="duration" name="duration" label="Czas trwania [h]" required @input="updateRef('duration', $event.target.value)"/>
+      <Input type="number" min="0" step="0.01" :value="price" name="price" label="Stawka [zł]" required @input="updateRef('price', $event.target.value)"/>
       <Button icon="check" type="submit">Zatwierdź</Button>
     </form>
   </div>

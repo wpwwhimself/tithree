@@ -87,11 +87,6 @@ const updateRef = (target: string, val: string) => {
 
   refTable[target as keyof typeof refTable].value = val;
 }
-const updateFirstName = (val: string) => first_name.value = val;
-const updateLastName = (val: string) => last_name.value = val;
-const updatePrice = (val: string) => price.value = val;
-const updatePhone = (val: string) => phone.value = val;
-const updateNote = (val: string) => note.value = val;
 </script>
 
 <template>
@@ -99,12 +94,12 @@ const updateNote = (val: string) => note.value = val;
     <PageHeader v-if="student_id > 0" :title="title"></PageHeader>
     <PageHeader v-else title="Nowy uczeń"></PageHeader>
     <form @submit="handleSubmit">
-      <Input name="first_name" :value="first_name" label="Imię" required @input="updateFirstName($event.target.value)" />
-      <Input name="last_name" :value="last_name" label="Nazwisko" @input="updateLastName($event.target.value)" />
+      <Input name="first_name" :value="first_name" label="Imię" required @input="updateRef('first_name', $event.target.value)" />
+      <Input name="last_name" :value="last_name" label="Nazwisko" @input="updateRef('last_name', $event.target.value)" />
       <Input name="nickname" :value="nickname" label="Pseudonim" @input="updateRef('nickname', $event.target.value)" />
-      <Input type="number" min="0" step="0.01" :value="price" name="price" label="Stawka [zł]" required @input="updatePrice($event.target.value)"/>
-      <Input name="phone" :value="phone" label="Numer telefonu" @input="updatePhone($event.target.value)" />
-      <Input name="note" :value="note" label="Notatka" @input="updateNote($event.target.value)" />
+      <Input type="number" min="0" step="0.01" :value="price" name="price" label="Stawka [zł]" required @input="updateRef('price', $event.target.value)"/>
+      <Input name="phone" :value="phone" label="Numer telefonu" @input="updateRef('phone', $event.target.value)" />
+      <Input name="note" :value="note" label="Notatka" @input="updateRef('note', $event.target.value)" />
       <Button icon="check" type="submit">Zatwierdź</Button>
     </form>
   </div>
