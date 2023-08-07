@@ -246,21 +246,23 @@ function createAuthPrompt(authUrl: string) {
 }
 
 ipcMain.on("calendar-events", (event, data) => {
+  const {cal_name, mode} = data;
+
   const events = (auth: OAuth2Client) => {
-    const cal_name = data.value;
     const calendar = google.calendar({ version: 'v3', auth });
 
     calendar.calendarList.list()
       .then((res) => res?.data.items?.find((cal => cal.summary === cal_name))?.id)
       .then((cal_id) => {
         const today = new Date(); today.setHours(0,0,0,0);
+        const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0,0,0,0);
         const next_month = new Date(); next_month.setMonth(next_month.getMonth() + 1); next_month.setHours(0,0,0,0);
 
         return calendar.events.list({
           calendarId: cal_id ?? undefined,
           singleEvents: true,
           timeMin: today.toISOString(),
-          timeMax: next_month.toISOString(),
+          timeMax: (mode === "all") ? next_month.toISOString() : tomorrow.toISOString(),
         })
       })
       // .then(res => {
@@ -272,11 +274,6 @@ ipcMain.on("calendar-events", (event, data) => {
           const dateA = new Date(a.start?.dateTime || a.start?.date || '');
           const dateB = new Date(b.start?.dateTime || b.start?.date || '');
           return dateA.getTime() - dateB.getTime();
-        }).filter(item => {
-          // only events from today
-          const today = new Date();
-          const date = new Date(item.start?.dateTime || item.start?.date || '');
-          return date.setHours(0,0,0,0) >= today.setHours(0,0,0,0);
         });
         BrowserWindow.getAllWindows()[0].webContents.send(
           "calendar-events-response",

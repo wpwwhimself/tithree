@@ -29,3 +29,13 @@ export interface Student{
   phone: string?,
   note: string?,
 }
+export interface CalEvent{
+  date: string,
+  title: string,
+  startTime: string,
+  duration: number,
+}
+export interface CalDay{
+  date: Moment,
+  events?: CalEvent[],
+}

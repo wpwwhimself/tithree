@@ -4,18 +4,7 @@ import PageHeader from '../components/PageHeader.vue';
 import { calendar_v3 } from 'googleapis';
 import moment, { Moment } from 'moment';
 import Loader from '../components/Loader.vue';
-import { Student } from 'types';
-
-interface CalEvent{
-  date: string,
-  title: string,
-  startTime: string,
-  duration: number,
-}
-interface CalDay{
-  date: Moment,
-  events?: CalEvent[],
-}
+import { CalEvent, CalDay, Student } from '../../types';
 
 const events = ref<CalEvent[]>([]);
 const days = ref<CalDay[]>([]);
@@ -27,7 +16,10 @@ onMounted(async () => {
   // get events
   try{
     const cal_name = await window.api.getSetting("google_calendar_name");
-    window.ipcRenderer.send("calendar-events", cal_name);
+    window.ipcRenderer.send("calendar-events", {
+      cal_name: cal_name.value,
+      mode: "all",
+    });
   }catch(err){
     console.error(err);
   }
@@ -67,7 +59,6 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
     });
   }
 })
-
 </script>
 
 <template>
