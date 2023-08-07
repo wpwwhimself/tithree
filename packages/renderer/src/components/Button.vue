@@ -11,7 +11,7 @@ defineProps(["icon"]);
 
 <style scoped>
 button{
-  font-family: Kalam;
+  font-family: Kurale;
   background: none;
   color: hsl(var(--fg));
   border: 3px solid hsl(var(--acc));
