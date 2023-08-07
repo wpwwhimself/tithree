@@ -6,6 +6,7 @@ import { CalEvent, Student } from '../../types';
 import { calendar_v3 } from 'googleapis';
 import moment from 'moment';
 import Button from '../components/Button.vue';
+import BigSplash from '../components/BigSplash.vue';
 
 const students = ref<Student[]>([]);
 const events = ref<CalEvent[]>([]);
@@ -75,7 +76,11 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
       </tr>
     </tbody>
   </table>
-  <p v-else-if="noEventsFlag">Brak zdarzeń na dziś</p>
+  <BigSplash v-else-if="noEventsFlag"
+    icon="couch"
+    title="Brak sesji na dziś"
+    subtitle="Czas na relaks?"
+    />
   <Loader v-else />
 </template>
 
