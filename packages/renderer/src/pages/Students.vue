@@ -61,6 +61,7 @@ const handleDelete = async (student_id: number) => {
     Poniżej znajduje się pełna lista uczniów wpisanych do systemu.
     Możesz edytować każdego z nich lub dodać nowego.
     Wyszarzone kwoty w stawkach oznaczają, że uczeń został zapisany z domyślną stawką (patrz ustawienia).
+    Pseudonimy są wykorzystywane do integracji z kalendarzem i identyfikują ucznia.
   </p>
 
   <template v-if="students">
@@ -68,6 +69,7 @@ const handleDelete = async (student_id: number) => {
       <thead>
         <tr>
           <th>Imię i nazwisko</th>
+          <th>Pseudonim</th>
           <th>Stawka</th>
           <th>Telefon</th>
           <th>Notatka</th>
@@ -77,6 +79,7 @@ const handleDelete = async (student_id: number) => {
       <tbody>
         <tr v-for="student in students" :key="student.id">
           <td>{{ student.first_name }} {{ student.last_name }}</td>
+          <td>{{ student.nickname || "–" }}</td>
           <td :class="{ ghost: (def_price == student.price) }">{{ $toPln(student.price) }}</td>
           <td>{{ student.phone || "–" }}</td>
           <td>{{ student.note || "–" }}</td>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Button from "../components/Button.vue";
 import PageHeader from "../components/PageHeader.vue";
@@ -13,6 +13,7 @@ const student = ref({} as Student);
 let title: string;
 let first_name = ref("");
 let last_name = ref("");
+let nickname = ref("");
 let price = ref("");
 let phone = ref("");
 let note = ref("");
@@ -32,6 +33,7 @@ onMounted(async () => {
     title = `${student.value.first_name} ${student.value.last_name} | Edycja ucznia`;
     first_name = ref(student.value.first_name);
     last_name = ref(student.value.last_name);
+    nickname = ref(student.value.nickname || "");
     price = ref(student.value.price.toString());
     phone = ref(student.value.phone || "");
     note = ref(student.value.note || "");
@@ -53,12 +55,12 @@ const handleSubmit = async (e: Event) => {
   try{
     const [query, params] = (!is_update)
       ? [
-          `INSERT INTO students (first_name, last_name, price, phone, note) VALUES(?, ?, ?, ?, ?)`,
-          [first_name.value, last_name.value, price.value, phone.value || null, note.value || null]
+          `INSERT INTO students (first_name, last_name, nickname, price, phone, note) VALUES(?, ?, ?, ?, ?)`,
+          [first_name.value, last_name.value, nickname.value, price.value, phone.value || null, note.value || null]
         ]
       : [
-          `UPDATE students SET first_name = ?, last_name = ?, price = ?, phone = ?, note = ?, updated_at = datetime() WHERE id = ?`,
-          [first_name.value, last_name.value, price.value, phone.value || null, note.value || null, student_id]
+          `UPDATE students SET first_name = ?, last_name = ?, nickname = ?, price = ?, phone = ?, note = ?, updated_at = datetime() WHERE id = ?`,
+          [first_name.value, last_name.value, nickname.value || null, price.value, phone.value || null, note.value || null, student_id]
         ];
     await window.api.executeQuery(query, params);
     router.push({
@@ -73,6 +75,18 @@ const handleSubmit = async (e: Event) => {
   }
 };
 
+const updateRef = (target: string, val: string) => {
+  const refTable = {
+    first_name: first_name,
+    last_name: last_name,
+    nickname: nickname,
+    price: price,
+    phone: phone,
+    note: note,
+  };
+
+  refTable[target as keyof typeof refTable].value = val;
+}
 const updateFirstName = (val: string) => first_name.value = val;
 const updateLastName = (val: string) => last_name.value = val;
 const updatePrice = (val: string) => price.value = val;
@@ -87,6 +101,7 @@ const updateNote = (val: string) => note.value = val;
     <form @submit="handleSubmit">
       <Input name="first_name" :value="first_name" label="Imię" required @input="updateFirstName($event.target.value)" />
       <Input name="last_name" :value="last_name" label="Nazwisko" @input="updateLastName($event.target.value)" />
+      <Input name="nickname" :value="nickname" label="Pseudonim" @input="updateRef('nickname', $event.target.value)" />
       <Input type="number" min="0" step="0.01" :value="price" name="price" label="Stawka [zł]" required @input="updatePrice($event.target.value)"/>
       <Input name="phone" :value="phone" label="Numer telefonu" @input="updatePhone($event.target.value)" />
       <Input name="note" :value="note" label="Notatka" @input="updateNote($event.target.value)" />

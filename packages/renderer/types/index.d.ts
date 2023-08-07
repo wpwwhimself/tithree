@@ -23,6 +23,7 @@ export interface Student{
   id: number,
   first_name: string,
   last_name: string,
+  nickname?: string,
   student_name?: string,
   price: number,
   phone: string?,

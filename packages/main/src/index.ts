@@ -58,6 +58,7 @@ const queries = [
     id INTEGER PRIMARY KEY,
     first_name TEXT NOT NULL,
     last_name TEXT,
+    nickname TEXT UNIQUE,
     price REAL,
     phone TEXT,
     note TEXT,
