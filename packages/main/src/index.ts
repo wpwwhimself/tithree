@@ -252,10 +252,21 @@ ipcMain.on("calendar-events", (event, data) => {
 
     calendar.calendarList.list()
       .then((res) => res?.data.items?.find((cal => cal.summary === cal_name))?.id)
-      .then((cal_id) => calendar.events.list({
-        calendarId: cal_id ?? undefined,
-        singleEvents: true,
-      }))
+      .then((cal_id) => {
+        const today = new Date(); today.setHours(0,0,0,0);
+        const next_month = new Date(); next_month.setMonth(next_month.getMonth() + 1); next_month.setHours(0,0,0,0);
+
+        return calendar.events.list({
+          calendarId: cal_id ?? undefined,
+          singleEvents: true,
+          timeMin: today.toISOString(),
+          timeMax: next_month.toISOString(),
+        })
+      })
+      // .then(res => {
+        // res.data.items?.forEach(el => console.log(el.start?.dateTime));
+      //   return res;
+      // })
       .then(res => {
         const events = res.data.items?.sort((a, b) => {
           const dateA = new Date(a.start?.dateTime || a.start?.date || '');

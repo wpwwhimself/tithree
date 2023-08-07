@@ -28,6 +28,8 @@ onMounted(async () => {
 });
 
 window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Event[]) => {
+  // get students
+
   // distilling events
   data.forEach(item => {
     events.value?.push({
@@ -65,7 +67,10 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
       </div>
     </div>
   </div>
-  <h2 v-else>Wczytuję...</h2>
+  <h2 v-else>
+    <fai :icon="['fas', 'cog']" spin />
+    Wczytuję...
+  </h2>
 </template>
 
 <style scoped>
