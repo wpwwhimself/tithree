@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
 import { Student, Session } from "../../types";
+import Loader from "../components/Loader.vue";
 
 const students = ref([] as (Student & Session)[]);
 
@@ -78,7 +79,7 @@ onMounted(async () => {
       Lista jest pusta. Brakuje uczniów lub sesji dla nich.
     </p>
   </template>
-  <h2 v-else>Wczytuję...</h2>
+  <Loader v-else />
 </template>
 
 <style>

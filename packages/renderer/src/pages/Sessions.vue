@@ -8,6 +8,7 @@ import Input from "../components/Input.vue";
 import { useRouter } from "vue-router";
 import { Session } from "../../types";
 import moment from "moment";
+import Loader from "../components/Loader.vue";
 
 const router = useRouter();
 const sessions = ref([] as Session[]);
@@ -130,5 +131,5 @@ const handleDelete = async (session_id: number) => {
       Lista jest pusta. Utwórz nową sesję przyciskiem powyżej lub sprawdź filtry.
     </p>
   </template>
-  <h2 v-else>Wczytuję...</h2>
+  <Loader v-else />
 </template>

@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import PageHeader from '../components/PageHeader.vue';
 import { calendar_v3 } from 'googleapis';
 import moment, { Moment } from 'moment';
+import Loader from '../components/Loader.vue';
 
 interface CalEvent{
   date: string,
@@ -67,10 +68,7 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
       </div>
     </div>
   </div>
-  <h2 v-else>
-    <fai :icon="['fas', 'cog']" spin />
-    Wczytuję...
-  </h2>
+  <Loader v-else />
 </template>
 
 <style scoped>

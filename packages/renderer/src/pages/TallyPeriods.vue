@@ -5,6 +5,7 @@ import PageHeader from "../components/PageHeader.vue";
 import SubPanel from "../components/SubPanel.vue";
 import ColPlot from "../components/ColPlot.vue";
 import { Session } from "../../types";
+import Loader from "../components/Loader.vue";
 
 const months = ref([] as Session[]);
 let totals = {
@@ -114,7 +115,7 @@ onMounted(async () => {
       Lista jest pusta. Brakuje sesji.
     </p>
   </template>
-  <h2 v-else>Wczytuję...</h2>
+  <Loader v-else />
 </template>
 
 <style>

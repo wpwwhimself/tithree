@@ -4,6 +4,7 @@ import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
 import { useRoute } from "vue-router";
 import { Student, Session } from "../../types";
+import Loader from "../components/Loader.vue";
 
 const route = useRoute();
 const student_id = +route.params.id;
@@ -95,7 +96,7 @@ onMounted(async () => {
       Lista jest pusta.
     </p>
   </template>
-  <h2 v-else>Wczytuję...</h2>
+  <Loader v-else />
 </template>
 
 <style>

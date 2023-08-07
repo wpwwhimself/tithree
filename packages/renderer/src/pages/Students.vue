@@ -5,6 +5,7 @@ import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
 import { useRouter } from "vue-router";
 import { Student } from "../../types";
+import Loader from "../components/Loader.vue";
 
 const router = useRouter();
 const students = ref([] as Student[]);
@@ -103,7 +104,7 @@ const handleDelete = async (student_id: number) => {
       Lista jest pusta. Utwórz nowego ucznia przyciskiem powyżej.
     </p>
   </template>
-  <h2 v-else>Wczytuję...</h2>
+  <Loader v-else />
 </template>
 
 <style>
