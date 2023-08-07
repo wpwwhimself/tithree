@@ -32,6 +32,7 @@ export interface Student{
 export interface CalEvent{
   date: string,
   title: string,
+  student?: Student,
   startTime: string,
   duration: number,
 }
