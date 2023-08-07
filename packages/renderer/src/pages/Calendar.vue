@@ -4,12 +4,13 @@ import PageHeader from '../components/PageHeader.vue';
 import { calendar_v3 } from 'googleapis';
 import moment, { Moment } from 'moment';
 import Loader from '../components/Loader.vue';
+import { Student } from 'types';
 
 interface CalEvent{
   date: string,
   title: string,
   startTime: string,
-  endTime: string,
+  duration: number,
 }
 interface CalDay{
   date: Moment,
@@ -18,26 +19,39 @@ interface CalDay{
 
 const events = ref<CalEvent[]>([]);
 const days = ref<CalDay[]>([]);
+const students = ref<Student[]>([]);
 
 onMounted(async () => {
+  // get events
   try{
     const cal_name = await window.api.getSetting("google_calendar_name");
     window.ipcRenderer.send("calendar-events", cal_name);
   }catch(err){
     console.error(err);
   }
+
+  // get students
+  try{
+    const data = await window.api.executeQuery(
+      `SELECT first_name, last_name, nickname
+      FROM students`
+    );
+    students.value = data;
+  }catch(err){
+    console.error(err);
+  }
 });
 
 window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Event[]) => {
-  // get students
-
   // distilling events
   data.forEach(item => {
+    const student = students.value.find(st => st.nickname == item.summary);
+
     events.value?.push({
       date: moment(item.start?.dateTime).format("YYYY-MM-DD"),
-      title: item.summary || '',
+      title: student ? `${student?.first_name} ${student?.last_name}` : item.summary || '',
       startTime: moment(item.start?.dateTime).format("H:mm"),
-      endTime: moment(item.end?.dateTime).format("H:mm"),
+      duration: moment.duration(moment(item.end?.dateTime).diff(moment(item.start?.dateTime))).asHours(),
     })
   })
 
@@ -63,8 +77,13 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
         <small>{{ day.date.format("ddd") }}</small>
         <h3>{{ day.date.format("D.MM") }}</h3>
       </div>
-      <div class="event rounded" v-for="(event, key2) in day.events" :key="key2">
-        {{ event.title }} ({{ event.startTime }} - {{ event.endTime }})
+      <div class="event rounded flex-down" v-for="(event, key2) in day.events" :key="key2">
+        <small class="ghost">
+          {{ event.startTime }}, {{ event.duration }} h
+        </small>
+        <span>
+          {{ event.title }}
+        </span>
       </div>
     </div>
   </div>
@@ -89,6 +108,11 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
 .event{
   background-color: hsl(var(--bg2));
   padding: 0.5em;
+  gap: 0;
+}
+.event small{
+  font-size: 0.75em;
+  margin: 0;
 }
 .header{
   text-align: center;
