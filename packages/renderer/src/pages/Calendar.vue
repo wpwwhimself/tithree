@@ -21,6 +21,8 @@ const events = ref<CalEvent[]>([]);
 const days = ref<CalDay[]>([]);
 const students = ref<Student[]>([]);
 
+const DoWs = ["nd", "pn", "wt", "śr", "cz", "pt", "so"];
+
 onMounted(async () => {
   // get events
   try{
@@ -74,7 +76,7 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
   <div id="calendar" v-if="days.length">
     <div class="day rounded" v-for="(day, key) in days" :key="key">
       <div class="header">
-        <small>{{ day.date.format("ddd") }}</small>
+        <small>{{ DoWs[day.date.format("d") as keyof typeof DoWs] }}</small>
         <h3>{{ day.date.format("D.MM") }}</h3>
       </div>
       <div class="event rounded flex-down" v-for="(event, key2) in day.events" :key="key2">
