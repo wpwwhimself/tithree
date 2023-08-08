@@ -117,6 +117,7 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
   padding: 0 0.5em;
   font-size: 0.85em;
   gap: 0; flex-wrap: nowrap;
+  overflow: hidden;
 }
 .event small{
   font-size: 0.75em;

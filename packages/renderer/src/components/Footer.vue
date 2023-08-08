@@ -34,9 +34,6 @@ h2, img{
   font-size: var(--height);
   height: var(--height);
 }
-img{
-  filter: brightness(2)
-}
 
 #app-info{
   align-items: baseline;
