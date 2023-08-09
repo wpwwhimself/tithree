@@ -5,6 +5,7 @@ import Button from "../components/Button.vue";
 import PageHeader from "../components/PageHeader.vue";
 import Input from "../components/Input.vue";
 import { Student } from "../../types";
+import Loader from "../components/Loader.vue";
 
 const [route, router] = [useRoute(), useRouter()];
 const student_id = +route.params.id;
@@ -103,9 +104,7 @@ const updateRef = (target: string, val: string) => {
       <Button icon="check" type="submit">Zatwierdź</Button>
     </form>
   </div>
-  <div v-else>
-    <h2>Wczytywanie...</h2>
-  </div>
+  <Loader v-else />
 </template>
 
 <style>

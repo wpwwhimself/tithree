@@ -12,13 +12,20 @@ const dbPath = path.join(__dirname, "../../../database.db")
 contextBridge.exposeInMainWorld("ipcRenderer", {
   send: (channel: string, data: any = undefined) => {
     // whitelist channels
-    let validChannels = ['calendar-events']
+    let validChannels = [
+      'calendar-events',
+      "calendar-new-event",
+    ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data)
     }
   },
   on: (channel: string, func: (...args: any[]) => void) => {
-    let validChannels = ['google-auth-token', 'calendar-events-response']
+    let validChannels = [
+      'google-auth-token',
+      'calendar-events-response',
+      "calendar-event-new-response",
+    ]
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`
       ipcRenderer.on(channel, (event, ...args) => func(...args))

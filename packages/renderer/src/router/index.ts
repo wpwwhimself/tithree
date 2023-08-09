@@ -12,6 +12,7 @@ import Settings from "../pages/Settings.vue";
 import ActionSummary from "../pages/ActionSummary.vue";
 import HomeVue from "../pages/Home.vue";
 import CalendarVue from "../pages/Calendar.vue";
+import EventMod from "../pages/EventMod.vue";
 
 const routes = [
   {
@@ -73,6 +74,11 @@ const routes = [
     path: "/calendar",
     name: "Calendar",
     component: CalendarVue,
+  },
+  {
+    path: "/calendar/eventmod/:id?",
+    name: "EventMod",
+    component: EventMod,
   },
   {
     path: "/action-summary/:action/:target",

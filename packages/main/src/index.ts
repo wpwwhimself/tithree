@@ -5,7 +5,7 @@ import {platform} from 'node:process';
 import * as path from 'node:path';
 import * as fs from 'fs';
 import * as sqlite3 from 'sqlite3';
-import { google } from 'googleapis';
+import { calendar_v3, google } from 'googleapis';
 import { OAuth2Client } from 'google-auth-library';
 import * as http from "http";
 import * as url from "url";
@@ -288,5 +288,31 @@ ipcMain.on("calendar-events", (event, data) => {
     import.meta.env.VITE_GOOGLE_API_CLIENT_SECRET,
     REDIRECT_URI,
     events
+  );
+})
+ipcMain.on("calendar-new-event", (ev, data) => {
+  const {cal_name, event} = data;
+
+  const callback = (auth: OAuth2Client) => {
+    const calendar = google.calendar({ version: 'v3', auth });
+
+    calendar.calendarList.list()
+      .then((res) => res?.data.items?.find((cal => cal.summary === cal_name))?.id)
+      .then((cal_id) => calendar.events.insert({
+        calendarId: cal_id ?? undefined,
+        requestBody: event,
+      }))
+      .then(res => BrowserWindow.getAllWindows()[0].webContents.send(
+        "calendar-event-new-response",
+        res.status
+      ))
+      .catch((err) => console.error(`Event creation error: ${err}`));
+  }
+
+  authorize(
+    import.meta.env.VITE_GOOGLE_API_CLIENT_ID,
+    import.meta.env.VITE_GOOGLE_API_CLIENT_SECRET,
+    REDIRECT_URI,
+    callback
   );
 })

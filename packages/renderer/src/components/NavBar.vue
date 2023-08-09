@@ -16,6 +16,7 @@ const page_names = {
   TallyPeriods: "Podliczanie po okresach",
   Settings: "Ustawienia",
   Calendar: "Kalendarz",
+  EventMod: "Edycja zdarzenia",
   ActionSummary: "Gotowe!",
 };
 </script>

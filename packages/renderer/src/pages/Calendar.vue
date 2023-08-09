@@ -5,6 +5,7 @@ import { calendar_v3 } from 'googleapis';
 import moment, { Moment } from 'moment';
 import Loader from '../components/Loader.vue';
 import { CalEvent, CalDay, Student } from '../../types';
+import JumpButton from '../components/JumpButton.vue';
 
 const events = ref<CalEvent[]>([]);
 const days = ref<CalDay[]>([]);
@@ -66,7 +67,9 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
 </script>
 
 <template>
-  <PageHeader title="Sesje w najbliższym tygodniu"></PageHeader>
+  <PageHeader title="Sesje w najbliższym tygodniu">
+    <JumpButton :to="{name: 'EventMod'}" icon="plus">Nowe zdarzenie</JumpButton>
+  </PageHeader>
 
   <div id="calendar" v-if="days.length">
     <div class="day rounded" v-for="(day, key) in days" :key="key">
