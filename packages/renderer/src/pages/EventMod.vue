@@ -114,7 +114,8 @@ const updateRef = (target: string, val: string | boolean) => {
 </script>
 
 <template>
-  <div v-if="event || !event_id || !showLoader">
+  <Loader mode="saving" v-if="showLoader" />
+  <div v-else-if="event || !event_id">
     <PageHeader v-if="!!event_id" :title="title"></PageHeader>
     <PageHeader v-else title="Nowe zdarzenie"></PageHeader>
     <form @submit="handleSubmit">

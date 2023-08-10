@@ -1,12 +1,24 @@
 <script setup lang="ts">
+const props = withDefaults(defineProps<{
+  mode?: string
+}>(), {
+  mode: "loading",
+});
+
+let text: string;
+switch(props.mode){
+  case "loading": text = "Wczytuję..."; break;
+  case "saving": text = "Zapisuję..."; break;
+}
 </script>
 
 <template>
   <div class="flex-down h-center v-center">
     <span class="icon ghost">
-      <fai :icon="['fas', 'cog']" spin></fai>
+      <fai v-if="mode == 'loading'" :icon="['fas', 'cog']" spin></fai>
+      <fai v-if="mode == 'saving'" :icon="['fas', 'pencil']" shake></fai>
     </span>
-    <h2>Wczytuję...</h2>
+    <h2>{{ text }}</h2>
   </div>
 </template>
 
