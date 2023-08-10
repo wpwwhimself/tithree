@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
   send: (channel: string, data: any = undefined) => {
     // whitelist channels
     let validChannels = [
+      "set-window-color",
       'calendar-events',
       "calendar-new-event",
     ];

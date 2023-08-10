@@ -2,6 +2,7 @@
 import { useRoute } from "vue-router";
 import logo from "../assets/t3_color.svg";
 import JumpButton from './JumpButton.vue';
+import { ref } from "vue";
 const APP_NAME = import.meta.env.VITE_APP_NAME;
 const route = useRoute();
 const page_names = {
@@ -19,6 +20,11 @@ const page_names = {
   EventMod: "Edycja zdarzenia",
   ActionSummary: "Gotowe!",
 };
+
+const navVisible = ref(false);
+const showNav = (show: boolean) => {
+  navVisible.value = show;
+}
 </script>
 
 <template>
@@ -30,10 +36,12 @@ const page_names = {
         <small class="ghost script">{{ APP_NAME }}</small>
       </template>
     </div>
-    <nav class="flex-right v-center">
-      <router-link to="/">
+    <nav class="flex-right v-center h-center" :class="{ show: navVisible }"
+      @mouseover="showNav(true)" @mouseleave="showNav(false)">
+      <!-- <router-link to="/">
         <img :src="logo" :alt="APP_NAME" />
-      </router-link>
+      </router-link> -->
+      <jump-button icon="house-chimney" :to="{name: 'Home'}">Dzisiaj</jump-button>
       <jump-button icon="calendar" :to="{name: 'Calendar'}">Kalendarz</jump-button>
       <jump-button icon="clock-rotate-left" :to="{name: 'Sessions'}">Sesje</jump-button>
       <jump-button icon="users" :to="{name: 'Students'}">Uczniowie</jump-button>
@@ -49,9 +57,12 @@ header{
 }
 nav{
   background-color: hsla(var(--acc), 35%);
-  padding: 1em;
-  padding-top: calc(var(--dragger-height) + 1em);
+  padding: 0.5em 1em;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  position: fixed; left: 0; right: 0;
 }
+nav.show{ opacity: 1; }
 h1 a{
   color: hsl(var(--fg));
   text-decoration: none;
@@ -64,11 +75,10 @@ img{
   -webkit-app-region: drag;
   height: var(--dragger-height);
   font-size: calc(var(--dragger-height) - 0.5em);
-  background-color: dimgray;
+  background-color: hsl(var(--acc));
   color: white;
   padding: 0 2em;
   align-items: flex-end;
-  position: fixed; top: 0; left: 0; right: 0;
   z-index: 999;
 }
 small{

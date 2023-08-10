@@ -110,6 +110,14 @@ app
   .then(restoreOrCreateWindow)
   .catch(e => console.error('Failed create window:', e));
 
+ipcMain.on("set-window-color", (ev, color) => {
+  BrowserWindow.getAllWindows()[0].setTitleBarOverlay({
+    color: `hsl(${color})`,
+    symbolColor: "white",
+    height: 30,
+  })
+})
+
 /**
  * Install Vue.js or any other extension in development mode only.
  * Note: You must install `electron-devtools-installer` manually

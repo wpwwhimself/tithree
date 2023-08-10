@@ -8,6 +8,7 @@ const theme = ref("light");
 onBeforeMount(async () => {
   let data = await window.api.getSetting("accent_color");
   accent_color.value = data.value;
+  window.ipcRenderer.send("set-window-color", data.value);
 
   data = await window.api.getSetting("dark_mode");
   theme.value = !!(+data.value) ? "dark" : "light";
@@ -29,5 +30,14 @@ onBeforeMount(async () => {
 <style>
 #app-container{
   --acc: v-bind(accent_color);
+  overflow: hidden;
+}
+#wrapper{
+  flex: 1 0 auto;
+  margin: 1em auto;
+  width: 90vw;
+  height: calc(100vh - 8em);
+  overflow: auto;
+  padding: 1em;
 }
 </style>

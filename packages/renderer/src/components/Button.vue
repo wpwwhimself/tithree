@@ -17,7 +17,7 @@ button{
   border: 3px solid hsl(var(--acc));
   cursor: pointer;
   font-size: 1rem;
-  padding: 0.5em;
+  padding: 0.2em 0.5em;
 }
 button:hover{
   background: hsl(var(--acc));

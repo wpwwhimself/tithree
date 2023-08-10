@@ -43,13 +43,6 @@ h1, h2, h3, .script{
   overflow: auto;
 }
 
-#wrapper{
-  flex: 1 0 auto;
-  margin: 0 auto;
-  width: 90vw;
-  padding: 1em;
-}
-
 a, h2, .accent {
   color: hsl(var(--acc));
 }
@@ -115,4 +108,5 @@ tfoot th{
 }
 .action-buttons button{
   font-size: 10px !important;
+  padding: 0.5em !important;
 }
