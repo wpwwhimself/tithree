@@ -21,6 +21,7 @@ const student_nick = ref("");
 const date = ref("");
 const time = ref("");
 const duration = ref("");
+const isRecurring = ref(true);
 const showLoader = ref(false);
 
 onMounted(async () => {
@@ -57,7 +58,7 @@ const handleSubmit = async (e: Event) => {
   e.preventDefault();
   showLoader.value = true;
 
-  const startDate = moment(`${date.value}T${time.value}Z`);
+  const startDate = moment(`${date.value}T${time.value}`);
 
   const event: calendar_v3.Schema$Event = {
     summary: student_nick.value,
@@ -70,6 +71,7 @@ const handleSubmit = async (e: Event) => {
       dateTime: startDate.add(duration.value, "h").toISOString(),
       timeZone: "Europe/Warsaw",
     },
+    recurrence: isRecurring.value ? ["RRULE:FREQ=WEEKLY;COUNT=30"] : undefined,
   }
 
   try{
@@ -98,12 +100,13 @@ window.ipcRenderer.on("calendar-event-new-response", (res_code) => {
   });
 })
 
-const updateRef = (target: string, val: string) => {
+const updateRef = (target: string, val: string | boolean) => {
   const refTable = {
     student_nick: student_nick,
     date: date,
     time: time,
     duration: duration,
+    isRecurring: isRecurring,
   };
 
   refTable[target as keyof typeof refTable].value = val;
@@ -119,6 +122,7 @@ const updateRef = (target: string, val: string) => {
       <Input type="date" name="date" :value="date" label="Data sesji" required @input="updateRef('date', $event.target.value)" />
       <Input type="time" name="time" :value="time" label="Godzina rozpoczęcia" required @input="updateRef('time', $event.target.value)" />
       <Input type="number" min="0" step="0.25" name="duration" :value="duration" label="Czas trwania sesji [h]" required @input="updateRef('duration', $event.target.value)" />
+      <Input type="checkbox" name="isRecurring" label="Powtarzaj co tydzień" @change="updateRef('isRecurring', $event.target.checked)" />
       <Button icon="check" type="submit">Zatwierdź</Button>
     </form>
   </div>
