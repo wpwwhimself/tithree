@@ -220,7 +220,7 @@ const getNewToken: GetNewToken = function (oAuth2Client, callback) {
   // Create a temp server for receiving the authentication approval request
   const server = http.createServer(function (req, res) {
       res.writeHead(200, {'Content-Type': 'text/html'});
-      res.end("OK. Autoryzacja pomyślna, możesz zamknąć tę kartę.");
+      res.end("Mamy to. Token zapisany, Zamknij to okno.");
 
       var q = url.parse(req.url!, true).query;
       const code = q.code as string;
@@ -288,7 +288,16 @@ ipcMain.on("calendar-events", (event, data) => {
           events
         )
       })
-      .catch((err) => console.error(`Calendar fetching error: ${err}`));
+      .catch((err) => {
+        // console.error(`Calendar fetching error: ${err}`);
+        console.log(err);
+        if(err.code == 401){
+          fs.unlink(TOKEN_PATH, (err) => {
+            if(err) console.error("Could not remove token...");
+          });
+          app.exit();
+        }
+      });
   }
 
   authorize(
