@@ -3,7 +3,7 @@ defineProps(["icon"]);
 </script>
 
 <template>
-  <button class="flex-right v-center rounded" :="$attrs">
+  <button class="flex-right v-center rounded animate" :="$attrs">
     <fai :icon="['fas', icon]" />
     <slot />
   </button>

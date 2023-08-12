@@ -24,7 +24,8 @@ footer{
   background-color: hsl(0, 0%, 0%);
   color: hsl(0, 0%, 100%);
   flex-shrink: 0;
-  padding: 0.2em 1em;
+  padding: 0 1em;
+  height: 2em;
 }
 h2, p{
   margin: 0;

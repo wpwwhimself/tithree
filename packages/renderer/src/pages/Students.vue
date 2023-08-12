@@ -92,7 +92,7 @@ const handleDelete = async (student_id: number) => {
       </tbody>
       <tfoot>
         <tr>
-          <th colspan="4"></th>
+          <th colspan="5"></th>
           <th>
             <fai :icon="['fas', 'calculator']" title="Liczba wyników" />
             {{ students.length }}

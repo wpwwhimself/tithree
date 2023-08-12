@@ -11,7 +11,7 @@ defineProps(["title"]);
   </div>
 </template>
 
-<style scoped>
+<style>
 .page-header{
   justify-content: space-between;
   background-color: hsl(var(--bg2));
@@ -20,5 +20,8 @@ defineProps(["title"]);
 }
 .page-header h1{
   margin: 0;
+}
+.page-header button{
+  padding: 0.5em;
 }
 </style>

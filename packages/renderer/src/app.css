@@ -110,3 +110,5 @@ tfoot th{
   font-size: 10px !important;
   padding: 0.5em !important;
 }
+
+.animate{ transition: all 0.2s ease-out; }

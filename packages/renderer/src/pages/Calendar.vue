@@ -94,13 +94,13 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
 <style scoped>
 #calendar{
   overflow-x: auto;
-  height: calc(100vh - 20em);
+  height: calc(100vh - 12em);
   display: flex;
   gap: 0.5em;
 }
 .day, .legend{
   /* flex: 1; */
-  width: 500px;
+  width: calc(100% / 7);
   border: 1px solid hsl(var(--bg2));
   padding: 0.5em;
   display: flex; flex-direction: column;
@@ -117,10 +117,13 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
   width: 100%;
   background-color: hsl(var(--bg2));
   box-sizing: border-box;
-  padding: 0 0.5em;
+  padding: 0.25em 0.5em;
   font-size: 0.85em;
   gap: 0; flex-wrap: nowrap;
   overflow: hidden;
+}
+.event:hover{
+  overflow: visible;
 }
 .event small{
   font-size: 0.75em;

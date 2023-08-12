@@ -289,9 +289,8 @@ ipcMain.on("calendar-events", (event, data) => {
         )
       })
       .catch((err) => {
-        // console.error(`Calendar fetching error: ${err}`);
-        console.log(err);
-        if(err.code == 401){
+        console.error(`Calendar fetching error: ${err.code} ${err}`);
+        if(err.code == 400 || err.code == 401){
           fs.unlink(TOKEN_PATH, (err) => {
             if(err) console.error("Could not remove token...");
           });
