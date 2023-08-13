@@ -54,7 +54,8 @@ const buttons = [
 nav{
   background-color: hsla(var(--acc), 30%);
   padding: 1em 1em;
-  width: 1em;
+  padding-left: 0;
+  width: 3em;
   overflow: hidden;
   align-items: start;
 }

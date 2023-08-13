@@ -25,7 +25,7 @@ withDefaults(
 <style scoped>
 .container{
   display: grid;
-  grid-template-columns: 2.5em 1fr;
+  grid-template-columns: 4em 1fr;
   align-items: center;
 
   text-decoration: none;
@@ -35,6 +35,6 @@ withDefaults(
   color: hsl(var(--acc));
 }
 .icon{
-  text-align: left;
+  text-align: center;
 }
 </style>
