@@ -56,7 +56,7 @@ const handleSubmit = async (e: Event) => {
   try{
     const [query, params] = (!is_update)
       ? [
-          `INSERT INTO students (first_name, last_name, nickname, price, phone, note) VALUES(?, ?, ?, ?, ?)`,
+          `INSERT INTO students (first_name, last_name, nickname, price, phone, note) VALUES(?, ?, ?, ?, ?, ?)`,
           [first_name.value, last_name.value, nickname.value, price.value, phone.value || null, note.value || null]
         ]
       : [

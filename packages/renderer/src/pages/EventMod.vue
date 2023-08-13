@@ -21,7 +21,7 @@ const student_nick = ref("");
 const date = ref("");
 const time = ref("");
 const duration = ref("");
-const isRecurring = ref(true);
+const isRecurring = ref(false);
 const showLoader = ref(false);
 
 onMounted(async () => {
@@ -41,7 +41,11 @@ onMounted(async () => {
     const data = await window.api.executeQuery(
       `SELECT
         students.nickname as key,
-        first_name || ' ' || last_name as value,
+        first_name || ' ' || last_name
+        || CASE WHEN students.nickname IS NOT NULL
+          THEN ' (' || students.nickname || ')'
+          ELSE ''
+        END as value,
         COALESCE(JULIANDAY(DATE()) - JULIANDAY(MAX(session_date)) > CAST((SELECT value FROM settings WHERE name = 'student_inactive_days') AS INTEGER), 1) as ghost
       FROM students
         LEFT JOIN sessions ON sessions.student_id = students.id
@@ -73,6 +77,8 @@ const handleSubmit = async (e: Event) => {
     },
     recurrence: isRecurring.value ? ["RRULE:FREQ=WEEKLY;COUNT=30"] : undefined,
   }
+
+  console.log(event.recurrence);
 
   try{
     if(!is_update){
