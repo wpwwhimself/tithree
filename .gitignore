@@ -58,7 +58,7 @@ thumbs.db
 /.idea/csv-plugin.xml
 
 # Database
-database.db
+*.db
 
 # Environment
 .env
