@@ -4,4 +4,9 @@ This is an app which serves as an aid for a tutor. It tallies how much time is s
 
 Made with __Vue__ and shipped to standalone app with __Electron__, motivated by my beloved 💝
 
-🔥 Still WIP so many features may be missing but I am committed to make it the best one ever!
+# Screenshots
+This app is constantly improving and will probably change in the near future. More screenshots can be found in the dedicated folder.
+![Home view](_screenshots/Home+events.png)
+![Sessions list and navigation](_screenshots/Sessions+Nav.png)
+![Tallying](_screenshots/TallyPeriods.png)
+![Calendar](_screenshots/Calendar.png)
