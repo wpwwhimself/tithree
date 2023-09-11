@@ -34,6 +34,7 @@ export interface Student{
   suspended: boolean,
 }
 export interface CalEvent{
+  eventId?: string | null,
   date: string,
   title: string,
   student?: Student,

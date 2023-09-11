@@ -16,6 +16,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       "set-window-color",
       'calendar-events',
       "calendar-new-event",
+      "calendar-delete-event",
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data)
@@ -26,6 +27,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       'google-auth-token',
       'calendar-events-response',
       "calendar-event-new-response",
+      "calendar-event-delete-response",
     ]
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`

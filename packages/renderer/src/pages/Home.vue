@@ -8,11 +8,13 @@ import moment from 'moment';
 import Button from '../components/Button.vue';
 import BigSplash from '../components/BigSplash.vue';
 import router from '../router';
+import JumpButton from '../components/JumpButton.vue';
 
 const students = ref<Student[]>([]);
 const events = ref<CalEvent[]>([]);
 const noEventsFlag = ref(false);
 const studentsToday = ref<number[]>([]);
+const showLoader = ref(false);
 
 onMounted(async () => {
   // get events
@@ -49,6 +51,7 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
     const student = students.value.find(st => st.nickname == item.summary);
 
     events.value.push({
+      eventId: item.id,
       date: moment(item.start?.dateTime).format("YYYY-MM-DD"),
       student: student,
       title: item.summary || '',
@@ -61,10 +64,18 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
 
   if(!events.value.length) noEventsFlag.value = true;
 })
+window.ipcRenderer.on("calendar-event-delete-response", (res_code) => {
+  if(res_code >= 300) return;
+  router.push({
+    name: "ActionSummary",
+    params: {
+      action: "Zdarzenie usunięte z kalendarza",
+      target: "Home"
+    }
+  });
+})
 
 const finalizeSession = async (date: string, student: Student, duration: number) => {
-  // if(!confirm("Na pewno?")) return;
-
   try{
     const [query, params] = [
       `INSERT INTO sessions (student_id, session_date, duration, price) VALUES(?, ?, ?, ?)`,
@@ -82,35 +93,63 @@ const finalizeSession = async (date: string, student: Student, duration: number)
     console.error(err);
   }
 };
+const deleteSession = async (eventId: string) => {
+  if(!confirm("Na pewno?")) return;
+  showLoader.value = true;
+
+  try{
+    const cal_name = await window.api.getSetting("google_calendar_name");
+    window.ipcRenderer.send("calendar-delete-event", {
+      cal_name: cal_name.value,
+      eventId: eventId
+    });
+  }catch(err){
+    showLoader.value = false;
+    console.error(err);
+  }
+
+};
 </script>
 
 <template>
-  <PageHeader title="Sesje zaplanowane na dziś" />
+  <Loader mode="saving" v-if="showLoader" />
+  <template v-else>
 
-  <table id="today" class="rounded" v-if="events.length">
-    <thead>
-      <tr>
-        <th>Godzina</th>
-        <th>Uczeń</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(event, key) in events" :key="key">
-        <td>{{ event.startTime.format("H:mm") }}, {{ event.duration }} h</td>
-        <td>{{ event.student && `${event.student?.first_name} ${event.student?.last_name}` }}</td>
-        <td class="flex-right action-buttons">
-          <Button title="Wykonaj sesję" icon="check" @click="finalizeSession(event.date, event.student as Student, event.duration)"></Button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <BigSplash v-else-if="noEventsFlag"
-    icon="couch"
-    title="Brak sesji na dziś"
-    subtitle="Czas na relaks?"
-    />
-  <Loader v-else />
+    <PageHeader title="Do wypełnienia na dziś" />
+    <p class="ghost">
+      Oto lista dzisiejszych i zaległych sesji, które oczekują na wypełnienie.
+    </p>
+
+    <table id="today" class="rounded" v-if="events.length">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Godzina</th>
+          <th>Uczeń</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(event, key) in events" :key="key">
+          <td>{{ event.startTime.format("D.MM") }}</td>
+          <td>{{ event.startTime.format("H:mm") }}, {{ event.duration }} h</td>
+          <td v-if="event.student">{{ event.student.first_name}} {{event.student.last_name}}</td>
+            <td v-else class="ghost">{{ event.title }} <i>(dodaj pseudonim)</i></td>
+          <td class="flex-right action-buttons">
+            <Button v-if="event.student" title="Wykonaj sesję" icon="check" @click="finalizeSession(event.date, event.student as Student, event.duration)"></Button>
+            <JumpButton v-else :to="{name: 'Students'}" title="Lista uczniów" icon="user-pen"></JumpButton>
+            <Button title="Odrzuć sesję" icon="xmark" @click="deleteSession(event.eventId!)"></Button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <BigSplash v-else-if="noEventsFlag"
+      icon="couch"
+      title="Brak sesji na dziś"
+      subtitle="Czas na relaks?"
+      />
+    <Loader v-else />
+  </template>
 </template>
 
 <script>

@@ -264,13 +264,14 @@ ipcMain.on("calendar-events", (event, data) => {
       .then((res) => res?.data.items?.find((cal => cal.summary === cal_name))?.id)
       .then((cal_id) => {
         const today = new Date(); today.setHours(0,0,0,0);
+        const last_week = new Date(); last_week.setDate(last_week.getDate() - 7); last_week.setHours(0,0,0,0);
         const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0,0,0,0);
         const next_month = new Date(); next_month.setMonth(next_month.getMonth() + 1); next_month.setHours(0,0,0,0);
 
         return calendar.events.list({
           calendarId: cal_id ?? undefined,
           singleEvents: true,
-          timeMin: today.toISOString(),
+          timeMin: last_week.toISOString(),
           timeMax: (mode === "all") ? next_month.toISOString() : tomorrow.toISOString(),
         })
       })
@@ -324,6 +325,34 @@ ipcMain.on("calendar-new-event", (ev, data) => {
         res.status
       ))
       .catch((err) => console.error(`Event creation error: ${err}`));
+  }
+
+  authorize(
+    import.meta.env.VITE_GOOGLE_API_CLIENT_ID,
+    import.meta.env.VITE_GOOGLE_API_CLIENT_SECRET,
+    REDIRECT_URI,
+    callback
+  );
+})
+ipcMain.on("calendar-delete-event", (ev, data) => {
+  const {cal_name, eventId} = data;
+
+  const callback = (auth: OAuth2Client) => {
+    const calendar = google.calendar({ version: 'v3', auth });
+
+    calendar.calendarList.list()
+      .then((res) => res?.data.items?.find((cal => cal.summary === cal_name))?.id)
+      .then((cal_id) => calendar.events.delete({
+        calendarId: cal_id ?? undefined,
+        eventId: eventId,
+      }))
+      .then(res => {
+        console.log(res.status);
+        BrowserWindow.getAllWindows()[0].webContents.send(
+        "calendar-event-delete-response",
+        res.status
+      )})
+      .catch((err) => console.error(`Event deletion error: ${err}`));
   }
 
   authorize(
