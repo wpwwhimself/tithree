@@ -13,6 +13,7 @@ onMounted(async () => {
       `SELECT
         students.id,
         students.first_name || ' ' || students.last_name as student_name,
+        students.suspended,
         COUNT(*) as session_count,
         SUM(sessions.duration) as session_time,
         SUM(
@@ -24,7 +25,7 @@ onMounted(async () => {
         LEFT JOIN sessions ON student_id = students.id
       GROUP BY students.id
       HAVING COUNT(sessions.id) > 0
-      ORDER BY students.first_name, students.last_name`
+      ORDER BY students.suspended, students.first_name, students.last_name`
     );
     students.value = data;
   }catch(err){
@@ -55,7 +56,7 @@ onMounted(async () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="student in students" :key="student.id">
+        <tr v-for="student in students" :key="student.id" :class="{ghost: student.suspended}">
           <td>{{ student.student_name }}</td>
           <td>{{ student.session_count }}</td>
           <td>{{ student.session_time }} h</td>

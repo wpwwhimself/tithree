@@ -50,7 +50,7 @@ onMounted(async () => {
       FROM students
         LEFT JOIN sessions ON sessions.student_id = students.id
       GROUP BY students.id
-      ORDER BY first_name, last_name`,
+      ORDER BY suspended, first_name, last_name`,
     );
     students.value = data;
   }catch(err){

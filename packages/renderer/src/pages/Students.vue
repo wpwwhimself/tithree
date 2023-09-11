@@ -9,15 +9,25 @@ import Loader from "../components/Loader.vue";
 
 const router = useRouter();
 const students = ref([] as Student[]);
+const students_suspended = ref([] as Student[]);
 const def_price = ref(0);
 
 onMounted(async () => {
   //students list
   try{
     const data = await window.api.executeQuery(
-      "SELECT * FROM students ORDER BY first_name, last_name"
+      "SELECT * FROM students WHERE suspended = 0 ORDER BY first_name, last_name"
     );
     students.value = data;
+  }catch(err){
+    console.error(err);
+  }
+  //suspended students list
+  try{
+    const data = await window.api.executeQuery(
+      "SELECT * FROM students WHERE suspended = 1 ORDER BY first_name, last_name"
+    );
+    students_suspended.value = data;
   }catch(err){
     console.error(err);
   }
@@ -51,6 +61,27 @@ const handleDelete = async (student_id: number) => {
     console.error(err);
   }
 };
+
+const handleSuspend = async (student_id: number, value: 1 | 0) => {
+  if(!confirm("Na pewno?")) return;
+
+  try{
+    const [query, params] = [
+      `UPDATE students SET suspended = ? WHERE id = ?`,
+      [value, student_id]
+    ];
+    await window.api.executeQuery(query, params);
+    router.push({
+      name: "ActionSummary",
+      params: {
+        action: `Uczeń ${value ? "zawieszony" : "przywrócony"}`,
+        target: "Students",
+      }
+    });
+  }catch(err){
+    console.error(err);
+  }
+};
 </script>
 
 <template>
@@ -64,6 +95,8 @@ const handleDelete = async (student_id: number) => {
     Wyszarzone kwoty w stawkach oznaczają, że uczeń został zapisany z domyślną stawką (patrz ustawienia).
     Pseudonimy są wykorzystywane do integracji z kalendarzem i identyfikują ucznia.
   </p>
+
+  <h1>Uczniowie aktualni</h1>
 
   <template v-if="students">
     <table v-if="students.length" class="rounded">
@@ -87,6 +120,8 @@ const handleDelete = async (student_id: number) => {
           <td class="flex-right action-buttons">
             <JumpButton title="Edytuj" icon="pencil" :to="{name: 'StudentsMod', params: {id: student.id}}"></JumpButton>
             <Button title="Usuń" icon="trash" @click="handleDelete(student.id)"></Button>
+            <Button v-if="!student.suspended" title="Zawieś" icon="anchor" @click="handleSuspend(student.id, 1)"></Button>
+            <Button v-else title="Przywróć" icon="share-from-square" @click="handleSuspend(student.id, 0)"></Button>
           </td>
         </tr>
       </tbody>
@@ -102,6 +137,54 @@ const handleDelete = async (student_id: number) => {
     </table>
     <p v-else>
       Lista jest pusta. Utwórz nowego ucznia przyciskiem powyżej.
+    </p>
+  </template>
+  <Loader v-else />
+
+  <h1>Uczniowie zawieszeni</h1>
+  <p class="ghost">
+    Uczniowie oznaczeni jako zawieszeni są przesuwani na koniec listy.
+  </p>
+
+  <template v-if="students_suspended">
+    <table v-if="students_suspended.length" class="rounded">
+      <thead>
+        <tr>
+          <th>Imię i nazwisko</th>
+          <th>Pseudonim</th>
+          <th>Stawka</th>
+          <th>Telefon</th>
+          <th>Notatka</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="student in students_suspended" :key="student.id">
+          <td>{{ student.first_name }} {{ student.last_name }}</td>
+          <td>{{ student.nickname || "–" }}</td>
+          <td :class="{ ghost: (def_price == student.price) }">{{ $toPln(student.price) }}</td>
+          <td>{{ student.phone || "–" }}</td>
+          <td>{{ student.note || "–" }}</td>
+          <td class="flex-right action-buttons">
+            <JumpButton title="Edytuj" icon="pencil" :to="{name: 'StudentsMod', params: {id: student.id}}"></JumpButton>
+            <Button title="Usuń" icon="trash" @click="handleDelete(student.id)"></Button>
+            <Button v-if="!student.suspended" title="Zawieś" icon="anchor" @click="handleSuspend(student.id, 1)"></Button>
+            <Button v-else title="Przywróć" icon="share-from-square" @click="handleSuspend(student.id, 0)"></Button>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="5"></th>
+          <th>
+            <fai :icon="['fas', 'calculator']" title="Liczba wyników" />
+            {{ students_suspended.length }}
+          </th>
+        </tr>
+      </tfoot>
+    </table>
+    <p v-else>
+      Lista jest pusta.
     </p>
   </template>
   <Loader v-else />
