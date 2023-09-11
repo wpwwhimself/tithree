@@ -55,19 +55,18 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
   })
 
   // grouping into days
-  const daysAhead = 6
-  for(let i = 0; i <= daysAhead; i++){
-    let cur_date = moment().add(i, "day");
+  for(let i = 0; i <= 6; i++){
+    let start_date = (moment().week() == moment().day(1 - 7).week()) ? moment().day(i + 1 - 7) : moment().day(i + 1);
     days.value.push({
-      date: cur_date,
-      events: events.value.filter(el => el.date == cur_date.format("YYYY-MM-DD")),
+      date: start_date,
+      events: events.value.filter(el => el.date == start_date.format("YYYY-MM-DD")),
     });
   }
 })
 </script>
 
 <template>
-  <PageHeader title="Sesje w najbliższym tygodniu">
+  <PageHeader title="Podgląd tygodnia">
     <JumpButton :to="{name: 'EventMod'}" icon="plus">Nowe zdarzenie</JumpButton>
   </PageHeader>
 
