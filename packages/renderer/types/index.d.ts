@@ -20,6 +20,7 @@ export interface Session{
   session_count?: number,
   session_time?: number,
   session_value?: number,
+  session_value_weekly?: number,
 }
 export interface Student{
   id: number,

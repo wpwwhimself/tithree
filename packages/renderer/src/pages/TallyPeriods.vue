@@ -33,7 +33,7 @@ onMounted(async () => {
         ) as session_value
       FROM sessions
       GROUP BY 1
-      ORDER BY 1 DESC`
+      ORDER BY 1 ASC`
     );
     months.value = data;
 
@@ -63,7 +63,7 @@ onMounted(async () => {
 
   <template v-if="months">
     <template v-if="months.length">
-      <ColPlot :data="months.slice(0, 12)" :axes="['id', 'session_value']" :as-pln="true" :flip="true"></ColPlot>
+      <ColPlot :data="months.slice(0, 12)" :axes="['id', 'session_value']" :as-pln="true"></ColPlot>
 
       <table class="rounded">
         <thead>
@@ -72,6 +72,7 @@ onMounted(async () => {
             <th>Sesje</th>
             <th>Czas</th>
             <th>Suma</th>
+            <th>Średnia tyg.</th>
           </tr>
         </thead>
         <tbody>
@@ -80,6 +81,7 @@ onMounted(async () => {
             <td>{{ month.session_count }}</td>
             <td>{{ month.session_time }} h</td>
             <td>{{ $toPln(month.session_value) }}</td>
+            <td>{{ $toPln(month.session_value! / 4) }}</td>
           </tr>
         </tbody>
       </table>
