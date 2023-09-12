@@ -5,10 +5,13 @@ import PageHeader from "../components/PageHeader.vue";
 import { useRoute } from "vue-router";
 import { Student, Session } from "../../types";
 import Loader from "../components/Loader.vue";
+import moment from "moment";
 
 const route = useRoute();
 const student_id = +route.params.id;
 const report_data = ref([] as (Student & Session)[]);
+const tally_from = ref("");
+const tally_to = ref("");
 
 let title: string;
 
@@ -41,11 +44,27 @@ onMounted(async () => {
       FROM sessions
         JOIN students ON student_id = students.id
       WHERE student_id = ?
+        AND date(session_date) >= (SELECT date(value) FROM settings WHERE name = 'tally_from')
+        AND date(session_date) <= (SELECT date(value) FROM settings WHERE name = 'tally_to')
       GROUP BY month
       ORDER BY month DESC`,
       [student_id]
     );
     report_data.value = data;
+  }catch(err){
+    console.error(err);
+  }
+
+  //tally from/to
+  try{
+    const data = await window.api.getSetting("tally_from");
+    tally_from.value = data.value;
+  }catch(err){
+    console.error(err);
+  }
+  try{
+    const data = await window.api.getSetting("tally_to");
+    tally_to.value = data.value;
   }catch(err){
     console.error(err);
   }
@@ -62,6 +81,11 @@ onMounted(async () => {
   </p>
 
   <template v-if="report_data">
+    <p v-if="tally_from && tally_to">
+      Zestawienie generowane jest na podstawie wpisów od {{ moment(tally_from).format("D.MM.YYYY") }} do {{ moment(tally_to).format("D.MM.YYYY") }}.
+      Zakres tych dat możesz zmienić w ustawieniach.
+    </p>
+
     <table v-if="report_data.length" class="rounded">
       <thead>
         <tr>

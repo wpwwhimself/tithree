@@ -86,6 +86,8 @@ const queries = [
     ("default_session_duration", "Domyślna długość sesji [h]", 1),
     ("price_factor_below_1", "Mnożnik stawki dla sesji poniżej 1 h", 1.0666667),
     ("student_inactive_days", "Powyżej ilu dni braku wpisów uczeń jest uznawany za nieaktywnego", 60),
+    ("tally_from", "Od jakiego dnia mają być zliczane wartości w podliczeniach", "2020-01-01"),
+    ("tally_to", "Do jakiego dnia mają być zliczane wartości w podliczeniach", "9999-12-31"),
     ("accent_color", "Kolor wiodący aplikacji", "256, 69%, 69%"),
     ("dark_mode", "Tryb ciemny", 0),
     ("google_calendar_name", "Nazwa kalendarza Google do integracji", "")

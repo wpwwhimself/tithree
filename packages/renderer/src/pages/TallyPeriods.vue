@@ -6,8 +6,11 @@ import SubPanel from "../components/SubPanel.vue";
 import ColPlot from "../components/ColPlot.vue";
 import { Session } from "../../types";
 import Loader from "../components/Loader.vue";
+import moment from "moment";
 
 const months = ref([] as Session[]);
+const tally_from = ref("");
+const tally_to = ref("");
 let totals = {
   count: 0,
   time: 0,
@@ -32,6 +35,8 @@ onMounted(async () => {
           END
         ) as session_value
       FROM sessions
+      WHERE date(session_date) >= (SELECT date(value) FROM settings WHERE name = 'tally_from')
+        AND date(session_date) <= (SELECT date(value) FROM settings WHERE name = 'tally_to')
       GROUP BY 1
       ORDER BY 1 ASC`
     );
@@ -48,6 +53,20 @@ onMounted(async () => {
   }catch(err){
     console.error(err);
   }
+
+  //tally from/to
+  try{
+    const data = await window.api.getSetting("tally_from");
+    tally_from.value = data.value;
+  }catch(err){
+    console.error(err);
+  }
+  try{
+    const data = await window.api.getSetting("tally_to");
+    tally_to.value = data.value;
+  }catch(err){
+    console.error(err);
+  }
 });
 </script>
 
@@ -57,11 +76,16 @@ onMounted(async () => {
   </PageHeader>
 
   <p class="ghost">
-    Poniżej znajdziesz zestawienie przychodów na podstawie całej dostępnej historii,
+    Poniżej znajdziesz zestawienie przychodów na podstawie dostępnej historii,
     z podziałem na miesiące.
   </p>
 
   <template v-if="months">
+    <p v-if="tally_from && tally_to">
+      Zestawienie generowane jest na podstawie wpisów od {{ moment(tally_from).format("D.MM.YYYY") }} do {{ moment(tally_to).format("D.MM.YYYY") }}.
+      Zakres tych dat możesz zmienić w ustawieniach.
+    </p>
+
     <template v-if="months.length">
       <ColPlot :data="months.slice(0, 12)" :axes="['id', 'session_value']" :as-pln="true"></ColPlot>
 

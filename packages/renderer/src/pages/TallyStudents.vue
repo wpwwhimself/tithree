@@ -4,8 +4,11 @@ import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
 import { Student, Session } from "../../types";
 import Loader from "../components/Loader.vue";
+import moment from "moment";
 
 const students = ref([] as (Student & Session)[]);
+const tally_from = ref("");
+const tally_to = ref("");
 
 onMounted(async () => {
   try{
@@ -23,11 +26,27 @@ onMounted(async () => {
         ) as session_value
       FROM students
         LEFT JOIN sessions ON student_id = students.id
+      WHERE date(session_date) >= (SELECT date(value) FROM settings WHERE name = 'tally_from')
+        AND date(session_date) <= (SELECT date(value) FROM settings WHERE name = 'tally_to')
       GROUP BY students.id
       HAVING COUNT(sessions.id) > 0
       ORDER BY students.suspended, students.first_name, students.last_name`
     );
     students.value = data;
+  }catch(err){
+    console.error(err);
+  }
+
+  //tally from/to
+  try{
+    const data = await window.api.getSetting("tally_from");
+    tally_from.value = data.value;
+  }catch(err){
+    console.error(err);
+  }
+  try{
+    const data = await window.api.getSetting("tally_to");
+    tally_to.value = data.value;
   }catch(err){
     console.error(err);
   }
@@ -45,6 +64,11 @@ onMounted(async () => {
   </p>
 
   <template v-if="students">
+    <p v-if="tally_from && tally_to">
+      Zestawienie generowane jest na podstawie wpisów od {{ moment(tally_from).format("D.MM.YYYY") }} do {{ moment(tally_to).format("D.MM.YYYY") }}.
+      Zakres tych dat możesz zmienić w ustawieniach.
+    </p>
+
     <table v-if="students.length" class="rounded">
       <thead>
         <tr>
