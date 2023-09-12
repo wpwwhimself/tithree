@@ -17,6 +17,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       'calendar-events',
       "calendar-new-event",
       "calendar-delete-event",
+      "reveal-database",
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data)

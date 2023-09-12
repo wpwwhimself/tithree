@@ -2,7 +2,9 @@
 import { ref, onMounted } from "vue";
 import PageHeader from "../components/PageHeader.vue";
 import Input from "../components/Input.vue";
+import Button from "../components/Button.vue";
 import { Setting } from "../../types";
+import { shell } from "electron";
 
 const settings = ref({} as Setting[]);
 
@@ -28,6 +30,10 @@ const updateSetting = async (name: string, val: string) => {
     console.error(err);
   }
 };
+
+const openDbFolder = () => {
+  window.ipcRenderer.send("reveal-database");
+}
 </script>
 
 <template>
@@ -60,6 +66,10 @@ const updateSetting = async (name: string, val: string) => {
     </template>
   </form>
   <h2 v-else>Wczytywanie...</h2>
+
+  <h1>Baza danych</h1>
+  <p>Plik bazy danych jest trzymany poniżej. Zabezpiecz go przed aktualizacją aplikacji.</p>
+  <Button icon="up-right-from-square" @click="openDbFolder">Otwórz</Button>
 </template>
 
 <style>

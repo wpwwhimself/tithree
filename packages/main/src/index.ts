@@ -102,6 +102,9 @@ db.serialize(() => {
   }
 });
 db.close();
+ipcMain.on("reveal-database", (ev) => {
+  shell.showItemInFolder(dbPath);
+})
 
 /**
  * Create the application window when the background process is ready.
