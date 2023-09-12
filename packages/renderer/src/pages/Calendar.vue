@@ -12,6 +12,7 @@ const days = ref<CalDay[]>([]);
 const students = ref<Student[]>([]);
 
 const DoWs = ["nd", "pn", "wt", "śr", "cz", "pt", "so"];
+const horizon = 21;
 
 const [low, high] = [8, 21];
 const unit = 1 / (high - low) * 100;
@@ -55,7 +56,7 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
   })
 
   // grouping into days
-  for(let i = 0; i <= 6; i++){
+  for(let i = 0; i <= horizon-1; i++){
     let start_date = (moment().week() == moment().day(1 - 7).week()) ? moment().day(i + 1 - 7) : moment().day(i + 1);
     days.value.push({
       date: start_date,
@@ -66,15 +67,15 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
 </script>
 
 <template>
-  <PageHeader title="Podgląd tygodnia">
+  <PageHeader title="Podgląd najbliższych dni">
     <JumpButton :to="{name: 'EventMod'}" icon="plus">Nowe zdarzenie</JumpButton>
   </PageHeader>
 
-  <div id="calendar" v-if="days.length">
-    <div class="day rounded" v-for="(day, key) in days" :key="key">
+  <div id="calendar" v-if="days.length" :style="{gridTemplateColumns: `repeat(${horizon}, 7em)`}">
+    <div class="day rounded" v-for="(day, key) in days" :key="key" :class="{today: day.date.isSame(moment(), 'days')}">
       <div class="header">
         <small>{{ DoWs[day.date.format("d") as keyof typeof DoWs] }}</small>
-        <h3>{{ day.date.format("D.MM") }}</h3>
+        <h3 :class="{accent: [0,6].includes(day.date.weekday())}">{{ day.date.format("D.MM") }}</h3>
       </div>
       <div class="events-container">
         <div class="event rounded flex-down" v-for="(event, key2) in day.events" :key="key2" :style="{
@@ -94,12 +95,11 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
 #calendar{
   overflow-x: auto;
   height: calc(100vh - 12em);
-  display: flex;
+  display: grid;
   gap: 0.5em;
 }
 .day, .legend{
   /* flex: 1; */
-  width: calc(100% / 7);
   border: 1px solid hsl(var(--bg2));
   padding: 0.5em;
   display: flex; flex-direction: column;
@@ -133,5 +133,8 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
 }
 .header h3{
   margin: 0;
+}
+.today{
+  background-color: hsla(var(--acc), 50%);
 }
 </style>
