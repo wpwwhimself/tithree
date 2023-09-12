@@ -18,6 +18,11 @@ const buttons = [
     routeName: "Calendar",
   },
   {
+    label: "Obecność",
+    icon: "table-cells-large",
+    routeName: "TimeGrid",
+  },
+  {
     label: "Sesje",
     icon: "clock-rotate-left",
     routeName: "Sessions",

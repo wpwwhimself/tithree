@@ -18,6 +18,7 @@ const page_names = {
   Settings: "Ustawienia",
   Calendar: "Kalendarz",
   EventMod: "Edycja zdarzenia",
+  TimeGrid: "Obecność",
   ActionSummary: "Gotowe!",
 };
 

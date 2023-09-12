@@ -13,6 +13,7 @@ import ActionSummary from "../pages/ActionSummary.vue";
 import HomeVue from "../pages/Home.vue";
 import CalendarVue from "../pages/Calendar.vue";
 import EventMod from "../pages/EventMod.vue";
+import TimeGridVue from "../pages/TimeGrid.vue";
 
 const routes = [
   {
@@ -79,6 +80,11 @@ const routes = [
     path: "/calendar/eventmod/:id?",
     name: "EventMod",
     component: EventMod,
+  },
+  {
+    path: "/calendar/grid/",
+    name: "TimeGrid",
+    component: TimeGridVue,
   },
   {
     path: "/action-summary/:action/:target",
