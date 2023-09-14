@@ -13,7 +13,7 @@ import JumpButton from '../components/JumpButton.vue';
 const students = ref<Student[]>([]);
 const events = ref<CalEvent[]>([]);
 const noEventsFlag = ref(false);
-const studentsToday = ref<number[]>([]);
+const lastSessions = ref<string[]>([]);
 const showLoader = ref(false);
 
 onMounted(async () => {
@@ -36,10 +36,11 @@ onMounted(async () => {
     console.error(err);
   }
 
-  // get today's sessions
+  // get last sessions
   try{
-    const data = await window.api.executeQuery(`SELECT DISTINCT student_id FROM sessions WHERE date(session_date) = date('now')`);
-    data.forEach(el => studentsToday.value.push(el.student_id));
+    const data = await window.api.executeQuery(`SELECT session_date || '_' || student_id as session_code FROM sessions WHERE date(session_date) >= date('now', '-7 day')`);
+    data.forEach(el => lastSessions.value.push(el.session_code));
+    console.log(lastSessions.value)
   }catch(err){
     console.error(err);
   }
@@ -60,7 +61,7 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
     })
   })
 
-  events.value = events.value.filter(ev => !studentsToday.value.includes(ev.student?.id!))
+  events.value = events.value.filter(ev => !lastSessions.value.includes(`${ev.date}_${ev.student?.id!}`))
 
   if(!events.value.length) noEventsFlag.value = true;
 })
