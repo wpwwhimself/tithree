@@ -4,7 +4,6 @@ import PageHeader from "../components/PageHeader.vue";
 import Input from "../components/Input.vue";
 import Button from "../components/Button.vue";
 import { Setting } from "../../types";
-import { shell } from "electron";
 
 const settings = ref({} as Setting[]);
 
@@ -59,6 +58,7 @@ const openDbFolder = () => {
         @change="(event) => updateSetting(setting.name, (+event.target.checked).toString())"
         />
       <Input v-else
+        :type="(['tally_from', 'tally_to'].includes(setting.name) ? 'date' : 'text')"
         :label="setting.desc" :value="setting.value"
         :name="setting.name"
         @change="(event) => updateSetting(setting.name, event.target.value)"
