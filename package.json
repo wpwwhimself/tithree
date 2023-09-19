@@ -1,7 +1,7 @@
 {
   "name": "tithree",
   "description": "An app for tutors to tally their time spent on tutoring",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "private": false,
   "author": {
     "email": "contact@wpww.pl",
@@ -9,12 +9,13 @@
     "url": "http://wpww.pl/"
   },
   "main": "packages/main/dist/index.cjs",
+  "license": "MIT",
   "scripts": {
     "build": "npm run build:main && npm run build:preload && npm run build:renderer",
     "build:main": "cd ./packages/main && vite build",
     "build:preload": "cd ./packages/preload && vite build",
     "build:renderer": "cd ./packages/renderer && vite build",
-    "compile": "cross-env MODE=production npm run build && electron-builder build --config .electron-builder.config.js --dir --config.asar=false",
+    "compile": "cross-env MODE=production npm run build && electron-builder build --config .electron-builder.config.js --config.asar=false",
     "test": "npm run test:main && npm run test:preload && npm run test:renderer && npm run test:e2e",
     "test:e2e": "npm run build && vitest run",
     "test:main": "vitest run -r packages/main --passWithNoTests",

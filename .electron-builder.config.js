@@ -25,5 +25,19 @@ module.exports = async function () {
     linux: {
       target: 'deb',
     },
+    appId: "Tithree",
+    win: {
+      target: ["nsis"],
+      icon: "buildResources/icon.ico"
+    },
+    nsis: {
+      oneClick: true,
+      artifactName: "Tithree_${version}_setup.${ext}",
+      uninstallDisplayName: "Tithree",
+      installerIcon: "buildResources/icon.ico",
+      uninstallerIcon: "buildResources/icon.ico",
+      license: "LICENSE",
+      allowToChangeInstallationDirectory: false
+    }
   };
 };
