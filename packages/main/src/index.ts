@@ -90,7 +90,8 @@ const queries = [
     ("tally_to", "Do jakiego dnia mają być zliczane wartości w podliczeniach", "9999-12-31"),
     ("accent_color", "Kolor wiodący aplikacji", "256, 69%, 69%"),
     ("dark_mode", "Tryb ciemny", 0),
-    ("google_calendar_name", "Nazwa kalendarza Google do integracji", "")
+    ("google_calendar_name", "Nazwa kalendarza Google do integracji", ""),
+    ("google_drive_db_backup_folder", "Nazwa folderu do kopii bazy danych na Dysku Google", "Tithree_baza_danych")
   `,
 ];
 db.serialize(() => {
@@ -174,7 +175,7 @@ if (import.meta.env.PROD) {
  */
 const CALLBACK_PORT = 9876;
 const REDIRECT_URI = `http://localhost:${CALLBACK_PORT}/google-auth`;
-const SCOPES = ['https://www.googleapis.com/auth/calendar'];
+const SCOPES = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/drive.file'];
 const TOKEN_PATH = "TOKEN.json";
 
 /**
@@ -365,5 +366,178 @@ ipcMain.on("calendar-delete-event", (ev, data) => {
     import.meta.env.VITE_GOOGLE_API_CLIENT_SECRET,
     REDIRECT_URI,
     callback
+  );
+})
+
+ipcMain.on("dbsync-get-data", (ev, data) => {
+  const {folder} = data;
+
+  const driveData = (auth: OAuth2Client) => {
+    const drive = google.drive({ version: 'v3', auth });
+
+    drive.files.list({
+      q: `mimeType='application/vnd.google-apps.folder' and name = '${folder}' and trashed = false`,
+      fields: 'files(id, name)',
+    })
+      .then(res => {
+        const folders = res.data.files;
+        if(folders?.length){
+          return folders[0].id
+        }else{
+          throw new Error("DB folder does not exist");
+        }
+      })
+      .then(folderId => drive.files.list({
+          q: `'${folderId}' in parents and trashed = false`,
+          fields: "files(id, name, modifiedTime)",
+        })
+          .then(res => res.data.files)
+      )
+      .then(res => {
+        BrowserWindow.getAllWindows()[0].webContents.send(
+          "dbsync-get-data-response",
+          res
+        )
+      })
+      .catch((err) => {
+        console.error(`DbSync fetching error: ${err.code} ${err}`);
+      });
+  }
+
+  authorize(
+    import.meta.env.VITE_GOOGLE_API_CLIENT_ID,
+    import.meta.env.VITE_GOOGLE_API_CLIENT_SECRET,
+    REDIRECT_URI,
+    driveData
+  );
+})
+
+ipcMain.on("dbsync-dump", (ev, data) => {
+  const {folder} = data;
+
+  const driveData = (auth: OAuth2Client) => {
+    const drive = google.drive({ version: 'v3', auth });
+
+    drive.files.list({
+      q: `mimeType='application/vnd.google-apps.folder' and name = '${folder}' and trashed = false`,
+      fields: 'files(id, name)',
+    })
+      .then(res => {
+        const folders = res.data.files;
+        if(folders?.length){
+          return folders[0].id
+        }else{
+          return drive.files.create({
+            requestBody: {
+              name: folder,
+              mimeType: "application/vnd.google-apps.folder",
+            },
+            fields: 'id'
+          })
+            .then(res => res.data.id)
+        }
+      })
+      .then(folderId => {
+        // upsert
+        drive.files.list({
+          q: `name = 'database.db' and '${folderId}' in parents and trashed = false`,
+          fields: `files(id, name)`,
+        }).then(res => {
+          const dbfile = fs.createReadStream(dbPath);
+
+          if(res.data.files?.length){
+            return drive.files.update({
+              fileId: res.data.files[0].id ?? "",
+              media: { body: dbfile },
+              requestBody: {
+                name: "database.db",
+              }
+            }).then(res => res.data.id)
+          }else{
+            return drive.files.create({
+              fields: `id`,
+              media: { body: dbfile },
+              requestBody: {
+                name: "database.db",
+                parents: [folderId as string],
+              },
+            }).then(res => res.data.id)
+          }
+        })
+      })
+      .then(res => {
+        BrowserWindow.getAllWindows()[0].webContents.send(
+          "dbsync-dump-response",
+          res
+        )
+      })
+      .catch((err) => {
+        console.error(`DbSync dumping error: ${err.code} ${err}`);
+      });
+  }
+
+  authorize(
+    import.meta.env.VITE_GOOGLE_API_CLIENT_ID,
+    import.meta.env.VITE_GOOGLE_API_CLIENT_SECRET,
+    REDIRECT_URI,
+    driveData
+  );
+})
+
+ipcMain.on("dbsync-restore", (ev, data) => {
+  const {folder} = data;
+
+  const driveData = (auth: OAuth2Client) => {
+    const drive = google.drive({ version: 'v3', auth });
+
+    drive.files.list({
+      q: `mimeType='application/vnd.google-apps.folder' and name = '${folder}' and trashed = false`,
+      fields: 'files(id, name)',
+    })
+      .then(res => {
+        const folders = res.data.files;
+        if(folders?.length){
+          return folders[0].id
+        }else{
+          throw new Error("DB folder does not exist");
+        }
+      })
+      .then(folderId => {
+        drive.files.list({
+          q: `name = 'database.db' and '${folderId}' in parents and trashed = false`,
+          fields: `files(id, name)`,
+        }).then(res => {
+          if(res.data.files?.length) return drive.files.get(
+              { fileId: res.data.files[0].id ?? "", alt: "media"},
+              { responseType: "stream" },
+              (err, res) => {
+                if(err) throw new Error(`Error downloading file: ${err}`);
+                else{
+                  const dest = fs.createWriteStream(dbPath);
+                  res?.data
+                    .on("end", () => {console.log("download complete")})
+                    .on("error", (err) => {throw new Error(`Error writing file: ${err}`)})
+                    .pipe(dest);
+                }
+              }
+          )
+        })
+      })
+      .then(res => {
+        BrowserWindow.getAllWindows()[0].webContents.send(
+          "dbsync-restore-response",
+          res
+        )
+      })
+      .catch((err) => {
+        console.error(`DbSync restoring error: ${err.code} ${err}`);
+      });
+  }
+
+  authorize(
+    import.meta.env.VITE_GOOGLE_API_CLIENT_ID,
+    import.meta.env.VITE_GOOGLE_API_CLIENT_SECRET,
+    REDIRECT_URI,
+    driveData
   );
 })

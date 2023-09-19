@@ -4,8 +4,20 @@ import PageHeader from "../components/PageHeader.vue";
 import Input from "../components/Input.vue";
 import Button from "../components/Button.vue";
 import { Setting } from "../../types";
+import moment, { Moment } from "moment";
+import Loader from "../components/Loader.vue";
+import { useRouter } from "vue-router";
 
 const settings = ref({} as Setting[]);
+const dbSyncLastMod = ref<Moment | null | undefined>(undefined);
+const showLoader = ref(false);
+const router = useRouter();
+
+const getDbSyncLastMod = () => {
+  window.ipcRenderer.send("dbsync-get-data", {
+    folder: settings.value.find(el => el.name === "google_drive_db_backup_folder")?.value,
+  })
+}
 
 onMounted(async () => {
   try{
@@ -15,6 +27,13 @@ onMounted(async () => {
     settings.value = data;
   }catch(err){
     console.error(err);
+  }
+
+  // dbSync
+  try{
+    getDbSyncLastMod();
+  }catch(err){
+    console.log(err);
   }
 });
 
@@ -30,12 +49,50 @@ const updateSetting = async (name: string, val: string) => {
   }
 };
 
-const openDbFolder = () => {
-  window.ipcRenderer.send("reveal-database");
-}
+const openDbFolder = () => { window.ipcRenderer.send("reveal-database", ) };
+const dbSyncDump = () => {
+  showLoader.value = true;
+  window.ipcRenderer.send("dbsync-dump", {
+    folder: settings.value.find(el => el.name === "google_drive_db_backup_folder")?.value,
+  })
+};
+const dbSyncRestore = () => {
+  showLoader.value = true;
+  window.ipcRenderer.send("dbsync-restore", {
+    folder: settings.value.find(el => el.name === "google_drive_db_backup_folder")?.value,
+  })
+};
+
+window.ipcRenderer.on("dbsync-get-data-response", (data) => {
+  dbSyncLastMod.value = (data.length) ? moment(data[0].modifiedTime) : null;
+})
+window.ipcRenderer.on("dbsync-dump-response", (data) => {
+  router.push({
+    name: "ActionSummary",
+    params: {
+      action: "Kopiowanie bazy na Dysk rozpoczęte",
+      sub: "Wkrótce Twoje dane pojawią się w chmurze",
+      target: "Settings"
+    }
+  })
+  getDbSyncLastMod();
+})
+window.ipcRenderer.on("dbsync-restore-response", (data) => {
+  router.push({
+    name: "ActionSummary",
+    params: {
+      action: "Zgrywanie bazy z Dysku rozpoczęte",
+      sub: "Wkrótce Twoja baza będzie przywrócona",
+      target: "Settings"
+    }
+  })
+})
 </script>
 
 <template>
+  <Loader mode="saving" v-if="showLoader" />
+  <template v-else>
+
   <PageHeader title="Ustawienia"></PageHeader>
 
   <p class="ghost">
@@ -68,8 +125,24 @@ const openDbFolder = () => {
   <h2 v-else>Wczytywanie...</h2>
 
   <h1>Baza danych</h1>
-  <p>Plik bazy danych jest trzymany poniżej. Zabezpiecz go przed aktualizacją aplikacji.</p>
-  <Button icon="up-right-from-square" @click="openDbFolder">Otwórz</Button>
+  <p class="ghost">
+    Aplikacja zapisuje dane w wewnętrznej bazie, dostępnej pod przyciskiem poniżej.
+    Dodatkowo istnieje możliwość tworzenia kopii zapasowej w chmurze. Ta jest trzymana na Twoim Dysku Google.
+  </p>
+  <p>Ostatnia kopia bazy danych: {{
+    (dbSyncLastMod === null)
+    ? "brak danych"
+    : (dbSyncLastMod === undefined)
+      ? "sprawdzam..."
+      : dbSyncLastMod.format("DD.MM.YYYY HH:mm:ss")
+  }}</p>
+  <div class="flex-right">
+    <Button icon="up-right-from-square" @click="openDbFolder">Otwórz lokalny plik</Button>
+    <Button icon="cloud-arrow-up" @click="dbSyncDump">Kopiuj bazę na Dysk</Button>
+    <Button icon="download" @click="dbSyncRestore">Pobierz kopię bazy z Dysku</Button>
+  </div>
+
+  </template>
 </template>
 
 <style>

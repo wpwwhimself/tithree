@@ -87,7 +87,7 @@ const routes = [
     component: TimeGridVue,
   },
   {
-    path: "/action-summary/:action/:target",
+    path: "/action-summary/:action/:target/:sub?",
     name: "ActionSummary",
     component: ActionSummary,
   },

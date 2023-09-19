@@ -18,6 +18,9 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       "calendar-new-event",
       "calendar-delete-event",
       "reveal-database",
+      "dbsync-get-data",
+      "dbsync-dump",
+      "dbsync-restore",
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data)
@@ -29,6 +32,9 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       'calendar-events-response',
       "calendar-event-new-response",
       "calendar-event-delete-response",
+      "dbsync-get-data-response",
+      "dbsync-dump-response",
+      "dbsync-restore-response",
     ]
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`
