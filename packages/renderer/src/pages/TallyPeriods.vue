@@ -16,11 +16,7 @@ let totals = {
   time: 0,
   value: 0,
 };
-let averages = {
-  count: 0,
-  time: 0,
-  value: 0,
-};
+const WEEKS_PER_MONTH = 365 / 7 / 12;
 
 onMounted(async () => {
   try{
@@ -47,9 +43,6 @@ onMounted(async () => {
       totals.time += month.session_time!;
       totals.value += month.session_value!;
     }
-    averages.count = totals.count / months.value.length;
-    averages.time = totals.time / months.value.length;
-    averages.value = totals.value / months.value.length;
   }catch(err){
     console.error(err);
   }
@@ -128,10 +121,16 @@ onMounted(async () => {
               <td>{{ $toPln(totals.value) }}</td>
             </tr>
             <tr>
-              <td>Średnie</td>
-              <td>{{ $round(averages.count) }}</td>
-              <td>{{ $round(averages.time) }} h</td>
-              <td>{{ $toPln(averages.value) }}</td>
+              <td>Średnie miesięczne</td>
+              <td>{{ $round(totals.count / months.length) }}</td>
+              <td>{{ $round(totals.time / months.length) }} h</td>
+              <td>{{ $toPln(totals.value / months.length) }}</td>
+            </tr>
+            <tr>
+              <td>Średnie tygodniowe</td>
+              <td>{{ $round(totals.count / (months.length * WEEKS_PER_MONTH)) }}</td>
+              <td>{{ $round(totals.time / (months.length * WEEKS_PER_MONTH)) }} h</td>
+              <td>{{ $toPln(totals.value / (months.length * WEEKS_PER_MONTH)) }}</td>
             </tr>
           </tbody>
         </table>
