@@ -9,6 +9,7 @@ import { useRouter } from "vue-router";
 import { Session } from "../../types";
 import moment from "moment";
 import Loader from "../components/Loader.vue";
+import { setErrorToast, setToast } from "../toastManager";
 
 const router = useRouter();
 const sessions = ref([] as Session[]);
@@ -29,7 +30,7 @@ const updateDataSet = () =>
     moment(ses.session_date).isBetween(filter_from.value, filter_to.value, undefined, "[]")
   );
 
-onMounted(async () => {
+const FETCH_DATA = async () => {
   try{
     const data = await window.api.executeQuery(
       `SELECT
@@ -45,9 +46,11 @@ onMounted(async () => {
     sessions.value = data;
     updateDataSet();
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania sesji", err)
   }
-});
+}
+
+onMounted(() => { FETCH_DATA() });
 
 const handleDelete = async (session_id: number) => {
   if(!confirm("Na pewno?")) return;
@@ -58,15 +61,10 @@ const handleDelete = async (session_id: number) => {
       [session_id]
     ];
     await window.api.executeQuery(query, params);
-    router.push({
-      name: "ActionSummary",
-      params: {
-        action: "Sesja usunięta",
-        target: "Sessions",
-      }
-    });
+    setToast("Sesja usunięta")
+    FETCH_DATA();
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd usuwania sesji", err)
   }
 };
 </script>

@@ -9,6 +9,7 @@ import Loader from '../components/Loader.vue';
 import { useRoute, useRouter } from 'vue-router';
 import Select from '../components/Select.vue';
 import moment from 'moment';
+import { setErrorToast, setToast } from '../toastManager';
 
 const [route, router] = [useRoute(), useRouter()];
 const event_id = route.params.id;
@@ -54,7 +55,7 @@ onMounted(async () => {
     );
     students.value = data;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania uczniów", err)
   }
 });
 
@@ -78,8 +79,6 @@ const handleSubmit = async (e: Event) => {
     recurrence: isRecurring.value ? ["RRULE:FREQ=WEEKLY;COUNT=30"] : undefined,
   }
 
-  console.log(event.recurrence);
-
   try{
     if(!is_update){
       const cal_name = await window.api.getSetting("google_calendar_name");
@@ -90,20 +89,15 @@ const handleSubmit = async (e: Event) => {
     }
   }catch(err){
     showLoader.value = false;
-    console.error(err);
+    setErrorToast("Błąd tworzenia zdarzenia w Google", err)
   }
 
 };
 
 window.ipcRenderer.on("calendar-event-new-response", (res_code) => {
   if(res_code != 200) return;
-  router.push({
-    name: "ActionSummary",
-    params: {
-      action: (is_update) ? "Zdarzenie poprawione" : "Sesja zaplanowana",
-      target: "Calendar"
-    }
-  });
+  setToast((is_update) ? "Zdarzenie poprawione" : "Sesja zaplanowana")
+  router.push({ name: "Calendar" });
 })
 
 const updateRef = (target: string, val: string | boolean) => {

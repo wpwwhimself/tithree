@@ -3,6 +3,7 @@ import NavBar from "./components/NavBar.vue";
 import Footer from "./components/Footer.vue";
 import {ref, onBeforeMount} from "vue";
 import { useRoute } from "vue-router";
+import Toast from "./components/Toast.vue";
 const route = useRoute();
 const APP_NAME = import.meta.env.VITE_APP_NAME;
 const page_names = {
@@ -44,6 +45,7 @@ onBeforeMount(async () => {
       </template>
     </div>
     <div id="split" class="flex-right">
+      <Toast />
       <NavBar />
       <div id="wrapper">
         <router-view />

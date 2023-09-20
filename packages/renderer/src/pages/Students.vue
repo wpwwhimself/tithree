@@ -6,13 +6,14 @@ import PageHeader from "../components/PageHeader.vue";
 import { useRouter } from "vue-router";
 import { Student } from "../../types";
 import Loader from "../components/Loader.vue";
+import { setToast, setErrorToast } from "../toastManager"
 
 const router = useRouter();
 const students = ref([] as Student[]);
 const students_suspended = ref([] as Student[]);
 const def_price = ref(0);
 
-onMounted(async () => {
+const FETCH_DATA = async () => {
   //students list
   try{
     const data = await window.api.executeQuery(
@@ -20,7 +21,7 @@ onMounted(async () => {
     );
     students.value = data;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania uczniów", err)
   }
   //suspended students list
   try{
@@ -29,7 +30,7 @@ onMounted(async () => {
     );
     students_suspended.value = data;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania uczniów", err)
   }
 
   //default price for highlighting purposes
@@ -37,9 +38,11 @@ onMounted(async () => {
     const data = await window.api.getSetting("default_student_price");
     def_price.value = +data.value;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania ustawień", err)
   }
-});
+}
+
+onMounted(() => { FETCH_DATA() });
 
 const handleDelete = async (student_id: number) => {
   if(!confirm("Na pewno?")) return;
@@ -50,36 +53,24 @@ const handleDelete = async (student_id: number) => {
       [student_id]
     ];
     await window.api.executeQuery(query, params);
-    router.push({
-      name: "ActionSummary",
-      params: {
-        action: "Uczeń usunięty",
-        target: "Students",
-      }
-    });
+    setToast(`Uczeń usunięty`)
+    FETCH_DATA();
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd usuwania ucznia", err)
   }
 };
 
 const handleSuspend = async (student_id: number, value: 1 | 0) => {
-  if(!confirm("Na pewno?")) return;
-
   try{
     const [query, params] = [
       `UPDATE students SET suspended = ? WHERE id = ?`,
       [value, student_id]
     ];
     await window.api.executeQuery(query, params);
-    router.push({
-      name: "ActionSummary",
-      params: {
-        action: `Uczeń ${value ? "zawieszony" : "przywrócony"}`,
-        target: "Students",
-      }
-    });
+    setToast(`${value ? "Zawieszono" : "Przywrócono"} ucznia: ${student_id}`)
+    FETCH_DATA();
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd zmiany statusu ucznia", err)
   }
 };
 </script>

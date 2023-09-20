@@ -7,6 +7,7 @@ import ColPlot from "../components/ColPlot.vue";
 import { Session } from "../../types";
 import Loader from "../components/Loader.vue";
 import moment from "moment";
+import { setErrorToast } from "../toastManager";
 
 const months = ref([] as Session[]);
 const tally_from = ref("");
@@ -44,7 +45,7 @@ onMounted(async () => {
       totals.value += month.session_value!;
     }
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania statystyk", err)
   }
 
   //tally from/to
@@ -52,13 +53,13 @@ onMounted(async () => {
     const data = await window.api.getSetting("tally_from");
     tally_from.value = data.value;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania ustawień", err)
   }
   try{
     const data = await window.api.getSetting("tally_to");
     tally_to.value = data.value;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania ustawień", err)
   }
 });
 </script>

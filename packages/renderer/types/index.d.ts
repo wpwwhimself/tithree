@@ -45,3 +45,11 @@ export interface CalDay{
   date: Moment,
   events?: CalEvent[],
 }
+
+export interface ToastData{
+  visible?: boolean,
+  title: string,
+  subtitle?: string,
+  icon?: string,
+  error: boolean,
+}

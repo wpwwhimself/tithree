@@ -5,6 +5,7 @@ import PageHeader from "../components/PageHeader.vue";
 import { Student, Session } from "../../types";
 import Loader from "../components/Loader.vue";
 import moment from "moment";
+import { setErrorToast } from "../toastManager";
 
 const students = ref([] as (Student & Session)[]);
 const tally_from = ref("");
@@ -34,7 +35,7 @@ onMounted(async () => {
     );
     students.value = data;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania statystyk", err)
   }
 
   //tally from/to
@@ -42,13 +43,13 @@ onMounted(async () => {
     const data = await window.api.getSetting("tally_from");
     tally_from.value = data.value;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania ustawień", err)
   }
   try{
     const data = await window.api.getSetting("tally_to");
     tally_to.value = data.value;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania ustawień", err)
   }
 });
 </script>

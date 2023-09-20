@@ -30,6 +30,8 @@ body{
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  overflow: hidden;
 }
 h1, h2, h3, .script{
   font-family: "Dancing Script", cursive;
@@ -112,3 +114,8 @@ tfoot th{
 }
 
 .animate{ transition: all 0.2s ease-out; }
+
+.clickable{
+  cursor: pointer;
+  user-select: none;
+}

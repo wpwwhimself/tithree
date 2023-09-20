@@ -6,6 +6,7 @@ import PageHeader from "../components/PageHeader.vue";
 import Input from "../components/Input.vue";
 import { Student } from "../../types";
 import Loader from "../components/Loader.vue";
+import { setErrorToast, setToast } from "../toastManager";
 
 const [route, router] = [useRoute(), useRouter()];
 const student_id = +route.params.id;
@@ -28,7 +29,7 @@ onMounted(async () => {
       );
       student.value = data[0];
     }catch(err){
-      console.error(err);
+      setErrorToast("Błąd wczytywania ucznia", err)
     }
 
     title = `${student.value.first_name} ${student.value.last_name} | Edycja ucznia`;
@@ -43,7 +44,7 @@ onMounted(async () => {
       const data = await window.api.getSetting('default_student_price');
       price.value = data.value;
     }catch(err){
-      console.error(err);
+      setErrorToast("Błąd wczytywania ustawień", err)
     }
   }
 });
@@ -64,15 +65,10 @@ const handleSubmit = async (e: Event) => {
           [first_name.value, last_name.value, nickname.value || null, price.value, phone.value || null, note.value || null, student_id]
         ];
     await window.api.executeQuery(query, params);
-    router.push({
-      name: "ActionSummary",
-      params: {
-        action: (is_update) ? "Dane ucznia poprawione" : "Uczeń dodany",
-        target: "Students"
-      }
-    });
+    setToast((is_update) ? "Dane ucznia poprawione" : "Uczeń dodany")
+    router.push({ name: "Students" });
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd zapisu danych", err)
   }
 };
 

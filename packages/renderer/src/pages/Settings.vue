@@ -7,6 +7,7 @@ import { Setting } from "../../types";
 import moment, { Moment } from "moment";
 import Loader from "../components/Loader.vue";
 import { useRouter } from "vue-router";
+import { setErrorToast, setToast } from "../toastManager";
 
 const settings = ref({} as Setting[]);
 const dbSyncLastMod = ref<Moment | null | undefined>(undefined);
@@ -26,14 +27,14 @@ onMounted(async () => {
     );
     settings.value = data;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania ustawień", err)
   }
 
   // dbSync
   try{
     getDbSyncLastMod();
   }catch(err){
-    console.log(err);
+    setErrorToast("Błąd wczytywania informacji o kopii zapasowej", err)
   }
 });
 
@@ -43,9 +44,9 @@ const updateSetting = async (name: string, val: string) => {
       `UPDATE settings SET value = ? WHERE name = ?`,
       [val, name]
     );
-    console.log(`${name} changed to ${val}`);
+    setToast("Zapisano", false, undefined, `${name} zmieniono na ${val}`);
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd zapisu ustawień", err)
   }
 };
 
@@ -67,25 +68,13 @@ window.ipcRenderer.on("dbsync-get-data-response", (data) => {
   dbSyncLastMod.value = (data.length) ? moment(data[0].modifiedTime) : null;
 })
 window.ipcRenderer.on("dbsync-dump-response", (data) => {
-  router.push({
-    name: "ActionSummary",
-    params: {
-      action: "Kopiowanie bazy na Dysk rozpoczęte",
-      sub: "Wkrótce Twoje dane pojawią się w chmurze",
-      target: "Settings"
-    }
-  })
+  setToast("Kopiowanie bazy na Dysk rozpoczęte", false, undefined, "Wkrótce Twoje dane pojawią się w chmurze")
+  showLoader.value = false;
   getDbSyncLastMod();
 })
 window.ipcRenderer.on("dbsync-restore-response", (data) => {
-  router.push({
-    name: "ActionSummary",
-    params: {
-      action: "Zgrywanie bazy z Dysku rozpoczęte",
-      sub: "Wkrótce Twoja baza będzie przywrócona",
-      target: "Settings"
-    }
-  })
+  setToast("Zgrywanie bazy z Dysku rozpoczęte", false, undefined, "Wkrótce Twoja baza będzie przywrócona")
+  showLoader.value = false;
 })
 </script>
 

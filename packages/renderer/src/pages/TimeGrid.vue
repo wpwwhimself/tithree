@@ -7,6 +7,7 @@ import { Session, Student } from 'types';
 import moment, { Moment } from 'moment';
 import SubPanel from '../components/SubPanel.vue';
 import Input from '../components/Input.vue';
+import { setErrorToast } from '../toastManager';
 
 const students = ref([] as Student[]);
 const sessions = ref([] as Session[]);
@@ -48,7 +49,7 @@ onMounted(async () => {
     students.value = data;
     updateDataSet();
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania uczniów", err)
   }
 
   //sessions
@@ -60,7 +61,7 @@ onMounted(async () => {
     );
     sessions.value = data;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania sesji", err)
   }
 
   updateDataSet();

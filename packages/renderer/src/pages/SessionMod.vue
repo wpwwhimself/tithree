@@ -7,6 +7,7 @@ import Input from "../components/Input.vue";
 import Select from "../components/Select.vue";
 import moment from "moment";
 import { SelectOption, Session } from "../../types";
+import { setErrorToast, setToast } from "../toastManager";
 
 const [route, router] = [useRoute(), useRouter()];
 const session_id = +route.params.id;
@@ -36,7 +37,7 @@ onMounted(async () => {
     );
     students.value = data;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania uczniów", err)
   }
 
   // load session data
@@ -53,7 +54,7 @@ onMounted(async () => {
       );
       session.value = data[0];
     }catch(err){
-      console.error(err);
+      setErrorToast("Błąd wczytywania danych sesji", err)
     }
 
     title = `${session.value.session_date} ${session.value.student_name} | Edycja sesji`;
@@ -66,7 +67,7 @@ onMounted(async () => {
       const data = await window.api.getSetting("default_session_duration");
       duration.value = data.value;
     }catch(err){
-      console.error(err);
+      setErrorToast("Błąd wczytywania ustawień", err)
     }
   }
 });
@@ -87,15 +88,10 @@ const handleSubmit = async (e: Event) => {
           [student_id.value, session_date.value, duration.value, price.value, session_id]
         ];
     await window.api.executeQuery(query, params);
-    router.push({
-      name: "ActionSummary",
-      params: {
-        action: (is_update) ? "Dane sesji poprawione" : "Sesja dodana",
-        target: "Sessions"
-      }
-    });
+    setToast((is_update) ? "Dane sesji poprawione" : "Sesja dodana")
+    router.push({ name: "Sessions" });
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd aktualizacji danych", err)
   }
 };
 

@@ -9,6 +9,7 @@ import Button from '../components/Button.vue';
 import BigSplash from '../components/BigSplash.vue';
 import router from '../router';
 import JumpButton from '../components/JumpButton.vue';
+import { setErrorToast, setToast } from '../toastManager';
 
 const students = ref<Student[]>([]);
 const events = ref<CalEvent[]>([]);
@@ -16,7 +17,7 @@ const noEventsFlag = ref(false);
 const lastSessions = ref<string[]>([]);
 const showLoader = ref(false);
 
-onMounted(async () => {
+const FETCH_DATA = async () => {
   // get events
   try{
     const cal_name = await window.api.getSetting("google_calendar_name");
@@ -25,7 +26,7 @@ onMounted(async () => {
       mode: "today"
     });
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania zdarzeń", err)
   }
 
   // get students
@@ -33,20 +34,23 @@ onMounted(async () => {
     const data = await window.api.executeQuery(`SELECT * FROM students`);
     students.value = data;
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania uczniów", err)
   }
 
   // get last sessions
   try{
     const data = await window.api.executeQuery(`SELECT session_date || '_' || student_id as session_code FROM sessions WHERE date(session_date) >= date('now', '-7 day')`);
     data.forEach(el => lastSessions.value.push(el.session_code));
-    console.log(lastSessions.value)
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd wczytywania sesji", err)
   }
-});
+}
+
+onMounted(async () => { FETCH_DATA() });
 
 window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Event[]) => {
+  events.value = [];
+
   // distilling events
   data.forEach(item => {
     const student = students.value.find(st => st.nickname == item.summary);
@@ -67,13 +71,9 @@ window.ipcRenderer.on("calendar-events-response", (data: calendar_v3.Schema$Even
 })
 window.ipcRenderer.on("calendar-event-delete-response", (res_code) => {
   if(res_code >= 300) return;
-  router.push({
-    name: "ActionSummary",
-    params: {
-      action: "Zdarzenie usunięte z kalendarza",
-      target: "Home"
-    }
-  });
+  showLoader.value = false;
+  setToast("Zdarzenie usunięte z kalendarza")
+  FETCH_DATA();
 })
 
 const finalizeSession = async (date: string, student: Student, duration: number) => {
@@ -83,15 +83,10 @@ const finalizeSession = async (date: string, student: Student, duration: number)
       [student.id, date, duration, student.price]
     ];
     await window.api.executeQuery(query, params);
-    router.push({
-      name: "ActionSummary",
-      params: {
-        action: "Sesja dodana",
-        target: "Home",
-      }
-    });
+    setToast("Sesja dodana")
+    FETCH_DATA();
   }catch(err){
-    console.error(err);
+    setErrorToast("Błąd zatwierdzania sesji", err)
   }
 };
 const deleteSession = async (eventId: string) => {
@@ -106,7 +101,7 @@ const deleteSession = async (eventId: string) => {
     });
   }catch(err){
     showLoader.value = false;
-    console.error(err);
+    setErrorToast("Błąd usuwania zdarzenia z Google", err)
   }
 
 };
