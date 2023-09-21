@@ -10,6 +10,14 @@ import { OAuth2Client } from 'google-auth-library';
 import * as http from "http";
 import * as url from "url";
 
+const setToast = (title: string, error = false, comment?: any) => {
+  BrowserWindow.getAllWindows()[0].webContents.send("toast-pop", JSON.stringify({
+    title: title,
+    error: error,
+    subtitle: comment,
+  }))
+}
+
 /**
  * Prevent electron from running multiple instances.
  */
@@ -297,10 +305,13 @@ ipcMain.on("calendar-events", (event, data) => {
         )
       })
       .catch((err) => {
-        console.error(`Calendar fetching error: ${err.code} ${err}`);
+        setToast("Nie udało się uruchomić kalendarza", true, err.message);
         if(err.code == 400 || err.code == 401){
           fs.unlink(TOKEN_PATH, (err) => {
-            if(err) console.error("Could not remove token...");
+            if(err){
+              setToast("Nie udało się wyczyścić tokena Google", true, err.message)
+              console.error("Could not remove token...");
+            }
           });
           app.exit();
         }
@@ -400,7 +411,7 @@ ipcMain.on("dbsync-get-data", (ev, data) => {
         )
       })
       .catch((err) => {
-        console.error(`DbSync fetching error: ${err.code} ${err}`);
+        setToast("Nie udało się sprawdzić Dysku", true, err.message);
       });
   }
 
@@ -472,7 +483,7 @@ ipcMain.on("dbsync-dump", (ev, data) => {
         )
       })
       .catch((err) => {
-        console.error(`DbSync dumping error: ${err.code} ${err}`);
+        setToast("Nie udało się wgrać bazy na Dysk", true, err.message)
       });
   }
 
@@ -515,7 +526,9 @@ ipcMain.on("dbsync-restore", (ev, data) => {
                 else{
                   const dest = fs.createWriteStream(dbPath);
                   res?.data
-                    .on("end", () => {console.log("download complete")})
+                    .on("end", () => {
+                      setToast("Baza danych pobrana")
+                    })
                     .on("error", (err) => {throw new Error(`Error writing file: ${err}`)})
                     .pipe(dest);
                 }
@@ -530,7 +543,7 @@ ipcMain.on("dbsync-restore", (ev, data) => {
         )
       })
       .catch((err) => {
-        console.error(`DbSync restoring error: ${err.code} ${err}`);
+        setToast("Nie udało się pobrać bazy z Dysku", true, err.message)
       });
   }
 

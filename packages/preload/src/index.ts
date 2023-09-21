@@ -35,6 +35,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       "dbsync-get-data-response",
       "dbsync-dump-response",
       "dbsync-restore-response",
+      "toast-pop",
     ]
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`

@@ -4,6 +4,8 @@ import Footer from "./components/Footer.vue";
 import {ref, onBeforeMount} from "vue";
 import { useRoute } from "vue-router";
 import Toast from "./components/Toast.vue";
+import { ToastData } from "types";
+import { setErrorToast, setToast } from "./toastManager";
 const route = useRoute();
 const APP_NAME = import.meta.env.VITE_APP_NAME;
 const page_names = {
@@ -32,6 +34,12 @@ onBeforeMount(async () => {
 
   data = await window.api.getSetting("dark_mode");
   theme.value = !!(+data.value) ? "dark" : "light";
+})
+
+window.ipcRenderer.on("toast-pop", (data) => {
+  const toast: ToastData = JSON.parse(data)
+  if(toast.error) setErrorToast(toast.title, toast.subtitle);
+  else setToast(toast.title, false, undefined, toast.subtitle);
 })
 </script>
 

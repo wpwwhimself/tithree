@@ -48,6 +48,6 @@ option{
   background-color: hsl(var(--bg1));
 }
 option.ghost{
-  color: rgba(0, 0, 0, 0.3);
+  color: hsla(var(--fg), 0.3);
 }
 </style>
