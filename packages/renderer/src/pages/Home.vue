@@ -131,10 +131,12 @@ const deleteSession = async (eventId: string) => {
           <td>{{ event.startTime.format("H:mm") }}, {{ event.duration }} h</td>
           <td v-if="event.student">{{ event.student.first_name}} {{event.student.last_name}}</td>
             <td v-else class="ghost">{{ event.title }} <i>(dodaj pseudonim)</i></td>
-          <td class="flex-right action-buttons">
-            <Button v-if="event.student" title="Wykonaj sesję" icon="check" @click="finalizeSession(event.date, event.student as Student, event.duration)"></Button>
-            <JumpButton v-else :to="{name: 'Students'}" title="Lista uczniów" icon="user-pen"></JumpButton>
-            <Button title="Odrzuć sesję" icon="xmark" @click="deleteSession(event.eventId!)"></Button>
+          <td>
+            <div class="flex-right action-buttons">
+              <Button v-if="event.student" title="Wykonaj sesję" icon="check" @click="finalizeSession(event.date, event.student as Student, event.duration)"></Button>
+              <JumpButton v-else :to="{name: 'Students'}" title="Lista uczniów" icon="user-pen"></JumpButton>
+              <Button title="Odrzuć sesję" icon="xmark" @click="deleteSession(event.eventId!)"></Button>
+            </div>
           </td>
         </tr>
       </tbody>

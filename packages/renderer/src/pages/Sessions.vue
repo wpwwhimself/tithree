@@ -108,9 +108,11 @@ const handleDelete = async (session_id: number) => {
             <td class="ghost">{{ session.duration }}</td>
             <td class="ghost">{{ $toPln(session.price) }}</td>
             <td>{{ $toPln(session.session_value) }}</td>
-            <td class="flex-right action-buttons">
-              <JumpButton title="Edytuj" icon="pencil" :to="{name: 'SessionsMod', params: {id: session.id}}"></JumpButton>
-              <Button title="Usuń" icon="trash" @click="handleDelete(session.id)"></Button>
+            <td>
+              <div class="flex-right action-buttons">
+                <JumpButton title="Edytuj" icon="pencil" :to="{name: 'SessionsMod', params: {id: session.id}}"></JumpButton>
+                <Button title="Usuń" icon="trash" @click="handleDelete(session.id)"></Button>
+              </div>
             </td>
           </tr>
         </template>
