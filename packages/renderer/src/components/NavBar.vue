@@ -63,6 +63,7 @@ nav{
   width: 3em;
   overflow: hidden;
   align-items: start;
+  box-shadow: 0 0 15px hsla(var(--shadow));
 }
 nav:hover{ width: 10em }
 h1 a{

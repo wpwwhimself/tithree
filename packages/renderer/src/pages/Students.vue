@@ -131,14 +131,14 @@ const handleSuspend = async (student_id: number, value: number) => {
           <td>{{ student.phone || "–" }}</td>
           <td>{{ student.note || "–" }}</td>
           <td>
-            <div class="flex-right action-buttons">
+            <div class="flex-right h-center action-buttons">
               <Button v-if="level != 0" title="Wysoki" icon="arrow-up" @click="handleSuspend(student.id, 0)"></Button>
               <Button v-if="level != 1" title="Średni" icon="minus" @click="handleSuspend(student.id, 1)"></Button>
               <Button v-if="level != 2" title="Niski" icon="arrow-down" @click="handleSuspend(student.id, 2)"></Button>
             </div>
           </td>
           <td>
-            <div class="flex-right action-buttons">
+            <div class="flex-right h-center action-buttons">
               <JumpButton title="Edytuj" icon="pencil" :to="{name: 'StudentsMod', params: {id: student.id}}"></JumpButton>
               <Button title="Usuń" icon="trash" @click="handleDelete(student.id)"></Button>
             </div>

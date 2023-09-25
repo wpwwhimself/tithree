@@ -22,6 +22,7 @@
 }
 :root{
   --acc: 256, 69%, 69%; /*rgb(150, 121, 230);*/
+  --shadow: 0, 0%, 0%, 0.5;
 }
 
 html, body, #app, #app-container{ height: 100%; }

@@ -26,6 +26,7 @@ import { toast, clearToast } from "../toastManager"
   z-index: 99;
   translate: -50% 4.5em;
   opacity: 0;
+  box-shadow: 5px 5px 15px hsla(var(--shadow));
 }
 .content{
   gap: 0;
