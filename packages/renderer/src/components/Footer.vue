@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import logo from "../assets/t3_color.svg";
+import { version } from "../../../../package.json";
 const APP_NAME = import.meta.env.VITE_APP_NAME;
 </script>
 
@@ -10,6 +11,7 @@ const APP_NAME = import.meta.env.VITE_APP_NAME;
         <h2>{{ APP_NAME }}</h2>
       </router-link>
       <p>Made by <a href="http://wpww.pl/" target="_blank">Wojciech Przybyła</a></p>
+      <p class="ghost">Wersja {{ version }}</p>
     </div>
     <!-- <router-link to="/"> -->
       <img :src="logo" :alt="APP_NAME" />
