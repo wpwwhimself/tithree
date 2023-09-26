@@ -3,22 +3,24 @@ import { toast, clearToast } from "../toastManager"
 </script>
 
 <template>
-  <div class="container rounded clickable animate flex-right v-center"
+  <div class="container rounded clickable animate"
     :class="{appear: toast.visible, error: toast.error}"
     @click="clearToast"
     >
-    <fai :icon="['fas', toast.icon || 'check']" bounce />
-    <div class="content flex-down">
-      <span>{{ toast.title }}</span>
-      <small>{{ toast.subtitle }}</small>
+    <div class="flex-right v-center">
+      <fai :icon="['fas', toast.icon || 'check']" bounce />
+      <div class="content">
+        <span>{{ toast.title }}</span>
+      </div>
     </div>
+    <small>{{ toast.subtitle }}</small>
   </div>
 </template>
 
 <style scoped>
 .container{
   position: absolute;
-  bottom: 2em;
+  bottom: 1em;
   left: 50%;
   background-color: hsl(var(--acc));
   color: black;
