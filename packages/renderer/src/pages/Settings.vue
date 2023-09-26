@@ -11,8 +11,8 @@ import { setErrorToast, setToast } from "../toastManager";
 
 const settings = ref({} as Setting[]);
 const dbSyncLastMod = ref<Moment | null | undefined>(undefined);
+const dbDriveLink = ref("");
 const showLoader = ref(false);
-const router = useRouter();
 
 const getDbSyncLastMod = () => {
   window.ipcRenderer.send("dbsync-get-data", {
@@ -50,27 +50,26 @@ const updateSetting = async (name: string, val: string) => {
   }
 };
 
-const openDbFolder = () => { window.ipcRenderer.send("reveal-database", ) };
+const openDbFolder = () => { window.ipcRenderer.send("reveal-database") };
+const openDriveLink = () => { window.ipcRenderer.send("open-external", dbDriveLink.value )}
 const dbSyncDump = () => {
   showLoader.value = true;
-  window.ipcRenderer.send("dbsync-dump", {
-    folder: settings.value.find(el => el.name === "google_drive_db_backup_folder")?.value,
-  })
+  window.ipcRenderer.send("dbsync-dump", { folder: settings.value.find(el => el.name === "google_drive_db_backup_folder")?.value })
 };
 const dbSyncRestore = () => {
   showLoader.value = true;
-  window.ipcRenderer.send("dbsync-restore", {
-    folder: settings.value.find(el => el.name === "google_drive_db_backup_folder")?.value,
-  })
+  window.ipcRenderer.send("dbsync-restore", { folder: settings.value.find(el => el.name === "google_drive_db_backup_folder")?.value })
 };
 
 window.ipcRenderer.on("dbsync-get-data-response", (data) => {
   dbSyncLastMod.value = (data.length) ? moment(data[0].modifiedTime) : null;
+  dbDriveLink.value = (data.length) ? `https://drive.google.com/drive/u/0/folders/${data[0].parents[0]}` : "";
 })
 window.ipcRenderer.on("dbsync-dump-response", (data) => {
   setToast("Kopiowanie bazy na Dysk rozpoczęte", false, undefined, "Wkrótce Twoje dane pojawią się w chmurze")
   showLoader.value = false;
   getDbSyncLastMod();
+  window.ipcRenderer.send("dbsync-cleanup", { folder: settings.value.find(el => el.name === "google_drive_db_backup_folder")?.value })
 })
 window.ipcRenderer.on("dbsync-restore-response", (data) => {
   setToast("Zgrywanie bazy z Dysku rozpoczęte", false, undefined, "Wkrótce Twoja baza będzie przywrócona")
@@ -115,8 +114,14 @@ window.ipcRenderer.on("dbsync-restore-response", (data) => {
 
   <h1>Baza danych</h1>
   <p class="ghost">
-    Aplikacja zapisuje dane w wewnętrznej bazie, dostępnej pod przyciskiem poniżej.
-    Dodatkowo istnieje możliwość tworzenia kopii zapasowej w chmurze. Ta jest trzymana na Twoim Dysku Google.
+    Wszystkie dane dotyczące uczniów i sesji są trzymane w wewnętrznej bazie danych. Możesz zobaczyć, gdzie ona się znajduje, za pomocą przycisku poniżej.
+  </p>
+  <Button icon="up-right-from-square" @click="openDbFolder">Otwórz lokalny plik</Button>
+
+  <h2>Kopia zapasowa bazy danych</h2>
+  <p class="ghost">
+    Kopia zapasowa bazy danych zapisywana jest na Twoim Dysku Google po pierwszym uruchomieniu aplikacji w danym dniu.
+    W chmurze przetrzymywane jest ostatnie 5 kopii bazy.
   </p>
   <p>Ostatnia kopia bazy danych: {{
     (dbSyncLastMod === null)
@@ -126,9 +131,9 @@ window.ipcRenderer.on("dbsync-restore-response", (data) => {
       : dbSyncLastMod.format("DD.MM.YYYY HH:mm:ss")
   }}</p>
   <div class="flex-right">
-    <Button icon="up-right-from-square" @click="openDbFolder">Otwórz lokalny plik</Button>
-    <Button icon="cloud-arrow-up" @click="dbSyncDump">Kopiuj bazę na Dysk</Button>
-    <Button icon="download" @click="dbSyncRestore">Pobierz kopię bazy z Dysku</Button>
+    <Button icon="up-right-from-square" @click="openDriveLink">Otwórz katalog na Dysku</Button>
+    <Button icon="cloud-arrow-up" @click="dbSyncDump">Kopiuj bazę teraz</Button>
+    <Button icon="download" @click="dbSyncRestore">Pobierz najnowszą kopię bazy z Dysku</Button>
   </div>
 
   </template>

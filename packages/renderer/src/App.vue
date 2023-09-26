@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import NavBar from "./components/NavBar.vue";
 import Footer from "./components/Footer.vue";
-import {ref, onBeforeMount} from "vue";
+import {ref, onBeforeMount, onMounted} from "vue";
 import { useRoute } from "vue-router";
 import Toast from "./components/Toast.vue";
 import { ToastData } from "types";
 import { setErrorToast, setToast } from "./toastManager";
+import moment from "moment";
+
 const route = useRoute();
 const APP_NAME = import.meta.env.VITE_APP_NAME;
 const page_names = {
@@ -25,8 +27,10 @@ const page_names = {
   ActionSummary: "Gotowe!",
 };
 
+const dbfolder = ref("");
 const accent_color = ref("10, 50%, 50%");
 const theme = ref("light");
+
 onBeforeMount(async () => {
   let data = await window.api.getSetting("accent_color");
   accent_color.value = data.value;
@@ -34,6 +38,25 @@ onBeforeMount(async () => {
 
   data = await window.api.getSetting("dark_mode");
   theme.value = !!(+data.value) ? "dark" : "light";
+})
+
+/**
+ * BACKUP
+ */
+onMounted(async () => {
+  window.api.getSetting("google_drive_db_backup_folder")
+    .then(folder => {
+      dbfolder.value = folder.value;
+      window.ipcRenderer.send("dbsync-get-data", { folder: dbfolder.value, callFrom: "App" })
+    }).catch(err => {
+      setErrorToast("Błąd wczytywania informacji o kopii zapasowej", err)
+    })
+})
+window.ipcRenderer.on("dbsync-get-data-response-app", backups => {
+  if(backups.length == 0 || !moment(backups[0].modifiedTime).isSame(moment(), "day")){
+    window.ipcRenderer.send("dbsync-dump", { folder: dbfolder.value });
+  }
+  window.ipcRenderer.send("dbsync-cleanup", { folder: dbfolder.value });
 })
 
 window.ipcRenderer.on("toast-pop", (data) => {

@@ -14,12 +14,14 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     // whitelist channels
     let validChannels = [
       "set-window-color",
+      "open-external",
       'calendar-events',
       "calendar-new-event",
       "calendar-delete-event",
       "reveal-database",
       "dbsync-get-data",
       "dbsync-dump",
+      "dbsync-cleanup",
       "dbsync-restore",
     ];
     if (validChannels.includes(channel)) {
@@ -33,7 +35,9 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       "calendar-event-new-response",
       "calendar-event-delete-response",
       "dbsync-get-data-response",
+      "dbsync-get-data-response-app",
       "dbsync-dump-response",
+      "dbsync-cleanup-response",
       "dbsync-restore-response",
       "toast-pop",
     ]

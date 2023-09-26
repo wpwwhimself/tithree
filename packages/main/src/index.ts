@@ -9,6 +9,7 @@ import { calendar_v3, google } from 'googleapis';
 import { OAuth2Client } from 'google-auth-library';
 import * as http from "http";
 import * as url from "url";
+import moment from 'moment';
 
 const setToast = (title: string, error = false, comment?: any) => {
   BrowserWindow.getAllWindows()[0].webContents.send("toast-pop", JSON.stringify({
@@ -177,6 +178,10 @@ if (import.meta.env.PROD) {
     )
     .catch(e => console.error('Failed check and install updates:', e));
 }
+
+ipcMain.on("open-external", (ev, link) => {
+  shell.openExternal(link);
+})
 
 /**
  * google auth
@@ -381,7 +386,7 @@ ipcMain.on("calendar-delete-event", (ev, data) => {
 })
 
 ipcMain.on("dbsync-get-data", (ev, data) => {
-  const {folder} = data;
+  const {folder, callFrom = "anywhere"} = data;
 
   const driveData = (auth: OAuth2Client) => {
     const drive = google.drive({ version: 'v3', auth });
@@ -389,30 +394,20 @@ ipcMain.on("dbsync-get-data", (ev, data) => {
     drive.files.list({
       q: `mimeType='application/vnd.google-apps.folder' and name = '${folder}' and trashed = false`,
       fields: 'files(id, name)',
-    })
-      .then(res => {
-        const folders = res.data.files;
-        if(folders?.length){
-          return folders[0].id
-        }else{
-          throw new Error("DB folder does not exist");
-        }
-      })
-      .then(folderId => drive.files.list({
-          q: `'${folderId}' in parents and trashed = false`,
-          fields: "files(id, name, modifiedTime)",
-        })
-          .then(res => res.data.files)
-      )
-      .then(res => {
-        BrowserWindow.getAllWindows()[0].webContents.send(
-          "dbsync-get-data-response",
-          res
-        )
-      })
-      .catch((err) => {
-        setToast("Nie udało się sprawdzić Dysku", true, err.message);
-      });
+    }).then(res => {
+      const folders = res.data.files;
+      if(folders?.length) return folders[0].id;
+      else throw new Error("DB folder does not exist");
+    }).then(folderId => drive.files.list({
+        q: `'${folderId}' in parents and trashed = false`,
+        fields: "files(id, name, modifiedTime, parents)",
+        orderBy: `modifiedTime desc`,
+      }).then(res => res.data.files)
+    ).then(files => {
+      BrowserWindow.getAllWindows()[0].webContents.send(`dbsync-get-data-response${callFrom == "App" ? "-app" : ""}`, files)
+    }).catch((err) => {
+      setToast("Nie udało się sprawdzić Dysku", true, err.message);
+    });
   }
 
   authorize(
@@ -429,62 +424,78 @@ ipcMain.on("dbsync-dump", (ev, data) => {
   const driveData = (auth: OAuth2Client) => {
     const drive = google.drive({ version: 'v3', auth });
 
+    // find or create folder
     drive.files.list({
       q: `mimeType='application/vnd.google-apps.folder' and name = '${folder}' and trashed = false`,
       fields: 'files(id, name)',
-    })
-      .then(res => {
-        const folders = res.data.files;
-        if(folders?.length){
-          return folders[0].id
-        }else{
-          return drive.files.create({
-            requestBody: {
-              name: folder,
-              mimeType: "application/vnd.google-apps.folder",
-            },
-            fields: 'id'
-          })
-            .then(res => res.data.id)
-        }
-      })
-      .then(folderId => {
-        // upsert
-        drive.files.list({
-          q: `name = 'database.db' and '${folderId}' in parents and trashed = false`,
-          fields: `files(id, name)`,
-        }).then(res => {
-          const dbfile = fs.createReadStream(dbPath);
+    }).then(res => {
+      const folders = res.data.files;
+      if(folders?.length) return folders[0].id;
+      else return drive.files.create({
+        requestBody: {
+          name: folder,
+          mimeType: "application/vnd.google-apps.folder",
+        },
+        fields: 'id'
+      }).then(res => res.data.id)
+    }).then(folderId => {
+      // upload file
+      const dbfile = fs.createReadStream(dbPath);
+      return drive.files.create({
+        fields: `id`,
+        media: { body: dbfile },
+        requestBody: {
+          name: `database_${moment().format("YYYYMMDD_HHmmss")}.db`,
+          parents: [folderId as string],
+        },
+      }).then(res => res.data.id)
+    }).then(fileid => {
+      setToast("Kopia bazy danych gotowa")
+      BrowserWindow.getAllWindows()[0].webContents.send("dbsync-dump-response", fileid)
+    }).catch((err) => {
+      setToast("Nie udało się wgrać bazy na Dysk", true, err.message)
+    });
+  }
 
-          if(res.data.files?.length){
-            return drive.files.update({
-              fileId: res.data.files[0].id ?? "",
-              media: { body: dbfile },
-              requestBody: {
-                name: "database.db",
-              }
-            }).then(res => res.data.id)
-          }else{
-            return drive.files.create({
-              fields: `id`,
-              media: { body: dbfile },
-              requestBody: {
-                name: "database.db",
-                parents: [folderId as string],
-              },
-            }).then(res => res.data.id)
-          }
-        })
+  authorize(
+    import.meta.env.VITE_GOOGLE_API_CLIENT_ID,
+    import.meta.env.VITE_GOOGLE_API_CLIENT_SECRET,
+    REDIRECT_URI,
+    driveData
+  );
+})
+
+ipcMain.on("dbsync-cleanup", (ev, data) => {
+  const {folder} = data;
+
+  const driveData = (auth: OAuth2Client) => {
+    const drive = google.drive({ version: 'v3', auth });
+
+    // find folder
+    drive.files.list({
+      q: `mimeType='application/vnd.google-apps.folder' and name = '${folder}' and trashed = false`,
+      fields: 'files(id, name)',
+    }).then(res => {
+      const folders = res.data.files;
+      if(folders?.length) return folders[0].id;
+    }).then(folderId => drive.files.list({
+        q: `'${folderId}' in parents and trashed = false`,
+        fields: "files(id, name, modifiedTime)",
+        orderBy: `modifiedTime desc`,
+      }).then(res => res.data.files)
+    ).then(files => {
+      let counter = 0;
+      files?.forEach(file => {
+        counter++;
+        if(counter > 5) drive.files.delete({
+          fileId: file.id ?? "",
+        }).catch(err => {throw new Error(`Nie udało się usunąć pliku ${file.name}: ${err.message}`)})
       })
-      .then(res => {
-        BrowserWindow.getAllWindows()[0].webContents.send(
-          "dbsync-dump-response",
-          res
-        )
-      })
-      .catch((err) => {
-        setToast("Nie udało się wgrać bazy na Dysk", true, err.message)
-      });
+    }).then(res => {
+      console.log("Katalog backupowy oczyszczony")
+    }).catch((err) => {
+      setToast("Nie udało się wyczyścić Dysku", true, err.message);
+    });
   }
 
   authorize(
@@ -515,8 +526,9 @@ ipcMain.on("dbsync-restore", (ev, data) => {
       })
       .then(folderId => {
         drive.files.list({
-          q: `name = 'database.db' and '${folderId}' in parents and trashed = false`,
-          fields: `files(id, name)`,
+          q: `name starts with 'database' and '${folderId}' in parents and trashed = false`,
+          fields: `files(id, name, modifiedTime)`,
+          orderBy: `modifiedTime desc`,
         }).then(res => {
           if(res.data.files?.length) return drive.files.get(
               { fileId: res.data.files[0].id ?? "", alt: "media"},
