@@ -540,6 +540,8 @@ ipcMain.on("dbsync-restore", (ev, data) => {
                   res?.data
                     .on("end", () => {
                       setToast("Baza danych pobrana")
+                      app.relaunch();
+                      app.exit();
                     })
                     .on("error", (err) => {throw new Error(`Error writing file: ${err}`)})
                     .pipe(dest);

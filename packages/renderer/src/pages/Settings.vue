@@ -133,7 +133,7 @@ window.ipcRenderer.on("dbsync-restore-response", (data) => {
   <div class="flex-right">
     <Button icon="up-right-from-square" @click="openDriveLink">Otwórz katalog na Dysku</Button>
     <Button icon="cloud-arrow-up" @click="dbSyncDump">Kopiuj bazę teraz</Button>
-    <Button icon="download" @click="dbSyncRestore">Pobierz najnowszą kopię bazy z Dysku</Button>
+    <Button icon="download" @click="dbSyncRestore">Pobierz najnowszą kopię bazy z Dysku (zrestartuje aplikację)</Button>
   </div>
 
   </template>
