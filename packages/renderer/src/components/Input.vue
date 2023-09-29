@@ -29,5 +29,6 @@ input{
   border-bottom: 2px solid hsl(var(--bg2));
   color: inherit;
   font-family: inherit;
+  accent-color: hsl(var(--acc));
 }
 </style>

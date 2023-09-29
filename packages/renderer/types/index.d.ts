@@ -31,7 +31,7 @@ export interface Student{
   price: number,
   phone: string?,
   note: string?,
-  suspended: boolean,
+  suspended: 0 | 1 | 2,
 }
 export interface CalEvent{
   eventId?: string | null,

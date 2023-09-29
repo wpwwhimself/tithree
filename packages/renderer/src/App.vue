@@ -21,6 +21,7 @@ const page_names = {
   TallyStudentDetails: "Podliczanie po uczniu",
   TallyPeriods: "Podliczanie po okresach",
   Settings: "Ustawienia",
+  BulkPriceChange: "Zmiana stawki",
   Calendar: "Kalendarz",
   EventMod: "Edycja zdarzenia",
   TimeGrid: "Obecność",

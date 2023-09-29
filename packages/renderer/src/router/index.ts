@@ -14,6 +14,7 @@ import HomeVue from "../pages/Home.vue";
 import CalendarVue from "../pages/Calendar.vue";
 import EventMod from "../pages/EventMod.vue";
 import TimeGridVue from "../pages/TimeGrid.vue";
+import BulkPriceChangeVue from "../pages/BulkPriceChange.vue";
 
 const routes = [
   {
@@ -70,6 +71,11 @@ const routes = [
     path: "/settings",
     name: "Settings",
     component: Settings,
+  },
+  {
+    path: "/settings/bulk/price-change",
+    name: "BulkPriceChange",
+    component: BulkPriceChangeVue,
   },
   {
     path: "/calendar",

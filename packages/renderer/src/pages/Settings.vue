@@ -8,6 +8,7 @@ import moment, { Moment } from "moment";
 import Loader from "../components/Loader.vue";
 import { useRouter } from "vue-router";
 import { setErrorToast, setToast } from "../toastManager";
+import JumpButton from "../components/JumpButton.vue";
 
 const settings = ref({} as Setting[]);
 const dbSyncLastMod = ref<Moment | null | undefined>(undefined);
@@ -75,6 +76,20 @@ window.ipcRenderer.on("dbsync-restore-response", (data) => {
   setToast("Zgrywanie bazy z Dysku rozpoczęte", false, undefined, "Wkrótce Twoja baza będzie przywrócona")
   showLoader.value = false;
 })
+
+// bulk operations
+interface BOper{
+  label: string,
+  icon: string,
+  pageName: string,
+}
+const bulkOperations: BOper[] = [
+  {
+    label: "Zmiana stawki",
+    icon: "copy",
+    pageName: "BulkPriceChange",
+  },
+]
 </script>
 
 <template>
@@ -134,6 +149,19 @@ window.ipcRenderer.on("dbsync-restore-response", (data) => {
     <Button icon="up-right-from-square" @click="openDriveLink">Otwórz katalog na Dysku</Button>
     <Button icon="cloud-arrow-up" @click="dbSyncDump">Kopiuj bazę teraz</Button>
     <Button icon="download" @click="dbSyncRestore">Pobierz najnowszą kopię bazy z Dysku (zrestartuje aplikację)</Button>
+  </div>
+
+  <h1>Operacje masowe</h1>
+  <p class="ghost">
+    Tutaj możesz wykonać zmiany na wielu obiektach jednocześnie.
+  </p>
+  <div class="flex-right">
+    <JumpButton v-for="{label, icon, pageName} in bulkOperations" :key="pageName"
+      :icon="icon"
+      :to="{name: pageName}"
+      >
+      {{ label }}
+    </JumpButton>
   </div>
 
   </template>
