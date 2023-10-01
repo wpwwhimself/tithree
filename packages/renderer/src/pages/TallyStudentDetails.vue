@@ -6,7 +6,9 @@ import { useRoute } from "vue-router";
 import { Student, Session } from "../../types";
 import Loader from "../components/Loader.vue";
 import moment from "moment";
-import { setErrorToast } from "../toastManager";
+import { setErrorToast, setToast } from "../toastManager";
+import SubPanel from "../components/SubPanel.vue";
+import Input from "../components/Input.vue";
 
 const route = useRoute();
 const student_id = +route.params.id;
@@ -16,7 +18,7 @@ const tally_to = ref("");
 
 let title: string;
 
-onMounted(async () => {
+const updateDataSet = async () => {
   //student data
   try{
     const data = await window.api.executeQuery(
@@ -69,7 +71,22 @@ onMounted(async () => {
   }catch(err){
     setErrorToast("Błąd wczytywania ustawień", err)
   }
+}
+
+onMounted(async () => {
+  updateDataSet();
 });
+
+const updateFilters = (name: string, val: string) => {
+  window.api.executeQuery(
+    `UPDATE settings SET value = ? WHERE name = ?`,
+    [val, `tally_${name}`]
+  ).then(res => {
+    setToast("Zakres filtrów zmieniony")
+    updateDataSet();
+  })
+  .catch(err => setErrorToast("Nie udało się zmienić filtrów", err.message))
+}
 </script>
 
 <template>
@@ -78,15 +95,17 @@ onMounted(async () => {
   </PageHeader>
 
   <p class="ghost">
-    To zestawienie wpłat danego ucznia z podziałem na miesiące, na podstawie całej dostępnej historii.
+    To zestawienie wpłat danego ucznia z podziałem na miesiące.
   </p>
 
-  <template v-if="report_data">
-    <p v-if="tally_from && tally_to">
-      Zestawienie generowane jest na podstawie wpisów od {{ moment(tally_from).format("D.MM.YYYY") }} do {{ moment(tally_to).format("D.MM.YYYY") }}.
-      Zakres tych dat możesz zmienić w ustawieniach.
-    </p>
+  <SubPanel title="Zakres zestawienia">
+    <div class="flex-right h-center inputs-in-line">
+      <Input type="date" name="date_from" :value="tally_from" label="Od" @change="updateFilters('from', $event.target.value)"/>
+      <Input type="date" name="date_to" :value="tally_to" label="Do" @change="updateFilters('to', $event.target.value)" />
+    </div>
+  </SubPanel>
 
+  <template v-if="report_data">
     <table v-if="report_data.length" class="rounded">
       <thead>
         <tr>
