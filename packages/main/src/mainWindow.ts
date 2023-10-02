@@ -2,6 +2,14 @@ import {app, BrowserWindow, ipcMain, ipcRenderer, shell} from 'electron';
 import {join, resolve} from 'node:path';
 
 async function createWindow() {
+  const splashWindow = new BrowserWindow({
+    show: true,
+    titleBarStyle: "hidden",
+    width: 500, height: 300,
+    frame: false,
+  })
+  splashWindow.loadFile(join(app.getAppPath(), "packages/renderer/splash.html"));
+
   const browserWindow = new BrowserWindow({
     show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
     webPreferences: {
@@ -29,6 +37,7 @@ async function createWindow() {
    * @see https://github.com/electron/electron/issues/25012 for the afford mentioned issue.
    */
   browserWindow.on('ready-to-show', () => {
+    splashWindow.close();
     browserWindow?.show();
 
     if (import.meta.env.DEV) {
