@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, DefineComponent } from "vue";
 import PageHeader from "../components/PageHeader.vue";
 import Input from "../components/Input.vue";
 import Button from "../components/Button.vue";
@@ -9,6 +9,8 @@ import Loader from "../components/Loader.vue";
 import { useRouter } from "vue-router";
 import { setErrorToast, setToast } from "../toastManager";
 import JumpButton from "../components/JumpButton.vue";
+import SuccessDialog from "../components/SuccessDialog.vue";
+import { createConfirmDialog } from "vuejs-confirm-dialog";
 
 const settings = ref({} as Setting[]);
 const dbSyncLastMod = ref<Moment | null | undefined>(undefined);
@@ -75,6 +77,16 @@ window.ipcRenderer.on("dbsync-dump-response", (data) => {
 window.ipcRenderer.on("dbsync-restore-response", (data) => {
   setToast("Zgrywanie bazy z Dysku rozpoczęte", false, undefined, "Wkrótce Twoja baza będzie przywrócona")
   showLoader.value = false;
+})
+
+const dialog = createConfirmDialog(SuccessDialog as DefineComponent<any, any, any, any, any, any, any, any>);
+window.ipcRenderer.on("dbsync-restore-restart", async () => {
+  const { isCanceled } = await dialog.reveal({
+    text: "Baza danych została pomyślnie pobrana",
+    subtext: "Musisz zrestartować aplikację. Chcesz zrobić to teraz?"
+  });
+  if(isCanceled) return;
+  window.ipcRenderer.send("app-restart");
 })
 
 // bulk operations

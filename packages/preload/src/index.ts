@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     // whitelist channels
     let validChannels = [
       "set-window-color",
+      "app-restart",
       "open-external",
       'calendar-events',
       "calendar-new-event",
@@ -39,6 +40,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       "dbsync-dump-response",
       "dbsync-cleanup-response",
       "dbsync-restore-response",
+      "dbsync-restore-restart",
       "toast-pop",
     ]
     if (validChannels.includes(channel)) {

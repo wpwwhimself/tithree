@@ -133,6 +133,10 @@ ipcMain.on("set-window-color", (ev, color) => {
     height: 30,
   })
 })
+ipcMain.on("app-restart", () => {
+  app.relaunch();
+  app.exit();
+})
 
 /**
  * Install Vue.js or any other extension in development mode only.
@@ -539,9 +543,7 @@ ipcMain.on("dbsync-restore", (ev, data) => {
                   const dest = fs.createWriteStream(dbPath);
                   res?.data
                     .on("end", () => {
-                      setToast("Baza danych pobrana")
-                      app.relaunch();
-                      app.exit();
+                      BrowserWindow.getAllWindows()[0].webContents.send("dbsync-restore-restart")
                     })
                     .on("error", (err) => {throw new Error(`Error writing file: ${err}`)})
                     .pipe(dest);
