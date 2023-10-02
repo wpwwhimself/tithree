@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, DefineComponent } from "vue";
 import Button from "../components/Button.vue";
 import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
@@ -7,6 +7,8 @@ import { useRouter } from "vue-router";
 import { Student } from "../../types";
 import Loader from "../components/Loader.vue";
 import { setToast, setErrorToast } from "../toastManager"
+import Warning from "../components/Warning.vue";
+import { createConfirmDialog } from "vuejs-confirm-dialog";
 
 const router = useRouter();
 const students = ref([] as Student[]);
@@ -60,8 +62,10 @@ const FETCH_DATA = async () => {
 
 onMounted(() => { FETCH_DATA() });
 
+const dialog = createConfirmDialog(Warning as DefineComponent<any, any, any, any, any, any, any, any>);
 const handleDelete = async (student_id: number) => {
-  if(!confirm("Na pewno?")) return;
+  const { isCanceled } = await dialog.reveal({ doYouWantTo: "usunąć ucznia" });
+  if(isCanceled) return;
 
   try{
     const [query, params] = [

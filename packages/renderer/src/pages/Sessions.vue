@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, DefineComponent } from "vue";
 import Button from "../components/Button.vue";
 import JumpButton from "../components/JumpButton.vue";
 import PageHeader from "../components/PageHeader.vue";
@@ -10,6 +10,8 @@ import { Session } from "../../types";
 import moment from "moment";
 import Loader from "../components/Loader.vue";
 import { setErrorToast, setToast } from "../toastManager";
+import Warning from "../components/Warning.vue";
+import { createConfirmDialog } from "vuejs-confirm-dialog";
 
 const router = useRouter();
 const sessions = ref([] as Session[]);
@@ -52,8 +54,10 @@ const FETCH_DATA = async () => {
 
 onMounted(() => { FETCH_DATA() });
 
+const dialog = createConfirmDialog(Warning as DefineComponent<any, any, any, any, any, any, any, any>);
 const handleDelete = async (session_id: number) => {
-  if(!confirm("Na pewno?")) return;
+  const { isCanceled } = await dialog.reveal({ doYouWantTo: "usunąć sesję" });
+  if(isCanceled) return;
 
   try{
     const [query, params] = [

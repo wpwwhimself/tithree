@@ -3,6 +3,7 @@ const props = defineProps<{
   icon: string,
   title: string,
   subtitle?: string,
+  ghosttitle?: string,
 }>();
 </script>
 
@@ -12,7 +13,8 @@ const props = defineProps<{
       <fai :icon="['fas', icon]"></fai>
     </span>
     <h1>{{ title }}</h1>
-    <span class="ghost">{{ subtitle }}</span>
+    <span v-if="subtitle">{{ subtitle }}</span>
+    <span v-if="ghosttitle" class="ghost">{{ ghosttitle }}</span>
   </div>
 </template>
 

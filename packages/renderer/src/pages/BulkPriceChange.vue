@@ -6,8 +6,10 @@ import { setErrorToast, setToast } from "../toastManager";
 import Input from "../components/Input.vue";
 import { Student } from "../../types";
 import Loader from "../components/Loader.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, DefineComponent } from "vue";
 import Button from '../components/Button.vue';
+import Warning from "../components/Warning.vue";
+import { createConfirmDialog } from "vuejs-confirm-dialog";
 
 const router = useRouter();
 const current_price = ref("");
@@ -45,9 +47,12 @@ const updateStudentsAffected = (student_id: number, state: boolean) => {
     else if(state === false && target_index > -1) students_affected.value.splice(target_index, 1);
   }
 }
-const handleSubmit = (e: Event) => {
+
+const dialog = createConfirmDialog(Warning as DefineComponent<any, any, any, any, any, any, any, any>);
+const handleSubmit = async (e: Event) => {
   e.preventDefault();
-  if(!confirm("Na pewno?")) return;
+  const { isCanceled } = await dialog.reveal({ doYouWantTo: "zmienić stawkę", orElse: "Naprawa może być czasochłonna" });
+  if(isCanceled) return;
 
   showLoader.value = true;
   window.api.executeQuery(

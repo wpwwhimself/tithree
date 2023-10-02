@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref, onMounted, DefineComponent } from "vue";
 import Loader from '../components/Loader.vue';
 import PageHeader from '../components/PageHeader.vue';
 import { CalEvent, Student, Session } from '../../types';
@@ -10,6 +10,8 @@ import BigSplash from '../components/BigSplash.vue';
 import router from '../router';
 import JumpButton from '../components/JumpButton.vue';
 import { setErrorToast, setToast } from '../toastManager';
+import Warning from "../components/Warning.vue";
+import { createConfirmDialog } from "vuejs-confirm-dialog";
 
 const students = ref<Student[]>([]);
 const events = ref<CalEvent[]>([]);
@@ -89,8 +91,11 @@ const finalizeSession = async (date: string, student: Student, duration: number)
     setErrorToast("Błąd zatwierdzania sesji", err)
   }
 };
+
+const dialog = createConfirmDialog(Warning as DefineComponent<any, any, any, any, any, any, any, any>);
 const deleteSession = async (eventId: string) => {
-  if(!confirm("Na pewno?")) return;
+  const { isCanceled } = await dialog.reveal({ doYouWantTo: "odrzucić sesję", orElse: "Spowoduje to usunięcie zdarzenia w kalendarzu" });
+  if(isCanceled) return;
   showLoader.value = true;
 
   try{

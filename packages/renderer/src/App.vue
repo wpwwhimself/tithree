@@ -6,6 +6,7 @@ import { useRoute } from "vue-router";
 import Toast from "./components/Toast.vue";
 import { ToastData } from "types";
 import { setErrorToast, setToast } from "./toastManager";
+import { DialogsWrapper } from "vuejs-confirm-dialog"
 import moment from "moment";
 
 const route = useRoute();
@@ -78,6 +79,7 @@ window.ipcRenderer.on("toast-pop", (data) => {
     </div>
     <div id="split" class="flex-right">
       <Toast />
+      <DialogsWrapper />
       <NavBar />
       <div id="wrapper">
         <router-view />
