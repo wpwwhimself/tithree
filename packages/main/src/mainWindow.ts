@@ -8,7 +8,6 @@ async function createWindow() {
     width: 500, height: 300,
     frame: false,
   })
-  splashWindow.loadFile(join(app.getAppPath(), "packages/renderer/splash.html"));
 
   const browserWindow = new BrowserWindow({
     show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
@@ -60,6 +59,7 @@ async function createWindow() {
     /**
      * Load from the Vite dev server for development.
      */
+    splashWindow.loadFile(join(app.getAppPath(), "packages/renderer/splash.html"));
     await browserWindow.loadURL(import.meta.env.VITE_DEV_SERVER_URL);
   } else {
     /**
@@ -71,6 +71,7 @@ async function createWindow() {
      * @see https://github.com/nodejs/node/issues/12682
      * @see https://github.com/electron/electron/issues/6869
      */
+    splashWindow.loadFile(join(app.getAppPath(), "packages/renderer/dist/splash.html"));
     await browserWindow.loadFile(resolve(__dirname, '../../renderer/dist/index.html'));
   }
 

@@ -36,7 +36,10 @@ const config = {
     outDir: 'dist',
     assetsDir: '.',
     rollupOptions: {
-      input: join(PACKAGE_ROOT, 'index.html'),
+      input: {
+        main: join(PACKAGE_ROOT, 'index.html'),
+        splash: join(PACKAGE_ROOT, 'splash.html'),
+      },
     },
     emptyOutDir: true,
     reportCompressedSize: false,
