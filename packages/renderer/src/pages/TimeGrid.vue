@@ -83,8 +83,7 @@ onMounted(async () => {
     <div id="timegrid" :style="{gridTemplateColumns: `auto repeat(${students.length}, 1fr)`}">
       <!-- header -->
       <span></span>
-      <span v-for="student in students"
-        class="heading"
+      <span v-for="student in students" class="heading"
         :title="`${student.first_name} ${student.last_name}`">
         {{ student.nickname ?? `${student.first_name} ${student.last_name}` }}
       </span>
@@ -130,8 +129,8 @@ onMounted(async () => {
   max-width: unset;
 }
 .heading{
-  rotate: -60deg;
-  translate: 1.5em 0;
+  rotate: -90deg;
+  translate: 2vw 0;
   transform-origin: 0% 100%;
   width: fit-content;
   position: sticky; top: 3em;
