@@ -17,7 +17,7 @@ const emit = defineEmits(["confirm", "cancel"])
         />
       <div class="flex-right h-center">
         <Button @click="emit('confirm')" icon="check" title="Potwierdź"></Button>
-        <Button @click="emit('cancel')" icon="x" title="Anuluj"></Button>
+        <Button @click="emit('cancel')" icon="xmark" title="Anuluj"></Button>
       </div>
     </div>
   </div>
