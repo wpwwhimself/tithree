@@ -117,12 +117,17 @@ const bulkOperations: BOper[] = [
 
   <form v-if="settings">
     <template v-for="setting in settings" :key="setting.name">
-      <Input v-if="setting.name == 'accent_color'"
-        type="color"
-        :label="setting.desc + '*'" :value="$colorConvert(setting.value, 'hsl-hex')"
-        :name="setting.name"
-        @change="(event) => updateSetting(setting.name, $colorConvert(event.target.value, 'hex-hsl'))"
-        />
+      <template v-if="setting.name == 'accent_color'">
+        <Input
+          type="color"
+          :label="setting.desc + '*'" :value="$colorConvert(setting.value, 'hsl-hex')"
+          :name="setting.name"
+          @change="(event) => updateSetting(setting.name, $colorConvert(event.target.value, 'hex-hsl'))"
+          />
+        <Button icon="rotate-left" @click="(event) => updateSetting(setting.name, '256, 69%, 69%')">
+          Przywróć kolor domyślny
+        </Button>
+      </template>
       <Input v-else-if="setting.name == 'dark_mode'"
         type="checkbox"
         :label="setting.desc + '*'" :checked="+setting.value"

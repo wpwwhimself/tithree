@@ -9,7 +9,7 @@ import { toPlnPlugin, groupPlugin, roundNumberPlugin, colorConvertPlugin } from 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 // icons
-import { faAnglesLeft, faArrowUp, faArrowDown, faCalculator, faCalendar, faChartLine, faCircleCheck, faCircleExclamation, faCheck, faChevronLeft, faClockRotateLeft, faCloudArrowUp, faCog, faDownload, faEye, faGraduationCap, faHouseChimney, faMinus, faPencil, faPlus, faTableCellsLarge, faTrash, faUpRightFromSquare, faUsers, faUserPen, faXmark, faCouch, faCopy } from '@fortawesome/free-solid-svg-icons';
+import { faAnglesLeft, faArrowUp, faArrowDown, faCalculator, faCalendar, faChartLine, faCircleCheck, faCircleExclamation, faCheck, faChevronLeft, faClockRotateLeft, faCloudArrowUp, faCog, faDownload, faEye, faGraduationCap, faHouseChimney, faMinus, faPencil, faPlus, faTableCellsLarge, faTrash, faUpRightFromSquare, faUsers, faUserPen, faXmark, faCouch, faCopy, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 library.add(
   faAnglesLeft,
   faArrowUp,
@@ -33,6 +33,7 @@ library.add(
   faMinus,
   faPencil,
   faPlus,
+  faRotateLeft,
   faTableCellsLarge,
   faTrash,
   faUpRightFromSquare,
