@@ -59,6 +59,8 @@ onMounted(async () => {
 });
 
 const updateFilters = (name: string, val: string) => {
+  if (val.charAt(0) == "0") return;
+
   window.api.executeQuery(
     `UPDATE settings SET value = ? WHERE name = ?`,
     [val, `tally_${name}`]

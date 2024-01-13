@@ -101,6 +101,8 @@ onMounted(async () => {
 });
 
 const updateFilters = (name: string, val: string) => {
+  if (val.charAt(0) == "0") return;
+
   window.api.executeQuery(
     `UPDATE settings SET value = ? WHERE name = ?`,
     [val, `tally_${name}`]
@@ -138,8 +140,8 @@ const updateFilters = (name: string, val: string) => {
 
   <SubPanel title="Zakres zestawienia">
     <div class="flex-right h-center inputs-in-line">
-      <Input type="date" name="date_from" :value="tally_from" label="Od" @change="updateFilters('from', $event.target.value)"/>
-      <Input type="date" name="date_to" :value="tally_to" label="Do" @change="updateFilters('to', $event.target.value)" />
+      <Input type="date" name="date_from" :value="tally_from" label="Od" @change="updateFilters('from', $event.target.value)" min="2020-01-01" />
+      <Input type="date" name="date_to" :value="tally_to" label="Do" @change="updateFilters('to', $event.target.value)" min="2020-01-01" />
     </div>
   </SubPanel>
 
