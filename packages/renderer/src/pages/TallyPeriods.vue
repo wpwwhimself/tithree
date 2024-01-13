@@ -50,6 +50,12 @@ const updateDataSet = async () => {
     );
     months.value = data;
 
+    totals = {
+      count: 0,
+      time: 0,
+      value: 0,
+    };
+
     for(let month of months.value){
       totals.count += month.session_count!;
       totals.time += month.session_time!;
@@ -155,7 +161,7 @@ const setReportYear = (year: number) => {
 
   <template v-if="months">
     <template v-if="months.length">
-      <ColPlot :data="months.slice(-12)" :axes="['id', 'session_value']" :as-pln="true"></ColPlot>
+      <ColPlot :key="+moment()" :data="months.slice(-12)" :axes="['id', 'session_value']" :as-pln="true"></ColPlot>
 
       <table class="rounded">
         <thead>
