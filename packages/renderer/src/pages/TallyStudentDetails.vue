@@ -9,6 +9,7 @@ import moment from "moment";
 import { setErrorToast, setToast } from "../toastManager";
 import SubPanel from "../components/SubPanel.vue";
 import Input from "../components/Input.vue";
+import Button from "../components/Button.vue";
 
 const route = useRoute();
 const student_id = +route.params.id;
@@ -89,6 +90,10 @@ const updateFilters = (name: string, val: string) => {
   })
   .catch(err => setErrorToast("Nie udało się zmienić filtrów", err.message))
 }
+const setReportYear = (year: number) => {
+  updateFilters("from", `${year}-01-01`)
+  updateFilters("to", `${year}-12-31`)
+}
 </script>
 
 <template>
@@ -104,6 +109,8 @@ const updateFilters = (name: string, val: string) => {
     <div class="flex-right h-center inputs-in-line">
       <Input type="date" name="date_from" :value="tally_from" label="Od" @change="updateFilters('from', $event.target.value)"/>
       <Input type="date" name="date_to" :value="tally_to" label="Do" @change="updateFilters('to', $event.target.value)" />
+      <Button icon="calendar" @click="(ev) => setReportYear(moment().year())">{{ moment().year() }}</Button>
+      <Button icon="calendar" @click="(ev) => setReportYear(moment().year() - 1)">{{ moment().year() - 1 }}</Button>
     </div>
   </SubPanel>
 
