@@ -17,3 +17,7 @@ This app is constantly improving and will probably change in the near future. Mo
 ![Sessions list and navigation](_screenshots/Sessions+Nav.png)
 ![Tallying](_screenshots/TallyPeriods.png)
 ![Calendar](_screenshots/Calendar.png)
+
+## Dev things
+- `npm run watch` - start development version
+- `npm run compile` - build and create an installer
