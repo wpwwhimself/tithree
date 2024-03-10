@@ -24,7 +24,7 @@ const updateDataSet = async () => {
         COUNT(*) as session_count,
         SUM(sessions.duration) as session_time,
         SUM(
-          CASE WHEN duration < 1 THEN duration * sessions.price * (SELECT value FROM settings WHERE name = 'price_factor_below_1')
+          CASE WHEN duration < 1 THEN duration * sessions.price * sessions.price_factor_below_1
             ELSE duration * sessions.price
           END
         ) as session_value

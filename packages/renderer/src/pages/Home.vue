@@ -81,7 +81,8 @@ window.ipcRenderer.on("calendar-event-delete-response", (res_code) => {
 const finalizeSession = async (date: string, student: Student, duration: number) => {
   try{
     const [query, params] = [
-      `INSERT INTO sessions (student_id, session_date, duration, price) VALUES(?, ?, ?, ?)`,
+      `INSERT INTO sessions (student_id, session_date, duration, price, price_factor_below_1)
+      VALUES (?, ?, ?, ?, (SELECT value FROM settings WHERE name = 'price_factor_below_1'))`,
       [student.id, date, duration, student.price]
     ];
     await window.api.executeQuery(query, params);

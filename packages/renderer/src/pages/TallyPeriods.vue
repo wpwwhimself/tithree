@@ -37,7 +37,7 @@ const updateDataSet = async () => {
         SUBSTR(date, 1, 7) as id,
         COALESCE(sum(duration), 0) as session_time,
         COALESCE(sum(
-          CASE WHEN duration < 1 THEN duration * price * (SELECT value FROM settings WHERE name = 'price_factor_below_1')
+          CASE WHEN duration < 1 THEN duration * price * price_factor_below_1
             ELSE duration * price
           END
         ), 0) as session_value
@@ -78,7 +78,7 @@ const updateDataSet = async () => {
       'tydz. ' || strftime('%W', date) as label,
       strftime('%W', date) as week,
       coalesce(sum(
-          CASE WHEN duration < 1 THEN duration * price * (SELECT value FROM settings WHERE name = 'price_factor_below_1')
+          CASE WHEN duration < 1 THEN duration * price * price_factor_below_1
             ELSE duration * price
           END
         ), 0) as session_value

@@ -20,6 +20,7 @@ let session_date = ref(moment().format("YYYY-MM-DD"));
 let student_id = ref("");
 let duration = ref("");
 let price = ref("");
+let price_factor_below_1 = ref("");
 
 onMounted(async () => {
   // load students
@@ -62,10 +63,17 @@ onMounted(async () => {
     student_id = ref(session.value.student_id.toString());
     duration = ref(session.value.duration.toString());
     price = ref(session.value.price.toString());
+    price_factor_below_1 = ref(session.value.price_factor_below_1.toString());
   }else{
     try{
       const data = await window.api.getSetting("default_session_duration");
       duration.value = data.value;
+    }catch(err){
+      setErrorToast("Błąd wczytywania ustawień", err)
+    }
+    try{
+      const data = await window.api.getSetting("price_factor_below_1");
+      price_factor_below_1.value = data.value;
     }catch(err){
       setErrorToast("Błąd wczytywania ustawień", err)
     }
@@ -80,12 +88,12 @@ const handleSubmit = async (e: Event) => {
   try{
     const [query, params] = (!is_update)
       ? [
-          `INSERT INTO sessions (student_id, session_date, duration, price) VALUES(?, ?, ?, ?)`,
-          [student_id.value, session_date.value, duration.value, price.value]
+          `INSERT INTO sessions (student_id, session_date, duration, price, price_factor_below_1) VALUES(?, ?, ?, ?, ?)`,
+          [student_id.value, session_date.value, duration.value, price.value, price_factor_below_1.value]
         ]
       : [
-          `UPDATE sessions SET student_id = ?, session_date = ?, duration = ?, price = ?, updated_at = datetime() WHERE id = ?`,
-          [student_id.value, session_date.value, duration.value, price.value, session_id]
+          `UPDATE sessions SET student_id = ?, session_date = ?, duration = ?, price = ?, price_factor_below_1 = ?, updated_at = datetime() WHERE id = ?`,
+          [student_id.value, session_date.value, duration.value, price.value, price_factor_below_1.value, session_id]
         ];
     await window.api.executeQuery(query, params);
     setToast((is_update) ? "Dane sesji poprawione" : "Sesja dodana")
@@ -104,6 +112,7 @@ const updateRef = (target: string, val: string) => {
     session_date: session_date,
     duration: duration,
     price: price,
+    price_factor_below_1: price_factor_below_1,
   }
   refTable[target as keyof typeof refTable].value = val;
 }
@@ -124,6 +133,7 @@ const updateRef = (target: string, val: string) => {
       <Select :options="students" :emptyOption="true" :value="student_id" name="student_id" label="Uczeń" required @change="updateStudentId($event.target.value)" />
       <Input type="number" min="0" step="0.25" :value="duration" name="duration" label="Czas trwania [h]" required @input="updateRef('duration', $event.target.value)"/>
       <Input type="number" min="0" step="0.01" :value="price" name="price" label="Stawka [zł]" required @input="updateRef('price', $event.target.value)"/>
+      <Input type="number" min="0" step="0.0000001" :value="price_factor_below_1" name="price_factor_below_1" label="Mnożnik stawki dla sesji poniżej 1 h" required @input="updateRef('price_factor_below_1', $event.target.value)"/>
       <Button icon="check" type="submit">Zatwierdź</Button>
     </form>
   </div>

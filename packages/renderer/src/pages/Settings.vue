@@ -140,6 +140,7 @@ const bulkOperations: BOper[] = [
         :name="setting.name"
         @change="(event) => updateSetting(setting.name, event.target.value)"
         />
+      <span v-if="setting.name == 'price_factor_below_1'" class="ghost">↑ mnożnik = cena docelowa / ułamek godziny / stawka za godzinę</span>
     </template>
   </form>
   <h2 v-else>Wczytywanie...</h2>

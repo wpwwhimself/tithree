@@ -17,6 +17,7 @@ export interface Session{
   student_name?: string,
   duration: number,
   price: number,
+  price_factor_below_1: number,
   session_count?: number,
   session_time?: number,
   session_value?: number,

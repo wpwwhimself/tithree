@@ -81,6 +81,7 @@ const queries = [
     session_date TEXT DEFAULT CURRENT_DATE NOT NULL,
     duration REAL,
     price REAL,
+    price_factor_below_1 REAL,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY(student_id) REFERENCES students(id)
