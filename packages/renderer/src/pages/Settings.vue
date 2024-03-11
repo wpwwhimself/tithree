@@ -135,7 +135,12 @@ const bulkOperations: BOper[] = [
         @change="(event) => updateSetting(setting.name, (+event.target.checked).toString())"
         />
       <Input v-else
-        :type="(['tally_from', 'tally_to'].includes(setting.name) ? 'date' : 'text')"
+        :type="
+          ['tally_from', 'tally_to'].includes(setting.name) ? 'date'
+          : ['default_student_price', 'default_session_duration', 'price_factor_below_1', 'student_inactive_days'].includes(setting.name) ? 'number'
+          : 'text'
+        "
+        step="0.0000001"
         :label="setting.desc" :value="setting.value"
         :name="setting.name"
         @change="(event) => updateSetting(setting.name, event.target.value)"
