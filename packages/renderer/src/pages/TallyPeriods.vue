@@ -77,15 +77,17 @@ const updateDataSet = async () => {
     SELECT
       'tydz. ' || strftime('%W', date) as label,
       strftime('%W', date) as week,
-      coalesce(sum(
+      coalesce(sum(round(
           CASE WHEN duration < 1 THEN duration * price * price_factor_below_1
             ELSE duration * price
           END
-        ), 0) as session_value
-    FROM weeks
-      LEFT JOIN sessions ON week = strftime('%W', session_date)
+        , 2)), 0) as session_value
+    FROM sessions
+      RIGHT JOIN weeks ON week = strftime('%W', session_date)
+    where session_date BETWEEN datetime('now', '-6 months') AND datetime('now')
     GROUP BY 1
-    LIMIT ${WEEKS_BACK}`
+    ORDER BY session_date
+`
   ).then(data => { weekly.value = data })
   .catch(err => { setErrorToast("Błąd wczytywania statystyk", err) })
 
