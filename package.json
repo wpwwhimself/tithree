@@ -1,11 +1,11 @@
 {
   "name": "tithree",
   "description": "An app for tutors to tally their time spent on tutoring",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": false,
   "author": {
     "email": "contact@wpww.pl",
-    "name": "Wojciech Przybyła",
+    "name": "Wojciech Przyby\u0139\u201aa",
     "url": "http://wpww.pl/"
   },
   "main": "packages/main/dist/index.cjs",
