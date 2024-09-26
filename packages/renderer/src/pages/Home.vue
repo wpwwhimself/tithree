@@ -41,7 +41,7 @@ const FETCH_DATA = async () => {
 
   // get last sessions
   try{
-    const data = await window.api.executeQuery(`SELECT session_date || '_' || student_id as session_code FROM sessions WHERE date(session_date) >= date('now', '-7 day')`);
+    const data = await window.api.executeQuery(`SELECT session_date || '_' || student_id as session_code FROM sessions WHERE date(session_date) >= date('now', '-30 days')`);
     data.forEach(el => lastSessions.value.push(el.session_code));
   }catch(err){
     setErrorToast("Błąd wczytywania sesji", err)

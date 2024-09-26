@@ -288,14 +288,14 @@ ipcMain.on("calendar-events", (event, data) => {
       .then((res) => res?.data.items?.find((cal => cal.summary === cal_name))?.id)
       .then((cal_id) => {
         const today = new Date(); today.setHours(0,0,0,0);
-        const last_week = new Date(); last_week.setDate(last_week.getDate() - 7); last_week.setHours(0,0,0,0);
+        const last_month = new Date(); last_month.setDate(last_month.getDate() - 30); last_month.setHours(0,0,0,0);
         const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0,0,0,0);
         const next_month = new Date(); next_month.setMonth(next_month.getMonth() + 1); next_month.setHours(0,0,0,0);
 
         return calendar.events.list({
           calendarId: cal_id ?? undefined,
           singleEvents: true,
-          timeMin: last_week.toISOString(),
+          timeMin: last_month.toISOString(),
           timeMax: (mode === "all") ? next_month.toISOString() : tomorrow.toISOString(),
         })
       })
